@@ -39,13 +39,81 @@ body {
   flex-wrap: wrap;
   gap: 24px;
   padding: 16px 20px 60px;
-  max-width: 1100px;
+  max-width: 1300px;
   margin: 0 auto;
+}
+
+.deck-panel {
+  flex: 0 1 220px;
+  min-width: 200px;
 }
 
 .form-panel, .preview-panel {
   flex: 1 1 420px;
   min-width: 320px;
+}
+
+.deck-panel h2 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+  margin: 0 0 10px;
+}
+
+#deck-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.deck-item {
+  padding: 8px 10px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.deck-item.active {
+  border-color: var(--accent);
+  background: rgba(138, 39, 39, 0.15);
+}
+
+.deck-panel button, .file-btn {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  color: var(--text);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.file-btn { box-sizing: border-box; }
+
+.deck-io {
+  border-top: 1px solid var(--panel-border);
+  padding-top: 10px;
+  margin-top: 6px;
+}
+
+#deck-status {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  min-height: 1.2em;
 }
 
 .type-toggle {
@@ -186,7 +254,22 @@ textarea { resize: vertical; }
   border: 2px solid var(--card-accent, #8a2727);
 }
 
+#statblock-card.theme-verdant {
+  background: linear-gradient(160deg, #182620 0%, #0e1712 100%);
+  color: #e4efe6;
+  border: 2px solid var(--card-accent, #8a2727);
+}
+
+#statblock-card.theme-arcane {
+  background: linear-gradient(160deg, #1a1630 0%, #0f0c1e 100%);
+  color: #e9e5f8;
+  border: 2px solid var(--card-accent, #8a2727);
+}
+
 .card-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.7rem;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -194,6 +277,15 @@ textarea { resize: vertical; }
   font-weight: 700;
   margin-bottom: 2px;
 }
+
+.type-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: var(--card-accent, #8a2727);
+}
+
+.type-icon svg { width: 100%; height: 100%; display: block; }
 
 .card-name {
   font-size: 1.5rem;
@@ -329,4 +421,8 @@ textarea { resize: vertical; }
 @media (max-width: 760px) {
   .preview-panel { position: static; }
   #statblock-card { width: 100%; }
+  .deck-panel { flex: 1 1 100%; order: -1; }
+  #deck-list { max-height: 160px; }
 }
+
+.print-cell { break-inside: avoid; }

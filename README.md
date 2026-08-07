@@ -6,20 +6,23 @@ Inspired by tools like [tetra-cube's D&D statblock generator](https://tetra-cube
 
 ## Status
 
-Early scaffold — functional MVP:
+Functional multi-card build:
 - Adversary and Environment forms
 - Live-updating card preview
 - Add/remove arbitrary Features
-- PNG export via `html2canvas`
-- Two starter themes (dark / parchment) with an accent color picker
+- A "deck" of cards (new/duplicate/delete), auto-saved to browser `localStorage`
+- Export/import the whole deck as JSON
+- Single-card PNG export via `html2canvas`
+- Batch PNG export of the whole deck as a `.zip` via `JSZip`
+- Print-friendly multi-card sheet (opens a print dialog, 2-up grid)
+- Four starter themes (dark / parchment / verdant / arcane) with an accent color picker
+- Small original SVG icon set that flags adversary/environment type on the card (not derived from official Daggerheart iconography)
 
 ## Roadmap
 
-- [ ] More card themes / layout options
-- [ ] Save/load statblocks (localStorage or export/import JSON)
-- [ ] Batch export for a full adventure pack (multiple cards → zip)
-- [ ] Icon set for adversary types (Solo, Bruiser, Skulk, Support, etc.)
-- [ ] Print-friendly multi-card sheet layout
+- [ ] More themes / layout variety
+- [ ] Configurable print sheet (card count per page, page size)
+- [ ] Deck organization (folders/tags for multi-adventure-pack use)
 - [ ] Hosting (GitHub Pages) + Ko-fi link once stable
 
 ## Running locally

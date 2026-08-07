@@ -15,6 +15,24 @@
 
 <main class="layout">
 
+  <section class="deck-panel" aria-label="Card deck">
+    <h2>Your Cards</h2>
+    <div id="deck-list"></div>
+    <button type="button" id="new-card">+ New Card</button>
+    <button type="button" id="duplicate-card">Duplicate Selected</button>
+    <button type="button" id="delete-card">Delete Selected</button>
+
+    <div class="deck-io">
+      <button type="button" id="export-json">Export Deck (JSON)</button>
+      <label class="file-btn">Import Deck (JSON)
+        <input type="file" id="import-json" accept="application/json" hidden>
+      </label>
+      <button type="button" id="export-all-png">Export All as PNG (.zip)</button>
+      <button type="button" id="print-sheet">Print Sheet</button>
+    </div>
+    <span id="deck-status"></span>
+  </section>
+
   <section class="form-panel" aria-label="Statblock editor">
     <div class="type-toggle">
       <button type="button" class="type-btn active" data-type="adversary">Adversary</button>
@@ -25,32 +43,32 @@
 
       <fieldset>
         <legend>Basics</legend>
-        <label>Name <input type="text" id="f-name" value="Acid Burrower"></label>
-        <label>Tier <input type="number" id="f-tier" value="1" min="1" max="4"></label>
-        <label class="adv-only">Type <input type="text" id="f-type" value="Solo" placeholder="Solo / Bruiser / Skulk / Support..."></label>
-        <label class="env-only" hidden>Type <input type="text" id="f-env-type" value="Exploration" placeholder="Exploration / Traversal / Social..."></label>
-        <label>Description <textarea id="f-description" rows="2">A horse-sized insect with digging claws and acidic blood.</textarea></label>
-        <label class="adv-only">Motives &amp; Tactics <input type="text" id="f-motives" value="Burrow, drag away, feed, reposition"></label>
-        <label class="env-only" hidden>Impulses <input type="text" id="f-impulses" value="Draw in the curious, echo the past"></label>
+        <label>Name <input type="text" data-field="name"></label>
+        <label>Tier <input type="number" data-field="tier" min="1" max="4"></label>
+        <label class="adv-only">Type <input type="text" data-field="type" placeholder="Solo / Bruiser / Skulk / Support / Leader / Horde / Ranged / Standard / Colossus"></label>
+        <label class="env-only" hidden>Type <input type="text" data-field="envType" placeholder="Exploration / Traversal / Social..."></label>
+        <label>Description <textarea data-field="description" rows="2"></textarea></label>
+        <label class="adv-only">Motives &amp; Tactics <input type="text" data-field="motives"></label>
+        <label class="env-only" hidden>Impulses <input type="text" data-field="impulses"></label>
       </fieldset>
 
       <fieldset class="adv-only">
         <legend>Combat Stats</legend>
-        <label>Difficulty <input type="number" id="f-difficulty" value="14"></label>
-        <label>Thresholds <input type="text" id="f-thresholds" value="8/15" placeholder="major/severe or 'None'"></label>
-        <label>HP <input type="number" id="f-hp" value="8"></label>
-        <label>Stress <input type="number" id="f-stress" value="3"></label>
-        <label>ATK <input type="text" id="f-atk" value="+3"></label>
-        <label>Attack Name <input type="text" id="f-attack-name" value="Claws"></label>
-        <label>Range <input type="text" id="f-range" value="Very Close"></label>
-        <label>Damage <input type="text" id="f-damage" value="1d12+2 phy"></label>
-        <label>Experience <input type="text" id="f-experience" value="Tremor Sense +2"></label>
+        <label>Difficulty <input type="number" data-field="difficultyAdv"></label>
+        <label>Thresholds <input type="text" data-field="thresholds" placeholder="major/severe or 'None'"></label>
+        <label>HP <input type="number" data-field="hp"></label>
+        <label>Stress <input type="number" data-field="stress"></label>
+        <label>ATK <input type="text" data-field="atk"></label>
+        <label>Attack Name <input type="text" data-field="attackName"></label>
+        <label>Range <input type="text" data-field="range"></label>
+        <label>Damage <input type="text" data-field="damage"></label>
+        <label>Experience <input type="text" data-field="experience"></label>
       </fieldset>
 
       <fieldset class="env-only" hidden>
         <legend>Environment</legend>
-        <label>Difficulty <input type="number" id="f-env-difficulty" value="11"></label>
-        <label>Potential Adversaries <input type="text" id="f-potential" value="Beasts, Grove Guardians"></label>
+        <label>Difficulty <input type="number" data-field="difficultyEnv"></label>
+        <label>Potential Adversaries <input type="text" data-field="potential"></label>
       </fieldset>
 
       <fieldset>
@@ -61,11 +79,13 @@
 
       <fieldset>
         <legend>Card Style</legend>
-        <label>Accent color <input type="color" id="f-accent" value="#8a2727"></label>
+        <label>Accent color <input type="color" data-field="accent"></label>
         <label>Card theme
-          <select id="f-theme">
+          <select data-field="theme">
             <option value="dark">Dark</option>
             <option value="parchment">Parchment</option>
+            <option value="verdant">Verdant</option>
+            <option value="arcane">Arcane</option>
           </select>
         </label>
       </fieldset>
@@ -96,6 +116,8 @@
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="icons.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
