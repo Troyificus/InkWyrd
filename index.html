@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adversary Card Forge — Daggerheart Compatible Statblock Generator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <h1>Adversary Card Forge</h1>
+  <p class="tagline">A Daggerheart Compatible statblock card generator — build it, preview it, export a PNG.</p>
+</header>
+
+<main class="layout">
+
+  <section class="form-panel" aria-label="Statblock editor">
+    <div class="type-toggle">
+      <button type="button" class="type-btn active" data-type="adversary">Adversary</button>
+      <button type="button" class="type-btn" data-type="environment">Environment</button>
+    </div>
+
+    <form id="statblock-form">
+
+      <fieldset>
+        <legend>Basics</legend>
+        <label>Name <input type="text" id="f-name" value="Acid Burrower"></label>
+        <label>Tier <input type="number" id="f-tier" value="1" min="1" max="4"></label>
+        <label class="adv-only">Type <input type="text" id="f-type" value="Solo" placeholder="Solo / Bruiser / Skulk / Support..."></label>
+        <label class="env-only" hidden>Type <input type="text" id="f-env-type" value="Exploration" placeholder="Exploration / Traversal / Social..."></label>
+        <label>Description <textarea id="f-description" rows="2">A horse-sized insect with digging claws and acidic blood.</textarea></label>
+        <label class="adv-only">Motives &amp; Tactics <input type="text" id="f-motives" value="Burrow, drag away, feed, reposition"></label>
+        <label class="env-only" hidden>Impulses <input type="text" id="f-impulses" value="Draw in the curious, echo the past"></label>
+      </fieldset>
+
+      <fieldset class="adv-only">
+        <legend>Combat Stats</legend>
+        <label>Difficulty <input type="number" id="f-difficulty" value="14"></label>
+        <label>Thresholds <input type="text" id="f-thresholds" value="8/15" placeholder="major/severe or 'None'"></label>
+        <label>HP <input type="number" id="f-hp" value="8"></label>
+        <label>Stress <input type="number" id="f-stress" value="3"></label>
+        <label>ATK <input type="text" id="f-atk" value="+3"></label>
+        <label>Attack Name <input type="text" id="f-attack-name" value="Claws"></label>
+        <label>Range <input type="text" id="f-range" value="Very Close"></label>
+        <label>Damage <input type="text" id="f-damage" value="1d12+2 phy"></label>
+        <label>Experience <input type="text" id="f-experience" value="Tremor Sense +2"></label>
+      </fieldset>
+
+      <fieldset class="env-only" hidden>
+        <legend>Environment</legend>
+        <label>Difficulty <input type="number" id="f-env-difficulty" value="11"></label>
+        <label>Potential Adversaries <input type="text" id="f-potential" value="Beasts, Grove Guardians"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Features</legend>
+        <div id="features-list"></div>
+        <button type="button" id="add-feature">+ Add Feature</button>
+      </fieldset>
+
+      <fieldset>
+        <legend>Card Style</legend>
+        <label>Accent color <input type="color" id="f-accent" value="#8a2727"></label>
+        <label>Card theme
+          <select id="f-theme">
+            <option value="dark">Dark</option>
+            <option value="parchment">Parchment</option>
+          </select>
+        </label>
+      </fieldset>
+
+    </form>
+  </section>
+
+  <section class="preview-panel" aria-label="Card preview">
+    <div id="card-wrapper">
+      <div id="statblock-card" class="theme-dark">
+        <!-- Rendered by script.js -->
+      </div>
+    </div>
+    <div class="export-controls">
+      <button type="button" id="export-png">Download PNG</button>
+      <span id="export-status"></span>
+    </div>
+    <p class="compliance-note">
+      Built using Public Game Content from the Daggerheart SRD 1.0 under the Darrington Press Community Gaming License.
+      This tool produces original card artwork — it does not reproduce official Daggerheart artwork, logos, or layouts.
+    </p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Fan-made tool. Not affiliated with or endorsed by Darrington Press or Critical Role, LLC. "Daggerheart" is a trademark of Critical Role, LLC.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
