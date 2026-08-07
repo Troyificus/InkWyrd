@@ -1,6 +1,6 @@
 # Adversary Card Forge
 
-A free, browser-based statblock card generator for **Daggerheart Compatible** content — build an Adversary or Environment statblock in a form, preview it live, and export it as a PNG for use in homebrew adventure packs, VTTs, or print.
+A free, browser-based statblock card generator for **Daggerheart Compatible** content. Build an Adversary or Environment statblock in a form, preview it live, and export it as a PNG for use in homebrew adventure packs, VTTs, or print.
 
 Inspired by tools like [tetra-cube's D&D statblock generator](https://tetra-cube.com/dnd/dnd-statblock.html), but built for Daggerheart with an original visual design.
 
