@@ -25,3 +25,11 @@ function getTypeIcon(typeText) {
   }
   return TYPE_ICONS.default;
 }
+
+// Small original marks distinguishing Passive / Action / Reaction features.
+// Simple geometric shapes — not a reproduction of any official iconography.
+const FEATURE_ICONS = {
+  passive:  '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>',
+  action:   '<svg viewBox="0 0 24 24"><path d="M12 3 L21 19 L3 19 Z" fill="currentColor"/></svg>',
+  reaction: '<svg viewBox="0 0 24 24"><path d="M12 3 L21 12 L12 21 L3 12 Z" fill="currentColor"/></svg>'
+};

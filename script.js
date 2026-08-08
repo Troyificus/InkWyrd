@@ -12,7 +12,8 @@ function newCard(overrides = {}) {
     description: '',
     motives: '',
     difficultyAdv: 12,
-    thresholds: '—/—',
+    thresholdMajor: 7,
+    thresholdSevere: 12,
     hp: 5,
     stress: 3,
     attacks: [{ atk: '+2', name: 'Strike', range: 'Melee', damage: '1d8' }],
@@ -21,8 +22,8 @@ function newCard(overrides = {}) {
     impulses: '',
     difficultyEnv: 11,
     potential: '',
-    theme: 'dark',
-    accent: '#8a2727',
+    theme: 'parchment',
+    accent: '#7a2020',
     features: [{ name: 'New Feature — Passive', text: 'Describe what it does.' }]
   }, overrides);
 }
@@ -34,7 +35,8 @@ function starterCard() {
     description: 'A horse-sized insect with digging claws and acidic blood.',
     motives: 'Burrow, drag away, feed, reposition',
     difficultyAdv: 14,
-    thresholds: '8/15',
+    thresholdMajor: 8,
+    thresholdSevere: 15,
     hp: 8,
     stress: 3,
     attacks: [
@@ -63,8 +65,8 @@ function loadDeck() {
   return [starterCard()];
 }
 
-// Migrates cards saved under the old single-attack schema (atk/attackName/range/damage)
-// to the current attacks[] array schema, so existing saved decks keep working.
+// Migrates cards saved under older schemas (single-attack fields, or the old
+// combined "thresholds" text field) to the current schema.
 function migrateCard(card) {
   if (!card.attacks) {
     card.attacks = [{
@@ -77,6 +79,12 @@ function migrateCard(card) {
     delete card.attackName;
     delete card.range;
     delete card.damage;
+  }
+  if (card.thresholds !== undefined && (card.thresholdMajor === undefined)) {
+    const parts = String(card.thresholds).split('/').map(s => parseInt(s, 10));
+    card.thresholdMajor = Number.isFinite(parts[0]) ? parts[0] : 7;
+    card.thresholdSevere = Number.isFinite(parts[1]) ? parts[1] : 12;
+    delete card.thresholds;
   }
   return card;
 }
@@ -255,58 +263,80 @@ $('add-attack').addEventListener('click', () => {
 });
 
 // ===== Card rendering (into a given element, so it can be reused for export/print) =====
+function featureIconFor(name) {
+  const n = (name || '').toLowerCase();
+  if (n.includes('reaction')) return FEATURE_ICONS.reaction;
+  if (n.includes('action')) return FEATURE_ICONS.action;
+  return FEATURE_ICONS.passive;
+}
+
 function cardInnerHtml(card) {
   let html = '';
-  const iconSvg = getTypeIcon(card.cardType === 'adversary' ? card.type : card.envType);
+  const isAdv = card.cardType === 'adversary';
+  const iconSvg = getTypeIcon(isAdv ? card.type : card.envType);
+  const typeLabel = isAdv ? card.type : card.envType;
 
-  if (card.cardType === 'adversary') {
-    html += `<div class="card-eyebrow"><span class="type-icon">${iconSvg}</span>Tier ${escapeHtml(card.tier)} · ${escapeHtml(card.type)} · Adversary</div>`;
-    html += `<div class="card-name">${escapeHtml(card.name)}</div>`;
-    if (card.description) html += `<div class="card-desc">${escapeHtml(card.description)}</div>`;
-    html += `<div class="card-line"><b>Motives &amp; Tactics:</b> ${escapeHtml(card.motives)}</div>`;
-    html += `<div class="card-divider"></div>`;
-
-    html += `<div class="stat-strip">
-      <div class="stat-box"><div class="val">${escapeHtml(card.difficultyAdv)}</div><div class="lbl">Difficulty</div></div>
-      <div class="stat-box"><div class="val">${escapeHtml(card.thresholds)}</div><div class="lbl">Thresholds</div></div>
-      <div class="stat-box"><div class="val">${escapeHtml(card.hp)}</div><div class="lbl">HP</div></div>
-      <div class="stat-box"><div class="val">${escapeHtml(card.stress)}</div><div class="lbl">Stress</div></div>
+  html += `<div class="corner-tag">
+      <div class="corner-tier">T${escapeHtml(card.tier)}</div>
+      <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(typeLabel)}</div>
     </div>`;
 
+  html += `<div class="card-name">${escapeHtml(card.name)}</div>`;
+  html += `<div class="card-kind">${isAdv ? 'Adversary' : 'Environment'}</div>`;
+  if (card.description) html += `<div class="card-desc">${escapeHtml(card.description)}</div>`;
+
+  if (isAdv) {
+    html += `<div class="card-line"><b>Difficulty:</b> ${escapeHtml(card.difficultyAdv)}</div>`;
     (card.attacks || []).forEach(a => {
-      html += `<div class="attack-line">
-        <b>${escapeHtml(a.atk)}</b> — ${escapeHtml(a.name)} ·
-        ${escapeHtml(a.range)} · ${escapeHtml(a.damage)}
-      </div>`;
+      html += `<div class="card-line"><b>Attack (${escapeHtml(a.atk)}):</b> ${escapeHtml(a.name)} — ${escapeHtml(a.range)}, ${escapeHtml(a.damage)}</div>`;
     });
 
-    if (card.experience) {
-      html += `<div class="card-line"><b>Experience:</b> ${escapeHtml(card.experience)}</div>`;
-    }
-  } else {
-    html += `<div class="card-eyebrow"><span class="type-icon">${iconSvg}</span>Tier ${escapeHtml(card.tier)} · ${escapeHtml(card.envType)} · Environment</div>`;
-    html += `<div class="card-name">${escapeHtml(card.name)}</div>`;
-    if (card.description) html += `<div class="card-desc">${escapeHtml(card.description)}</div>`;
-    html += `<div class="card-line"><b>Impulses:</b> ${escapeHtml(card.impulses)}</div>`;
-    html += `<div class="card-divider"></div>`;
-
-    html += `<div class="stat-strip">
-      <div class="stat-box"><div class="val">${escapeHtml(card.difficultyEnv)}</div><div class="lbl">Difficulty</div></div>
+    html += `<div class="two-col">
+      <div class="two-col-item">
+        <div class="two-col-head">Experience</div>
+        <div class="two-col-body">${card.experience ? escapeHtml(card.experience) : '—'}</div>
+      </div>
+      <div class="two-col-item">
+        <div class="two-col-head">Motives &amp; Tactics</div>
+        <div class="two-col-body italic">${escapeHtml(card.motives) || '—'}</div>
+      </div>
     </div>`;
-
+  } else {
+    html += `<div class="card-line"><b>Difficulty:</b> ${escapeHtml(card.difficultyEnv)}</div>`;
+    html += `<div class="two-col two-col-single">
+      <div class="two-col-item">
+        <div class="two-col-head">Impulses</div>
+        <div class="two-col-body italic">${escapeHtml(card.impulses) || '—'}</div>
+      </div>
+    </div>`;
     if (card.potential) {
       html += `<div class="card-line"><b>Potential Adversaries:</b> ${escapeHtml(card.potential)}</div>`;
     }
   }
 
   if (card.features.length) {
-    html += `<div class="card-divider"></div>`;
+    html += `<div class="section-divider">Features</div>`;
     card.features.forEach(f => {
-      html += `<div class="card-feature"><span class="feat-name">${escapeHtml(f.name)}:</span> ${escapeHtml(f.text)}</div>`;
+      html += `<div class="card-feature">
+        <div class="feat-head"><span class="feat-name">${escapeHtml(f.name)}</span><span class="feat-icon">${featureIconFor(f.name)}</span></div>
+        <div class="feat-text">${escapeHtml(f.text)}</div>
+      </div>`;
     });
   }
 
-  html += `<div class="card-footer">Daggerheart Compatible — built from the SRD under the DPCGL</div>`;
+  if (isAdv) {
+    html += `<div class="section-divider">Vitals</div>`;
+    html += `<div class="vitals-row">
+      <div class="vital-box"><div class="vital-val">${escapeHtml(card.hp)}</div><div class="vital-lbl">HP</div></div>
+      <div class="vital-box"><div class="vital-val">${escapeHtml(card.stress)}</div><div class="vital-lbl">Stress</div></div>
+      <div class="vital-thresholds">
+        <div class="vital-lbl">Thresholds</div>
+        <div class="vital-thresh-val">Major ${escapeHtml(card.thresholdMajor)} &middot; Severe ${escapeHtml(card.thresholdSevere)}</div>
+      </div>
+    </div>`;
+  }
+
+  html += `<div class="card-footer">Daggerheart Compatible &middot; built from the SRD under the DPCGL</div>`;
   return html;
 }
 

@@ -282,156 +282,256 @@ textarea { resize: vertical; }
   border-radius: 10px;
 }
 
-/* ===== The card itself ===== */
+/* ===== The card itself — printed-page aesthetic ===== */
 
 #statblock-card {
-  width: 420px;
-  padding: 24px;
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  border-radius: 10px;
+  width: 440px;
+  padding: 30px 28px 22px;
+  font-family: 'EB Garamond', Georgia, serif;
+  border-radius: 0;
   position: relative;
-  overflow: hidden;
-}
-
-#statblock-card.theme-dark {
-  background: linear-gradient(160deg, #1a1a22 0%, #101014 100%);
-  color: #eae7e0;
-  border: 2px solid var(--card-accent, #8a2727);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.35);
 }
 
 #statblock-card.theme-parchment {
-  background: linear-gradient(160deg, #ece0c8 0%, #ddcda4 100%);
-  color: #2c2416;
-  border: 2px solid var(--card-accent, #8a2727);
+  background: #f3ecd8;
+  color: #2a2216;
+  border: 1px solid #2a2216;
+  outline: 1px solid #2a2216;
+  outline-offset: -4px;
+}
+
+#statblock-card.theme-dark {
+  background: #17161a;
+  color: #ece7d9;
+  border: 1px solid #4a4640;
+  outline: 1px solid #4a4640;
+  outline-offset: -4px;
 }
 
 #statblock-card.theme-verdant {
-  background: linear-gradient(160deg, #182620 0%, #0e1712 100%);
-  color: #e4efe6;
-  border: 2px solid var(--card-accent, #8a2727);
+  background: #10201a;
+  color: #e3ecdf;
+  border: 1px solid #3c5347;
+  outline: 1px solid #3c5347;
+  outline-offset: -4px;
 }
 
 #statblock-card.theme-arcane {
-  background: linear-gradient(160deg, #1a1630 0%, #0f0c1e 100%);
-  color: #e9e5f8;
-  border: 2px solid var(--card-accent, #8a2727);
+  background: #14101f;
+  color: #e6e1f2;
+  border: 1px solid #4a3f63;
+  outline: 1px solid #4a3f63;
+  outline-offset: -4px;
 }
 
-.card-eyebrow {
+.corner-tag {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 1px solid var(--card-accent, #8a2727);
+  border-top: none;
+  border-right: none;
+  padding: 6px 12px 5px;
+  text-align: center;
+  background: rgba(0,0,0,0.03);
+}
+
+.theme-dark .corner-tag, .theme-verdant .corner-tag, .theme-arcane .corner-tag {
+  background: rgba(255,255,255,0.04);
+}
+
+.corner-tier {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 1px;
+  color: var(--card-accent, #8a2727);
+  line-height: 1.1;
+}
+
+.corner-type {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.7rem;
-  letter-spacing: 2px;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.62rem;
   text-transform: uppercase;
-  color: var(--card-accent, #8a2727);
-  font-weight: 700;
-  margin-bottom: 2px;
+  letter-spacing: 1.5px;
+  opacity: 0.85;
+  margin-top: 2px;
 }
 
-.type-icon {
-  width: 16px;
-  height: 16px;
-  flex: 0 0 16px;
-  color: var(--card-accent, #8a2727);
-}
-
-.type-icon svg { width: 100%; height: 100%; display: block; }
+.corner-icon { width: 11px; height: 11px; flex: 0 0 11px; color: var(--card-accent, #8a2727); }
+.corner-icon svg { width: 100%; height: 100%; display: block; }
 
 .card-name {
-  font-size: 1.5rem;
-  font-weight: 800;
-  margin: 0 0 4px;
-  line-height: 1.15;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.9rem;
+  letter-spacing: 0.5px;
+  margin: 0 0 2px;
+  line-height: 1.1;
+  padding-right: 70px;
 }
 
-.card-desc {
-  font-size: 0.85rem;
-  font-style: italic;
-  opacity: 0.85;
+.card-kind {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.65;
+  border-bottom: 1.5px solid var(--card-accent, #8a2727);
+  padding-bottom: 8px;
   margin-bottom: 10px;
 }
 
-.card-divider {
-  height: 2px;
-  background: var(--card-accent, #8a2727);
+.card-desc {
+  font-size: 0.88rem;
+  font-style: italic;
+  opacity: 0.85;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  margin: 16px 0 10px;
+  font-size: 0.68rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
   opacity: 0.6;
-  margin: 10px 0;
-  border-radius: 2px;
+}
+
+.section-divider::before, .section-divider::after {
+  content: "";
+  flex: 1;
+  border-top: 1.5px dotted currentColor;
+  opacity: 0.6;
 }
 
 .card-line {
-  font-size: 0.82rem;
-  margin: 4px 0;
+  font-size: 0.85rem;
+  margin: 5px 0;
+  line-height: 1.4;
 }
 
-.card-line b { color: var(--card-accent, #8a2727); }
-
-.stat-strip {
-  display: flex;
-  gap: 8px;
-  margin: 12px 0;
-}
-
-.stat-box {
-  flex: 1;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 6px;
-  text-align: center;
-  padding: 6px 4px;
-}
-
-.theme-parchment .stat-box {
-  background: rgba(0,0,0,0.04);
-  border: 1px solid rgba(0,0,0,0.15);
-}
-
-.stat-box .val {
-  font-size: 1.1rem;
-  font-weight: 800;
-  font-family: var(--mono);
-}
-
-.stat-box .lbl {
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  opacity: 0.7;
-}
-
-.attack-line {
-  background: rgba(255,255,255,0.04);
-  border-left: 3px solid var(--card-accent, #8a2727);
-  padding: 6px 10px;
-  font-size: 0.82rem;
-  margin: 10px 0;
-  border-radius: 0 4px 4px 0;
-}
-
-.theme-parchment .attack-line { background: rgba(0,0,0,0.04); }
-
-.card-feature {
-  margin: 8px 0;
-  font-size: 0.8rem;
-  line-height: 1.35;
-}
-
-.card-feature .feat-name {
+.card-line b {
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 700;
   color: var(--card-accent, #8a2727);
 }
 
-.card-footer {
-  margin-top: 14px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  font-size: 0.6rem;
-  opacity: 0.55;
-  text-align: center;
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 18px;
+  margin: 12px 0 4px;
 }
 
-.theme-parchment .card-footer { border-top: 1px solid rgba(0,0,0,0.15); }
+.two-col-single { grid-template-columns: 1fr; }
+
+.two-col-head {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  color: var(--card-accent, #8a2727);
+  margin-bottom: 2px;
+}
+
+.two-col-body {
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.two-col-body.italic { font-style: italic; }
+
+.card-feature {
+  margin: 10px 0;
+  font-size: 0.83rem;
+  line-height: 1.42;
+}
+
+.feat-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-feature .feat-name {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--card-accent, #8a2727);
+}
+
+.feat-icon {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
+  color: var(--card-accent, #8a2727);
+  opacity: 0.8;
+}
+
+.feat-icon svg { width: 100%; height: 100%; display: block; }
+
+.feat-text { margin-top: 2px; }
+
+.vitals-row {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  margin: 10px 0 4px;
+}
+
+.vital-box {
+  border: 1px solid var(--card-accent, #8a2727);
+  padding: 6px 4px;
+  text-align: center;
+  min-width: 56px;
+}
+
+.vital-val {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  line-height: 1.1;
+}
+
+.vital-lbl {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+.vital-thresholds {
+  flex: 1;
+  border: 1px solid var(--card-accent, #8a2727);
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.vital-thresh-val {
+  font-size: 0.82rem;
+  margin-top: 2px;
+}
+
+.card-footer {
+  margin-top: 16px;
+  padding-top: 8px;
+  border-top: 1px dotted currentColor;
+  opacity: 0.5;
+  font-size: 0.6rem;
+  text-align: center;
+  letter-spacing: 0.3px;
+}
 
 .export-controls {
   display: flex;

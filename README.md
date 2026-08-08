@@ -15,8 +15,9 @@ Functional multi-card build:
 - Single-card PNG export via `html2canvas`
 - Batch PNG export of the whole deck as a `.zip` via `JSZip`
 - Print-friendly multi-card sheet (opens a print dialog, 2-up grid)
-- Four starter themes (dark / parchment / verdant / arcane) with an accent color picker
-- Small original SVG icon set that flags adversary/environment type on the card (not derived from official Daggerheart iconography)
+- Multiple attacks per adversary, add/remove as needed
+- Four print-page-styled themes (parchment / ink / verdant / arcane) with an accent color picker — serif type, dotted section rules, sharp corners, an original corner tag for tier/type (not a reproduction of official card devices)
+- Small original SVG icon set for adversary/environment type and Passive/Action/Reaction features (not derived from official Daggerheart iconography)
 
 ## Roadmap
 
