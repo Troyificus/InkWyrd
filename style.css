@@ -217,6 +217,57 @@ textarea { resize: vertical; }
   margin-top: 6px;
 }
 
+.attack-row {
+  border-top: 1px solid var(--panel-border);
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+.attack-row:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+
+.attack-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.attack-row-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+}
+
+.attack-row-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 8px 10px;
+}
+
+.attack-row-grid label { margin-bottom: 0; }
+
+.remove-attack {
+  background: transparent;
+  border: 1px solid #4a2a2a;
+  color: #d88;
+  border-radius: 5px;
+  padding: 3px 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+#add-attack {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px dashed var(--panel-border);
+  color: var(--text-dim);
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 6px;
+}
+
 .preview-panel {
   position: sticky;
   top: 16px;

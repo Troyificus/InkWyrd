@@ -15,10 +15,7 @@ function newCard(overrides = {}) {
     thresholds: '—/—',
     hp: 5,
     stress: 3,
-    atk: '+2',
-    attackName: 'Strike',
-    range: 'Melee',
-    damage: '1d8',
+    attacks: [{ atk: '+2', name: 'Strike', range: 'Melee', damage: '1d8' }],
     experience: '',
     envType: 'Exploration',
     impulses: '',
@@ -40,10 +37,9 @@ function starterCard() {
     thresholds: '8/15',
     hp: 8,
     stress: 3,
-    atk: '+3',
-    attackName: 'Claws',
-    range: 'Very Close',
-    damage: '1d12+2 phy',
+    attacks: [
+      { atk: '+3', name: 'Claws', range: 'Very Close', damage: '1d12+2 phy' }
+    ],
     experience: 'Tremor Sense +2',
     features: [
       { name: 'Relentless (3) — Passive', text: 'The Burrower can be spotlighted up to three times per GM turn. Spend Fear as usual to spotlight them.' },
@@ -61,10 +57,28 @@ function loadDeck() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length) return parsed;
+      if (Array.isArray(parsed) && parsed.length) return parsed.map(migrateCard);
     }
   } catch (e) { /* fall through */ }
   return [starterCard()];
+}
+
+// Migrates cards saved under the old single-attack schema (atk/attackName/range/damage)
+// to the current attacks[] array schema, so existing saved decks keep working.
+function migrateCard(card) {
+  if (!card.attacks) {
+    card.attacks = [{
+      atk: card.atk || '+2',
+      name: card.attackName || 'Strike',
+      range: card.range || 'Melee',
+      damage: card.damage || '1d8'
+    }];
+    delete card.atk;
+    delete card.attackName;
+    delete card.range;
+    delete card.damage;
+  }
+  return card;
 }
 
 function saveDeck() {
@@ -106,6 +120,7 @@ function renderForm() {
   });
 
   renderFeatureInputs();
+  renderAttackInputs();
 }
 
 document.querySelectorAll('.type-btn').forEach(btn => {
@@ -187,6 +202,58 @@ $('add-feature').addEventListener('click', () => {
   saveDeck();
 });
 
+// ===== Attacks list UI =====
+function renderAttackInputs() {
+  const card = currentCard();
+  if (!card.attacks || !card.attacks.length) {
+    card.attacks = [{ atk: '+2', name: 'Strike', range: 'Melee', damage: '1d8' }];
+  }
+  const container = $('attacks-list');
+  container.innerHTML = '';
+  card.attacks.forEach((a, i) => {
+    const row = document.createElement('div');
+    row.className = 'attack-row';
+    row.innerHTML = `
+      <div class="attack-row-header">
+        <span class="attack-row-label">Attack ${i + 1}</span>
+        ${card.attacks.length > 1 ? `<button type="button" class="remove-attack" data-idx="${i}">✕</button>` : ''}
+      </div>
+      <div class="attack-row-grid">
+        <label>ATK <input type="text" data-idx="${i}" data-key="atk" class="attack-input" value="${escapeHtml(a.atk)}"></label>
+        <label>Name <input type="text" data-idx="${i}" data-key="name" class="attack-input" value="${escapeHtml(a.name)}"></label>
+        <label>Range <input type="text" data-idx="${i}" data-key="range" class="attack-input" value="${escapeHtml(a.range)}"></label>
+        <label>Damage <input type="text" data-idx="${i}" data-key="damage" class="attack-input" value="${escapeHtml(a.damage)}"></label>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+
+  container.querySelectorAll('.attack-input').forEach(inp => {
+    inp.addEventListener('input', (e) => {
+      const idx = +e.target.dataset.idx;
+      const key = e.target.dataset.key;
+      currentCard().attacks[idx][key] = e.target.value;
+      renderCard();
+      saveDeck();
+    });
+  });
+  container.querySelectorAll('.remove-attack').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      currentCard().attacks.splice(+e.target.dataset.idx, 1);
+      renderAttackInputs();
+      renderCard();
+      saveDeck();
+    });
+  });
+}
+
+$('add-attack').addEventListener('click', () => {
+  currentCard().attacks.push({ atk: '+2', name: 'New Attack', range: 'Melee', damage: '1d8' });
+  renderAttackInputs();
+  renderCard();
+  saveDeck();
+});
+
 // ===== Card rendering (into a given element, so it can be reused for export/print) =====
 function cardInnerHtml(card) {
   let html = '';
@@ -206,10 +273,12 @@ function cardInnerHtml(card) {
       <div class="stat-box"><div class="val">${escapeHtml(card.stress)}</div><div class="lbl">Stress</div></div>
     </div>`;
 
-    html += `<div class="attack-line">
-      <b>${escapeHtml(card.atk)}</b> — ${escapeHtml(card.attackName)} ·
-      ${escapeHtml(card.range)} · ${escapeHtml(card.damage)}
-    </div>`;
+    (card.attacks || []).forEach(a => {
+      html += `<div class="attack-line">
+        <b>${escapeHtml(a.atk)}</b> — ${escapeHtml(a.name)} ·
+        ${escapeHtml(a.range)} · ${escapeHtml(a.damage)}
+      </div>`;
+    });
 
     if (card.experience) {
       html += `<div class="card-line"><b>Experience:</b> ${escapeHtml(card.experience)}</div>`;
@@ -297,7 +366,7 @@ $('import-json').addEventListener('change', (e) => {
     try {
       const parsed = JSON.parse(reader.result);
       if (!Array.isArray(parsed) || !parsed.length) throw new Error('Invalid deck file');
-      deck = parsed;
+      deck = parsed.map(migrateCard);
       currentId = deck[0].id;
       renderDeckList(); renderForm(); renderCard(); saveDeck();
       $('deck-status').textContent = `Imported ${deck.length} card(s).`;
