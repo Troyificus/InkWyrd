@@ -20,6 +20,7 @@ Functional multi-card build:
 - Small original SVG icon set for adversary/environment type and Passive/Action/Reaction features (not derived from official Daggerheart iconography)
 - Custom Variables: define a named value once (e.g. a homebrew stat) and reference it anywhere with `[TOKEN]` — also works with built-in stat tokens (`[TIER]`, `[DIFFICULTY]`, `[HP]`, `[STRESS]`, `[MAJOR]`, `[SEVERE]`) so text stays in sync if you tweak a number
 - Editor UI redesigned to match the card's printed-page identity (serif type, sharp corners, ink-stamp buttons) instead of a generic dashboard look
+- Illustration upload: drop in a transparent-background PNG (e.g. from a local ComfyUI pipeline) and the card text wraps around the character's actual silhouette using CSS `shape-outside`, not just a rectangle. Choose left/right placement and width; images are auto-downscaled client-side before storage.
 
 ## Roadmap
 

@@ -331,6 +331,42 @@ textarea { resize: vertical; }
   color: var(--gold);
 }
 
+.image-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: -4px 0 12px;
+  padding: 8px;
+  border: 1px solid var(--panel-border);
+  background: #15110c;
+}
+
+.image-preview img {
+  max-width: 70px;
+  max-height: 70px;
+  width: auto;
+  margin: 0;
+  border: 1px solid var(--panel-border);
+  background:
+    linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%) 0 0/10px 10px,
+    linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%) 5px 5px/10px 10px,
+    #222;
+}
+
+#remove-image {
+  padding: 7px 12px;
+  background: transparent;
+  border: 1px solid #5a2f2f;
+  color: #c98;
+  cursor: pointer;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'EB Garamond', Georgia, serif;
+}
+
+#remove-image:hover { border-color: var(--accent); color: var(--text); }
+
 .variable-row {
   display: grid;
   grid-template-columns: 1fr 1.6fr auto;
@@ -422,13 +458,23 @@ textarea { resize: vertical; }
 .corner-tag {
   position: absolute;
   top: 0;
+  padding: 6px 12px 5px;
+  text-align: center;
+  background: rgba(0,0,0,0.03);
+}
+
+.corner-tag.corner-right {
   right: 0;
   border: 1px solid var(--card-accent, #8a2727);
   border-top: none;
   border-right: none;
-  padding: 6px 12px 5px;
-  text-align: center;
-  background: rgba(0,0,0,0.03);
+}
+
+.corner-tag.corner-left {
+  left: 0;
+  border: 1px solid var(--card-accent, #8a2727);
+  border-top: none;
+  border-left: none;
 }
 
 .theme-dark .corner-tag, .theme-verdant .corner-tag, .theme-arcane .corner-tag {
@@ -459,6 +505,24 @@ textarea { resize: vertical; }
 .corner-icon { width: 11px; height: 11px; flex: 0 0 11px; color: var(--card-accent, #8a2727); }
 .corner-icon svg { width: 100%; height: 100%; display: block; }
 
+.card-illustration {
+  display: block;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.card-illustration.align-right {
+  float: right;
+  margin-left: 14px;
+  shape-margin: 12px;
+}
+
+.card-illustration.align-left {
+  float: left;
+  margin-right: 14px;
+  shape-margin: 12px;
+}
+
 .card-name {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 700;
@@ -466,7 +530,6 @@ textarea { resize: vertical; }
   letter-spacing: 0.5px;
   margin: 0 0 2px;
   line-height: 1.1;
-  padding-right: 70px;
 }
 
 .card-kind {
@@ -488,6 +551,7 @@ textarea { resize: vertical; }
 }
 
 .section-divider {
+  clear: both;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -519,6 +583,7 @@ textarea { resize: vertical; }
 }
 
 .two-col {
+  clear: both;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px 18px;
@@ -575,6 +640,7 @@ textarea { resize: vertical; }
 .feat-text { margin-top: 2px; }
 
 .vitals-row {
+  clear: both;
   display: flex;
   align-items: stretch;
   gap: 10px;
@@ -618,6 +684,7 @@ textarea { resize: vertical; }
 }
 
 .card-footer {
+  clear: both;
   margin-top: 16px;
   padding-top: 8px;
   border-top: 1px dotted currentColor;

@@ -25,6 +25,9 @@ function newCard(overrides = {}) {
     theme: 'parchment',
     accent: '#7a2020',
     variables: [],
+    image: null,
+    imageAlign: 'right',
+    imageWidth: 170,
     features: [{ name: 'New Feature — Passive', text: 'Describe what it does.' }]
   }, overrides);
 }
@@ -88,11 +91,22 @@ function migrateCard(card) {
     delete card.thresholds;
   }
   if (!card.variables) card.variables = [];
+  if (card.image === undefined) card.image = null;
+  if (!card.imageAlign) card.imageAlign = 'right';
+  if (!card.imageWidth) card.imageWidth = 170;
   return card;
 }
 
 function saveDeck() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(deck)); } catch (e) { /* storage full/unavailable */ }
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(deck));
+  } catch (e) {
+    const status = $('deck-status');
+    if (status) {
+      status.textContent = 'Could not autosave (storage full — try Export Deck as a backup).';
+      setTimeout(() => { if (status.textContent.startsWith('Could not autosave')) status.textContent = ''; }, 5000);
+    }
+  }
 }
 
 function currentCard() {
@@ -132,6 +146,7 @@ function renderForm() {
   renderFeatureInputs();
   renderAttackInputs();
   renderVariableInputs();
+  renderImagePreview();
 }
 
 document.querySelectorAll('.type-btn').forEach(btn => {
@@ -310,6 +325,74 @@ $('add-variable').addEventListener('click', () => {
   saveDeck();
 });
 
+// ===== Illustration upload =====
+// Downscales the uploaded image (preserving transparency) before storing it,
+// to keep localStorage usage and export size reasonable.
+function resizeImageFile(file, maxDim = 700) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          const scale = maxDim / Math.max(width, height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/png'));
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+$('image-upload').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const dataUrl = await resizeImageFile(file);
+    currentCard().image = dataUrl;
+    renderImagePreview();
+    renderCard();
+    saveDeck();
+  } catch (err) {
+    console.error(err);
+    $('deck-status').textContent = 'Could not load that image.';
+    setTimeout(() => $('deck-status').textContent = '', 3000);
+  }
+  e.target.value = '';
+});
+
+function renderImagePreview() {
+  const card = currentCard();
+  const wrap = $('image-preview-wrap');
+  if (!card.image) {
+    wrap.innerHTML = '';
+    return;
+  }
+  wrap.innerHTML = `
+    <div class="image-preview">
+      <img src="${card.image}" alt="Illustration preview">
+      <button type="button" id="remove-image">Remove image</button>
+    </div>
+  `;
+  $('remove-image').addEventListener('click', () => {
+    currentCard().image = null;
+    renderImagePreview();
+    renderCard();
+    saveDeck();
+  });
+}
+
 // Replaces [TOKEN] references in text with a custom variable's value, or a
 // built-in stat token (TIER, DIFFICULTY, HP, STRESS, MAJOR, SEVERE) pulled
 // straight from the card's own fields. Custom variables take priority if a
@@ -347,12 +430,22 @@ function cardInnerHtml(card) {
   const typeLabel = isAdv ? card.type : card.envType;
   const sub = (text) => escapeHtml(applySubs(text, card));
 
-  html += `<div class="corner-tag">
+  const hasImage = !!card.image && card.imageAlign !== 'none';
+  // Keep the corner tag on whichever side the illustration isn't floating on.
+  const cornerSide = (hasImage && card.imageAlign === 'right') ? 'left' : 'right';
+
+  if (hasImage) {
+    const w = card.imageWidth || 170;
+    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}"
+      style="float:${card.imageAlign}; width:${w}px; shape-outside:url('${card.image}');" alt="">`;
+  }
+
+  html += `<div class="corner-tag corner-${cornerSide}">
       <div class="corner-tier">T${escapeHtml(card.tier)}</div>
       <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(typeLabel)}</div>
     </div>`;
 
-  html += `<div class="card-name">${escapeHtml(card.name)}</div>`;
+  html += `<div class="card-name" style="padding-${cornerSide}:70px">${escapeHtml(card.name)}</div>`;
   html += `<div class="card-kind">${isAdv ? 'Adversary' : 'Environment'}</div>`;
   if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
 
