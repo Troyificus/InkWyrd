@@ -18,12 +18,14 @@ Functional multi-card build:
 - Multiple attacks per adversary, add/remove as needed
 - Four print-page-styled themes (parchment / ink / verdant / arcane) with an accent color picker — serif type, dotted section rules, sharp corners, an original corner tag for tier/type (not a reproduction of official card devices)
 - Small original SVG icon set for adversary/environment type and Passive/Action/Reaction features (not derived from official Daggerheart iconography)
+- Custom Variables: define a named value once (e.g. a homebrew stat) and reference it anywhere with `[TOKEN]` — also works with built-in stat tokens (`[TIER]`, `[DIFFICULTY]`, `[HP]`, `[STRESS]`, `[MAJOR]`, `[SEVERE]`) so text stays in sync if you tweak a number
+- Editor UI redesigned to match the card's printed-page identity (serif type, sharp corners, ink-stamp buttons) instead of a generic dashboard look
 
 ## Roadmap
 
-- [ ] More themes / layout variety
 - [ ] Configurable print sheet (card count per page, page size)
 - [ ] Deck organization (folders/tags for multi-adventure-pack use)
+- [ ] More themes / layout variety
 - [ ] Hosting (GitHub Pages) + Ko-fi link once stable
 
 ## Running locally

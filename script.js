@@ -24,6 +24,7 @@ function newCard(overrides = {}) {
     potential: '',
     theme: 'parchment',
     accent: '#7a2020',
+    variables: [],
     features: [{ name: 'New Feature — Passive', text: 'Describe what it does.' }]
   }, overrides);
 }
@@ -86,6 +87,7 @@ function migrateCard(card) {
     card.thresholdSevere = Number.isFinite(parts[1]) ? parts[1] : 12;
     delete card.thresholds;
   }
+  if (!card.variables) card.variables = [];
   return card;
 }
 
@@ -129,6 +131,7 @@ function renderForm() {
 
   renderFeatureInputs();
   renderAttackInputs();
+  renderVariableInputs();
 }
 
 document.querySelectorAll('.type-btn').forEach(btn => {
@@ -262,6 +265,73 @@ $('add-attack').addEventListener('click', () => {
   saveDeck();
 });
 
+// ===== Custom Variables list UI =====
+function renderVariableInputs() {
+  const card = currentCard();
+  if (!card.variables) card.variables = [];
+  const container = $('variables-list');
+  container.innerHTML = '';
+  card.variables.forEach((v, i) => {
+    const row = document.createElement('div');
+    row.className = 'variable-row';
+    row.innerHTML = `
+      <input type="text" data-idx="${i}" data-key="key" class="variable-input variable-key" placeholder="TOKEN" value="${escapeHtml(v.key)}">
+      <input type="text" data-idx="${i}" data-key="value" class="variable-input variable-value" placeholder="Value" value="${escapeHtml(v.value)}">
+      <button type="button" class="remove-variable" data-idx="${i}">✕</button>
+    `;
+    container.appendChild(row);
+  });
+
+  container.querySelectorAll('.variable-input').forEach(inp => {
+    inp.addEventListener('input', (e) => {
+      const idx = +e.target.dataset.idx;
+      const key = e.target.dataset.key;
+      let val = e.target.value;
+      if (key === 'key') val = val.toUpperCase().replace(/[^A-Z0-9_]/g, '');
+      currentCard().variables[idx][key] = val;
+      renderCard();
+      saveDeck();
+    });
+  });
+  container.querySelectorAll('.remove-variable').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      currentCard().variables.splice(+e.target.dataset.idx, 1);
+      renderVariableInputs();
+      renderCard();
+      saveDeck();
+    });
+  });
+}
+
+$('add-variable').addEventListener('click', () => {
+  currentCard().variables.push({ key: 'VAR' + (currentCard().variables.length + 1), value: '' });
+  renderVariableInputs();
+  renderCard();
+  saveDeck();
+});
+
+// Replaces [TOKEN] references in text with a custom variable's value, or a
+// built-in stat token (TIER, DIFFICULTY, HP, STRESS, MAJOR, SEVERE) pulled
+// straight from the card's own fields. Custom variables take priority if a
+// name collides with a built-in token.
+function applySubs(text, card) {
+  if (!text) return text;
+  const builtins = card.cardType === 'adversary' ? {
+    TIER: card.tier, DIFFICULTY: card.difficultyAdv, HP: card.hp,
+    STRESS: card.stress, MAJOR: card.thresholdMajor, SEVERE: card.thresholdSevere
+  } : {
+    TIER: card.tier, DIFFICULTY: card.difficultyEnv
+  };
+  const custom = {};
+  (card.variables || []).forEach(v => { if (v.key) custom[v.key.toUpperCase()] = v.value; });
+  const lookup = Object.assign({}, builtins, custom);
+
+  return text.replace(/\[([A-Z0-9_]+)\]/gi, (match, token) => {
+    const key = token.toUpperCase();
+    return key in lookup && lookup[key] !== '' && lookup[key] !== undefined ? lookup[key] : match;
+  });
+}
+
 // ===== Card rendering (into a given element, so it can be reused for export/print) =====
 function featureIconFor(name) {
   const n = (name || '').toLowerCase();
@@ -275,6 +345,7 @@ function cardInnerHtml(card) {
   const isAdv = card.cardType === 'adversary';
   const iconSvg = getTypeIcon(isAdv ? card.type : card.envType);
   const typeLabel = isAdv ? card.type : card.envType;
+  const sub = (text) => escapeHtml(applySubs(text, card));
 
   html += `<div class="corner-tag">
       <div class="corner-tier">T${escapeHtml(card.tier)}</div>
@@ -283,22 +354,22 @@ function cardInnerHtml(card) {
 
   html += `<div class="card-name">${escapeHtml(card.name)}</div>`;
   html += `<div class="card-kind">${isAdv ? 'Adversary' : 'Environment'}</div>`;
-  if (card.description) html += `<div class="card-desc">${escapeHtml(card.description)}</div>`;
+  if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
 
   if (isAdv) {
     html += `<div class="card-line"><b>Difficulty:</b> ${escapeHtml(card.difficultyAdv)}</div>`;
     (card.attacks || []).forEach(a => {
-      html += `<div class="card-line"><b>Attack (${escapeHtml(a.atk)}):</b> ${escapeHtml(a.name)} — ${escapeHtml(a.range)}, ${escapeHtml(a.damage)}</div>`;
+      html += `<div class="card-line"><b>Attack (${sub(a.atk)}):</b> ${sub(a.name)} — ${sub(a.range)}, ${sub(a.damage)}</div>`;
     });
 
     html += `<div class="two-col">
       <div class="two-col-item">
         <div class="two-col-head">Experience</div>
-        <div class="two-col-body">${card.experience ? escapeHtml(card.experience) : '—'}</div>
+        <div class="two-col-body">${card.experience ? sub(card.experience) : '—'}</div>
       </div>
       <div class="two-col-item">
         <div class="two-col-head">Motives &amp; Tactics</div>
-        <div class="two-col-body italic">${escapeHtml(card.motives) || '—'}</div>
+        <div class="two-col-body italic">${card.motives ? sub(card.motives) : '—'}</div>
       </div>
     </div>`;
   } else {
@@ -306,11 +377,11 @@ function cardInnerHtml(card) {
     html += `<div class="two-col two-col-single">
       <div class="two-col-item">
         <div class="two-col-head">Impulses</div>
-        <div class="two-col-body italic">${escapeHtml(card.impulses) || '—'}</div>
+        <div class="two-col-body italic">${card.impulses ? sub(card.impulses) : '—'}</div>
       </div>
     </div>`;
     if (card.potential) {
-      html += `<div class="card-line"><b>Potential Adversaries:</b> ${escapeHtml(card.potential)}</div>`;
+      html += `<div class="card-line"><b>Potential Adversaries:</b> ${sub(card.potential)}</div>`;
     }
   }
 
@@ -318,8 +389,8 @@ function cardInnerHtml(card) {
     html += `<div class="section-divider">Features</div>`;
     card.features.forEach(f => {
       html += `<div class="card-feature">
-        <div class="feat-head"><span class="feat-name">${escapeHtml(f.name)}</span><span class="feat-icon">${featureIconFor(f.name)}</span></div>
-        <div class="feat-text">${escapeHtml(f.text)}</div>
+        <div class="feat-head"><span class="feat-name">${sub(f.name)}</span><span class="feat-icon">${featureIconFor(f.name)}</span></div>
+        <div class="feat-text">${sub(f.text)}</div>
       </div>`;
     });
   }
