@@ -28,7 +28,7 @@ function newCard(overrides = {}) {
     image: null,
     imageAlign: 'right',
     imageWidth: 170,
-    features: [{ name: 'New Feature — Passive', text: 'Describe what it does.' }]
+    features: [{ type: 'Passive', name: 'New Feature', text: 'Describe what it does.' }]
   }, overrides);
 }
 
@@ -48,8 +48,8 @@ function starterCard() {
     ],
     experience: 'Tremor Sense +2',
     features: [
-      { name: 'Relentless (3) — Passive', text: 'The Burrower can be spotlighted up to three times per GM turn. Spend Fear as usual to spotlight them.' },
-      { name: 'Earth Eruption — Action', text: 'Mark a Stress to have the Burrower burst out of the ground. All creatures within Very Close range must succeed on an Agility Reaction Roll or be knocked over, making them Vulnerable until they next act.' }
+      { type: 'Passive', name: 'Relentless (3)', text: 'The Burrower can be spotlighted up to three times per GM turn. Spend Fear as usual to spotlight them.' },
+      { type: 'Action', name: 'Earth Eruption', text: 'Mark a Stress to have the Burrower burst out of the ground. All creatures within Very Close range must succeed on an Agility Reaction Roll or be knocked over, making them Vulnerable until they next act.' }
     ]
   });
 }
@@ -89,6 +89,17 @@ function migrateCard(card) {
     card.thresholdMajor = Number.isFinite(parts[0]) ? parts[0] : 7;
     card.thresholdSevere = Number.isFinite(parts[1]) ? parts[1] : 12;
     delete card.thresholds;
+  }
+  if (card.features) {
+    card.features = card.features.map(f => {
+      if (f.type) return f;
+      // Old format embedded the type in the name, e.g. "Relentless (3) — Passive".
+      const match = /^(.*?)\s*[—-]\s*(Passive|Action|Reaction)\s*$/i.exec(f.name || '');
+      if (match) {
+        return { type: match[2].charAt(0).toUpperCase() + match[2].slice(1).toLowerCase(), name: match[1], text: f.text };
+      }
+      return { type: 'Passive', name: f.name, text: f.text };
+    });
   }
   if (!card.variables) card.variables = [];
   if (card.image === undefined) card.image = null;
@@ -176,30 +187,40 @@ function escapeHtml(str) {
   }[c]));
 }
 
+let autoOpenFeatureIdx = null;
+
 function renderFeatureInputs() {
   const card = currentCard();
   const container = $('features-list');
   container.innerHTML = '';
   card.features.forEach((f, i) => {
-    const row = document.createElement('div');
+    const row = document.createElement('details');
     row.className = 'feature-row';
+    if (i === autoOpenFeatureIdx) row.open = true;
     row.innerHTML = `
-      <div class="feature-row-header">
-        <label>Feature Name
-          <input type="text" data-idx="${i}" class="feat-name-input" value="${escapeHtml(f.name)}">
+      <summary>${escapeHtml(f.name) || '(unnamed)'} <span class="summary-type">— ${escapeHtml(f.type)}</span></summary>
+      <div class="feature-row-body">
+        <div class="feature-row-header">
+          <label>Feature Name
+            <input type="text" data-idx="${i}" class="feat-name-input" value="${escapeHtml(f.name)}">
+          </label>
+          <button type="button" class="remove-feature" data-idx="${i}">✕</button>
+        </div>
+        <label>Feature Text
+          <textarea rows="2" data-idx="${i}" class="feat-text-input">${escapeHtml(f.text)}</textarea>
         </label>
-        <button type="button" class="remove-feature" data-idx="${i}">✕</button>
       </div>
-      <label>Feature Text
-        <textarea rows="2" data-idx="${i}" class="feat-text-input">${escapeHtml(f.text)}</textarea>
-      </label>
     `;
     container.appendChild(row);
   });
+  autoOpenFeatureIdx = null;
 
   container.querySelectorAll('.feat-name-input').forEach(inp => {
     inp.addEventListener('input', (e) => {
       currentCard().features[+e.target.dataset.idx].name = e.target.value;
+      const summaryEl = e.target.closest('details').querySelector('summary');
+      const type = currentCard().features[+e.target.dataset.idx].type;
+      summaryEl.innerHTML = `${escapeHtml(e.target.value) || '(unnamed)'} <span class="summary-type">— ${escapeHtml(type)}</span>`;
       renderCard();
       saveDeck();
     });
@@ -221,11 +242,15 @@ function renderFeatureInputs() {
   });
 }
 
-$('add-feature').addEventListener('click', () => {
-  currentCard().features.push({ name: 'New Feature — Passive', text: 'Describe what it does.' });
-  renderFeatureInputs();
-  renderCard();
-  saveDeck();
+document.querySelectorAll('.quick-add[data-feat-type]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const type = btn.dataset.featType;
+    currentCard().features.push({ type, name: 'New ' + type, text: 'Describe what it does.' });
+    autoOpenFeatureIdx = currentCard().features.length - 1;
+    renderFeatureInputs();
+    renderCard();
+    saveDeck();
+  });
 });
 
 // ===== Attacks list UI =====
@@ -416,11 +441,9 @@ function applySubs(text, card) {
 }
 
 // ===== Card rendering (into a given element, so it can be reused for export/print) =====
-function featureIconFor(name) {
-  const n = (name || '').toLowerCase();
-  if (n.includes('reaction')) return FEATURE_ICONS.reaction;
-  if (n.includes('action')) return FEATURE_ICONS.action;
-  return FEATURE_ICONS.passive;
+function featureIconFor(type) {
+  const t = (type || '').toLowerCase();
+  return FEATURE_ICONS[t] || FEATURE_ICONS.passive;
 }
 
 function cardInnerHtml(card) {
@@ -482,7 +505,7 @@ function cardInnerHtml(card) {
     html += `<div class="section-divider">Features</div>`;
     card.features.forEach(f => {
       html += `<div class="card-feature">
-        <div class="feat-head"><span class="feat-name">${sub(f.name)}</span><span class="feat-icon">${featureIconFor(f.name)}</span></div>
+        <div class="feat-head"><span class="feat-name">${sub(f.name)}</span><span class="feat-type-tag">— ${escapeHtml(f.type)}</span><span class="feat-icon">${featureIconFor(f.type)}</span></div>
         <div class="feat-text">${sub(f.text)}</div>
       </div>`;
     });

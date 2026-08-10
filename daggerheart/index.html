@@ -63,8 +63,15 @@
         <legend>Basics</legend>
         <label>Name <input type="text" data-field="name"></label>
         <label>Tier <input type="number" data-field="tier" min="1" max="4"></label>
-        <label class="adv-only">Type <input type="text" data-field="type" placeholder="Solo / Bruiser / Skulk / Support / Leader / Horde / Ranged / Standard / Colossus"></label>
-        <label class="env-only" hidden>Type <input type="text" data-field="envType" placeholder="Exploration / Traversal / Social..."></label>
+        <label class="adv-only">Type <input type="text" data-field="type" list="dh-type-list" placeholder="Start typing or pick a role..."></label>
+        <label class="env-only" hidden>Type <input type="text" data-field="envType" list="dh-env-type-list" placeholder="Start typing or pick a role..."></label>
+        <datalist id="dh-type-list">
+          <option value="Solo"><option value="Bruiser"><option value="Skulk"><option value="Support">
+          <option value="Leader"><option value="Horde"><option value="Ranged"><option value="Standard"><option value="Colossus">
+        </datalist>
+        <datalist id="dh-env-type-list">
+          <option value="Exploration"><option value="Traversal"><option value="Social"><option value="Event">
+        </datalist>
         <label>Description <textarea data-field="description" rows="2"></textarea></label>
         <label class="adv-only">Motives &amp; Tactics <input type="text" data-field="motives"></label>
         <label class="env-only" hidden>Impulses <input type="text" data-field="impulses"></label>
@@ -93,20 +100,25 @@
       </fieldset>
 
       <fieldset>
-        <legend>Custom Variables</legend>
+        <legend>Features</legend>
+        <p class="hint">Pick a type to add a feature — click its header to expand and edit.</p>
+        <div class="quick-add-row">
+          <button type="button" class="quick-add" data-feat-type="Passive">+ Passive</button>
+          <button type="button" class="quick-add" data-feat-type="Action">+ Action</button>
+          <button type="button" class="quick-add" data-feat-type="Reaction">+ Reaction</button>
+        </div>
+        <div id="features-list"></div>
+      </fieldset>
+
+      <details class="fieldset-details">
+        <summary>Custom Variables</summary>
         <p class="hint">Define a value once, then reference it anywhere below by typing its token in brackets — e.g. a variable named <code>STR</code> can be used as <code>[STR]</code> in a feature, attack, or description field.</p>
         <div id="variables-list"></div>
         <button type="button" id="add-variable">+ Add Variable</button>
-      </fieldset>
+      </details>
 
-      <fieldset>
-        <legend>Features</legend>
-        <div id="features-list"></div>
-        <button type="button" id="add-feature">+ Add Feature</button>
-      </fieldset>
-
-      <fieldset>
-        <legend>Card Style</legend>
+      <details class="fieldset-details">
+        <summary>Card Style</summary>
         <label>Accent color <input type="color" data-field="accent"></label>
         <label>Card theme
           <select data-field="theme">
@@ -116,7 +128,7 @@
             <option value="arcane">Arcane</option>
           </select>
         </label>
-      </fieldset>
+      </details>
 
     </form>
   </section>

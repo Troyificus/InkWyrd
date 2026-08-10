@@ -58,9 +58,22 @@
       <fieldset>
         <legend>Basics</legend>
         <label>Name <input type="text" data-field="name"></label>
-        <label>Size <input type="text" data-field="size" placeholder="Medium"></label>
-        <label>Type <input type="text" data-field="creatureType" placeholder="Beast, Undead, Humanoid (goblinoid)..."></label>
-        <label>Alignment <input type="text" data-field="alignment" placeholder="unaligned, chaotic evil..."></label>
+        <label>Size <input type="text" data-field="size" list="size-list" placeholder="Medium"></label>
+        <label>Type <input type="text" data-field="creatureType" list="type-list" placeholder="Beast, Undead, Humanoid (goblinoid)..."></label>
+        <label>Alignment <input type="text" data-field="alignment" list="alignment-list" placeholder="unaligned, chaotic evil..."></label>
+        <datalist id="size-list">
+          <option value="Tiny"><option value="Small"><option value="Medium"><option value="Large"><option value="Huge"><option value="Gargantuan">
+        </datalist>
+        <datalist id="type-list">
+          <option value="Aberration"><option value="Beast"><option value="Celestial"><option value="Construct"><option value="Dragon">
+          <option value="Elemental"><option value="Fey"><option value="Fiend"><option value="Giant"><option value="Humanoid">
+          <option value="Monstrosity"><option value="Ooze"><option value="Plant"><option value="Undead">
+        </datalist>
+        <datalist id="alignment-list">
+          <option value="lawful good"><option value="neutral good"><option value="chaotic good">
+          <option value="lawful neutral"><option value="neutral"><option value="chaotic neutral">
+          <option value="lawful evil"><option value="neutral evil"><option value="chaotic evil"><option value="unaligned">
+        </datalist>
         <label>Description <textarea data-field="description" rows="2" placeholder="Optional flavor text"></textarea></label>
       </fieldset>
 
@@ -96,22 +109,28 @@
         <label>XP <input type="number" data-field="xp"></label>
       </fieldset>
 
-      <fieldset>
-        <legend>Custom Variables</legend>
+      <details class="fieldset-details">
+        <summary>Custom Variables</summary>
         <p class="hint">Define a value once, then reference it anywhere below with <code>[TOKEN]</code>. Built-ins: <code>[STR]</code> <code>[DEX]</code> <code>[CON]</code> <code>[INT]</code> <code>[WIS]</code> <code>[CHA]</code> <code>[AC]</code> <code>[HP]</code> <code>[CR]</code> (ability tokens insert the modifier, e.g. +3).</p>
         <div id="variables-list"></div>
         <button type="button" id="add-variable">+ Add Variable</button>
-      </fieldset>
+      </details>
 
       <fieldset>
         <legend>Traits, Actions &amp; Reactions</legend>
-        <p class="hint">Add each ability with a category — Traits, Actions, Bonus Actions, Reactions, and Legendary Actions are grouped and ordered automatically on the card.</p>
+        <p class="hint">Pick a category to add an ability — click its header to expand and edit.</p>
+        <div class="quick-add-row">
+          <button type="button" class="quick-add" data-feat-cat="Trait">+ Trait</button>
+          <button type="button" class="quick-add" data-feat-cat="Action">+ Action</button>
+          <button type="button" class="quick-add" data-feat-cat="Bonus Action">+ Bonus</button>
+          <button type="button" class="quick-add" data-feat-cat="Reaction">+ Reaction</button>
+          <button type="button" class="quick-add" data-feat-cat="Legendary Action">+ Legendary</button>
+        </div>
         <div id="features-list"></div>
-        <button type="button" id="add-feature">+ Add Ability</button>
       </fieldset>
 
-      <fieldset>
-        <legend>Card Style</legend>
+      <details class="fieldset-details">
+        <summary>Card Style</summary>
         <label>Accent color <input type="color" data-field="accent"></label>
         <label>Card theme
           <select data-field="theme">
@@ -121,7 +140,7 @@
             <option value="arcane">Arcane</option>
           </select>
         </label>
-      </fieldset>
+      </details>
 
     </form>
   </section>

@@ -157,34 +157,44 @@ function modifier(score) {
 }
 
 // ===== Features (Traits/Actions/Bonus Actions/Reactions/Legendary Actions) UI =====
+let autoOpenFeatureIdx = null;
+
 function renderFeatureInputs() {
   const card = currentCard();
   const container = $('features-list');
   container.innerHTML = '';
   card.features.forEach((f, i) => {
-    const row = document.createElement('div');
+    const row = document.createElement('details');
     row.className = 'feature-row';
+    if (i === autoOpenFeatureIdx) row.open = true;
     const options = FEATURE_CATEGORIES.map(c => `<option value="${c}" ${f.category === c ? 'selected' : ''}>${c}</option>`).join('');
     row.innerHTML = `
-      <div class="feature-row-header">
-        <label class="feat-cat-label">Category
-          <select data-idx="${i}" class="feat-cat-input">${options}</select>
+      <summary>${escapeHtml(f.name) || '(unnamed)'} <span class="summary-type">— ${escapeHtml(f.category)}</span></summary>
+      <div class="feature-row-body">
+        <div class="feature-row-header">
+          <label class="feat-cat-label">Category
+            <select data-idx="${i}" class="feat-cat-input">${options}</select>
+          </label>
+          <label>Name
+            <input type="text" data-idx="${i}" class="feat-name-input" value="${escapeHtml(f.name)}">
+          </label>
+          <button type="button" class="remove-feature" data-idx="${i}">✕</button>
+        </div>
+        <label>Text
+          <textarea rows="2" data-idx="${i}" class="feat-text-input">${escapeHtml(f.text)}</textarea>
         </label>
-        <label>Name
-          <input type="text" data-idx="${i}" class="feat-name-input" value="${escapeHtml(f.name)}">
-        </label>
-        <button type="button" class="remove-feature" data-idx="${i}">✕</button>
       </div>
-      <label>Text
-        <textarea rows="2" data-idx="${i}" class="feat-text-input">${escapeHtml(f.text)}</textarea>
-      </label>
     `;
     container.appendChild(row);
   });
+  autoOpenFeatureIdx = null;
 
   container.querySelectorAll('.feat-cat-input').forEach(inp => {
     inp.addEventListener('change', (e) => {
       currentCard().features[+e.target.dataset.idx].category = e.target.value;
+      const summaryEl = e.target.closest('details').querySelector('summary');
+      const name = currentCard().features[+e.target.dataset.idx].name;
+      summaryEl.innerHTML = `${escapeHtml(name) || '(unnamed)'} <span class="summary-type">— ${escapeHtml(e.target.value)}</span>`;
       renderCard();
       saveDeck();
     });
@@ -192,6 +202,9 @@ function renderFeatureInputs() {
   container.querySelectorAll('.feat-name-input').forEach(inp => {
     inp.addEventListener('input', (e) => {
       currentCard().features[+e.target.dataset.idx].name = e.target.value;
+      const summaryEl = e.target.closest('details').querySelector('summary');
+      const category = currentCard().features[+e.target.dataset.idx].category;
+      summaryEl.innerHTML = `${escapeHtml(e.target.value) || '(unnamed)'} <span class="summary-type">— ${escapeHtml(category)}</span>`;
       renderCard();
       saveDeck();
     });
@@ -213,11 +226,15 @@ function renderFeatureInputs() {
   });
 }
 
-$('add-feature').addEventListener('click', () => {
-  currentCard().features.push({ category: 'Trait', name: 'New Trait', text: 'Describe what it does.' });
-  renderFeatureInputs();
-  renderCard();
-  saveDeck();
+document.querySelectorAll('.quick-add[data-feat-cat]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const category = btn.dataset.featCat;
+    currentCard().features.push({ category, name: 'New ' + category, text: 'Describe what it does.' });
+    autoOpenFeatureIdx = currentCard().features.length - 1;
+    renderFeatureInputs();
+    renderCard();
+    saveDeck();
+  });
 });
 
 // ===== Custom Variables =====

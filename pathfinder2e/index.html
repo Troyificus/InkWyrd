@@ -59,8 +59,20 @@
         <legend>Basics</legend>
         <label>Name <input type="text" data-field="name"></label>
         <label>Level <input type="number" data-field="level" min="-1" max="25"></label>
-        <label>Rarity <input type="text" data-field="rarity" placeholder="Common / Uncommon / Rare / Unique"></label>
-        <label>Size &amp; Type <input type="text" data-field="sizeType" placeholder="Large Beast"></label>
+        <label>Rarity
+          <select data-field="rarity">
+            <option value="Common">Common</option>
+            <option value="Uncommon">Uncommon</option>
+            <option value="Rare">Rare</option>
+            <option value="Unique">Unique</option>
+          </select>
+        </label>
+        <label>Size &amp; Type <input type="text" data-field="sizeType" list="sizetype-list" placeholder="Large Beast"></label>
+        <datalist id="sizetype-list">
+          <option value="Tiny Beast"><option value="Small Humanoid"><option value="Medium Humanoid">
+          <option value="Large Beast"><option value="Huge Dragon"><option value="Gargantuan Dragon">
+          <option value="Medium Undead"><option value="Medium Fiend"><option value="Medium Construct">
+        </datalist>
         <label>Traits <input type="text" data-field="traits" placeholder="chaotic, evil, earth"></label>
         <label>Description <textarea data-field="description" rows="2" placeholder="Optional flavor text"></textarea></label>
       </fieldset>
@@ -105,25 +117,34 @@
 
       <fieldset>
         <legend>Strikes</legend>
+        <p class="hint">Click its header to expand and edit.</p>
+        <div class="quick-add-row">
+          <button type="button" class="quick-add" data-strike-type="Melee">+ Melee Strike</button>
+          <button type="button" class="quick-add" data-strike-type="Ranged">+ Ranged Strike</button>
+        </div>
         <div id="attacks-list"></div>
-        <button type="button" id="add-attack">+ Add Strike</button>
       </fieldset>
 
-      <fieldset>
-        <legend>Custom Variables</legend>
+      <details class="fieldset-details">
+        <summary>Custom Variables</summary>
         <p class="hint">Define a value once, then reference it anywhere below with <code>[TOKEN]</code>. Built-ins: <code>[STR]</code> <code>[DEX]</code> <code>[CON]</code> <code>[INT]</code> <code>[WIS]</code> <code>[CHA]</code> <code>[AC]</code> <code>[HP]</code> <code>[LEVEL]</code>.</p>
         <div id="variables-list"></div>
         <button type="button" id="add-variable">+ Add Variable</button>
-      </fieldset>
+      </details>
 
       <fieldset>
         <legend>Abilities, Reactions &amp; Free Actions</legend>
+        <p class="hint">Pick a category to add an ability — click its header to expand and edit.</p>
+        <div class="quick-add-row">
+          <button type="button" class="quick-add" data-feat-cat="Ability">+ Ability</button>
+          <button type="button" class="quick-add" data-feat-cat="Reaction">+ Reaction</button>
+          <button type="button" class="quick-add" data-feat-cat="Free Action">+ Free Action</button>
+        </div>
         <div id="features-list"></div>
-        <button type="button" id="add-feature">+ Add Ability</button>
       </fieldset>
 
-      <fieldset>
-        <legend>Card Style</legend>
+      <details class="fieldset-details">
+        <summary>Card Style</summary>
         <label>Accent color <input type="color" data-field="accent"></label>
         <label>Card theme
           <select data-field="theme">
@@ -133,7 +154,7 @@
             <option value="arcane">Arcane</option>
           </select>
         </label>
-      </fieldset>
+      </details>
 
     </form>
   </section>

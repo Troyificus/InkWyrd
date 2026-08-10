@@ -164,6 +164,8 @@ function escapeHtml(str) {
 }
 
 // ===== Strikes (attacks) UI =====
+let autoOpenAttackIdx = null;
+
 function renderAttackInputs() {
   const card = currentCard();
   if (!card.attacks || !card.attacks.length) {
@@ -172,44 +174,49 @@ function renderAttackInputs() {
   const container = $('attacks-list');
   container.innerHTML = '';
   card.attacks.forEach((a, i) => {
-    const row = document.createElement('div');
-    row.className = 'attack-row';
+    const row = document.createElement('details');
+    row.className = 'feature-row';
+    if (i === autoOpenAttackIdx) row.open = true;
     row.innerHTML = `
-      <div class="attack-row-header">
-        <span class="attack-row-label">Strike ${i + 1}</span>
-        ${card.attacks.length > 1 ? `<button type="button" class="remove-attack" data-idx="${i}">✕</button>` : ''}
-      </div>
-      <div class="attack-row-grid">
-        <label>Action Cost <input type="text" data-idx="${i}" data-key="actionCost" class="attack-input" value="${escapeHtml(a.actionCost)}" placeholder="1 action"></label>
-        <label>Type
-          <select data-idx="${i}" data-key="type" class="attack-input">
-            <option value="Melee" ${a.type === 'Melee' ? 'selected' : ''}>Melee</option>
-            <option value="Ranged" ${a.type === 'Ranged' ? 'selected' : ''}>Ranged</option>
-          </select>
-        </label>
-        <label>Name <input type="text" data-idx="${i}" data-key="name" class="attack-input" value="${escapeHtml(a.name)}"></label>
-        <label>Bonus <input type="text" data-idx="${i}" data-key="bonus" class="attack-input" value="${escapeHtml(a.bonus)}"></label>
-        <label>Damage <input type="text" data-idx="${i}" data-key="damage" class="attack-input" value="${escapeHtml(a.damage)}"></label>
+      <summary>${escapeHtml(a.name) || '(unnamed)'} <span class="summary-type">— ${escapeHtml(a.type)}</span></summary>
+      <div class="feature-row-body">
+        <div class="attack-row-header">
+          <span class="attack-row-label">Strike ${i + 1}</span>
+          ${card.attacks.length > 1 ? `<button type="button" class="remove-attack" data-idx="${i}">✕</button>` : ''}
+        </div>
+        <div class="attack-row-grid">
+          <label>Action Cost <input type="text" data-idx="${i}" data-key="actionCost" class="attack-input" value="${escapeHtml(a.actionCost)}" placeholder="1 action"></label>
+          <label>Type
+            <select data-idx="${i}" data-key="type" class="attack-input">
+              <option value="Melee" ${a.type === 'Melee' ? 'selected' : ''}>Melee</option>
+              <option value="Ranged" ${a.type === 'Ranged' ? 'selected' : ''}>Ranged</option>
+            </select>
+          </label>
+          <label>Name <input type="text" data-idx="${i}" data-key="name" class="attack-input" value="${escapeHtml(a.name)}"></label>
+          <label>Bonus <input type="text" data-idx="${i}" data-key="bonus" class="attack-input" value="${escapeHtml(a.bonus)}"></label>
+          <label>Damage <input type="text" data-idx="${i}" data-key="damage" class="attack-input" value="${escapeHtml(a.damage)}"></label>
+        </div>
       </div>
     `;
     container.appendChild(row);
   });
+  autoOpenAttackIdx = null;
 
   container.querySelectorAll('.attack-input').forEach(inp => {
-    inp.addEventListener('input', (e) => {
+    const sync = (e) => {
       const idx = +e.target.dataset.idx;
       const key = e.target.dataset.key;
       currentCard().attacks[idx][key] = e.target.value;
+      if (key === 'name' || key === 'type') {
+        const summaryEl = e.target.closest('details').querySelector('summary');
+        const a = currentCard().attacks[idx];
+        summaryEl.innerHTML = `${escapeHtml(a.name) || '(unnamed)'} <span class="summary-type">— ${escapeHtml(a.type)}</span>`;
+      }
       renderCard();
       saveDeck();
-    });
-    inp.addEventListener('change', (e) => {
-      const idx = +e.target.dataset.idx;
-      const key = e.target.dataset.key;
-      currentCard().attacks[idx][key] = e.target.value;
-      renderCard();
-      saveDeck();
-    });
+    };
+    inp.addEventListener('input', sync);
+    inp.addEventListener('change', sync);
   });
   container.querySelectorAll('.remove-attack').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -221,42 +228,56 @@ function renderAttackInputs() {
   });
 }
 
-$('add-attack').addEventListener('click', () => {
-  currentCard().attacks.push({ actionCost: '1 action', type: 'Melee', name: 'New Strike', bonus: '+10', damage: '1d8+4' });
-  renderAttackInputs();
-  renderCard();
-  saveDeck();
+document.querySelectorAll('.quick-add[data-strike-type]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const type = btn.dataset.strikeType;
+    currentCard().attacks.push({ actionCost: '1 action', type, name: 'New Strike', bonus: '+10', damage: '1d8+4' });
+    autoOpenAttackIdx = currentCard().attacks.length - 1;
+    renderAttackInputs();
+    renderCard();
+    saveDeck();
+  });
 });
 
 // ===== Features (Abilities/Reactions/Free Actions) UI =====
+let autoOpenFeatureIdx = null;
+
 function renderFeatureInputs() {
   const card = currentCard();
   const container = $('features-list');
   container.innerHTML = '';
   card.features.forEach((f, i) => {
-    const row = document.createElement('div');
+    const row = document.createElement('details');
     row.className = 'feature-row';
+    if (i === autoOpenFeatureIdx) row.open = true;
     const options = FEATURE_CATEGORIES.map(c => `<option value="${c}" ${f.category === c ? 'selected' : ''}>${c}</option>`).join('');
     row.innerHTML = `
-      <div class="feature-row-header">
-        <label class="feat-cat-label">Category
-          <select data-idx="${i}" class="feat-cat-input">${options}</select>
+      <summary>${escapeHtml(f.name) || '(unnamed)'} <span class="summary-type">— ${escapeHtml(f.category)}</span></summary>
+      <div class="feature-row-body">
+        <div class="feature-row-header">
+          <label class="feat-cat-label">Category
+            <select data-idx="${i}" class="feat-cat-input">${options}</select>
+          </label>
+          <label>Name
+            <input type="text" data-idx="${i}" class="feat-name-input" value="${escapeHtml(f.name)}">
+          </label>
+          <button type="button" class="remove-feature" data-idx="${i}">✕</button>
+        </div>
+        <label>Text
+          <textarea rows="2" data-idx="${i}" class="feat-text-input">${escapeHtml(f.text)}</textarea>
         </label>
-        <label>Name
-          <input type="text" data-idx="${i}" class="feat-name-input" value="${escapeHtml(f.name)}">
-        </label>
-        <button type="button" class="remove-feature" data-idx="${i}">✕</button>
       </div>
-      <label>Text
-        <textarea rows="2" data-idx="${i}" class="feat-text-input">${escapeHtml(f.text)}</textarea>
-      </label>
     `;
     container.appendChild(row);
   });
+  autoOpenFeatureIdx = null;
 
   container.querySelectorAll('.feat-cat-input').forEach(inp => {
     inp.addEventListener('change', (e) => {
       currentCard().features[+e.target.dataset.idx].category = e.target.value;
+      const summaryEl = e.target.closest('details').querySelector('summary');
+      const name = currentCard().features[+e.target.dataset.idx].name;
+      summaryEl.innerHTML = `${escapeHtml(name) || '(unnamed)'} <span class="summary-type">— ${escapeHtml(e.target.value)}</span>`;
       renderCard();
       saveDeck();
     });
@@ -264,6 +285,9 @@ function renderFeatureInputs() {
   container.querySelectorAll('.feat-name-input').forEach(inp => {
     inp.addEventListener('input', (e) => {
       currentCard().features[+e.target.dataset.idx].name = e.target.value;
+      const summaryEl = e.target.closest('details').querySelector('summary');
+      const category = currentCard().features[+e.target.dataset.idx].category;
+      summaryEl.innerHTML = `${escapeHtml(e.target.value) || '(unnamed)'} <span class="summary-type">— ${escapeHtml(category)}</span>`;
       renderCard();
       saveDeck();
     });
@@ -285,11 +309,15 @@ function renderFeatureInputs() {
   });
 }
 
-$('add-feature').addEventListener('click', () => {
-  currentCard().features.push({ category: 'Ability', name: 'New Ability', text: 'Describe what it does.' });
-  renderFeatureInputs();
-  renderCard();
-  saveDeck();
+document.querySelectorAll('.quick-add[data-feat-cat]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const category = btn.dataset.featCat;
+    currentCard().features.push({ category, name: 'New ' + category, text: 'Describe what it does.' });
+    autoOpenFeatureIdx = currentCard().features.length - 1;
+    renderFeatureInputs();
+    renderCard();
+    saveDeck();
+  });
 });
 
 // ===== Custom Variables =====
