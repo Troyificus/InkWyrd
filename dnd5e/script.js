@@ -6,6 +6,7 @@ const FEATURE_CATEGORIES = ['Trait', 'Action', 'Bonus Action', 'Reaction', 'Lege
 function newCard(overrides = {}) {
   return Object.assign({
     id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
+    format: '2024',
     name: 'New Creature',
     size: 'Medium',
     creatureType: 'Humanoid',
@@ -87,6 +88,7 @@ function migrateCard(card) {
   if (!card.imageAlign) card.imageAlign = 'right';
   if (!card.imageWidth) card.imageWidth = 170;
   if (card.proficiencyBonus === undefined) card.proficiencyBonus = 2;
+  if (!card.format) card.format = '2024';
   return card;
 }
 
@@ -131,10 +133,20 @@ function renderForm() {
     const field = el.dataset.field;
     if (field in card) el.value = card[field];
   });
+  document.querySelectorAll('.type-btn[data-format]').forEach(b => b.classList.toggle('active', b.dataset.format === card.format));
   renderFeatureInputs();
   renderVariableInputs();
   renderImagePreview();
 }
+
+document.querySelectorAll('.type-btn[data-format]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentCard().format = btn.dataset.format;
+    document.querySelectorAll('.type-btn[data-format]').forEach(b => b.classList.toggle('active', b === btn));
+    renderCard();
+    saveDeck();
+  });
+});
 
 document.getElementById('statblock-form').addEventListener('input', (e) => {
   const el = e.target;
@@ -381,6 +393,7 @@ function cardInnerHtml(card) {
   const cornerSide = (hasImage && card.imageAlign === 'right') ? 'left' : 'right';
   const iconSvg = getTypeIcon(card.creatureType);
   const dexMod = Math.floor((Number(card.dex) - 10) / 2);
+  const is2024 = card.format !== '2014';
 
   if (hasImage) {
     const w = card.imageWidth || 170;
@@ -394,19 +407,31 @@ function cardInnerHtml(card) {
     </div>`;
 
   html += `<div class="card-name" style="padding-${cornerSide}:70px">${escapeHtml(card.name)}</div>`;
-  html += `<div class="trait-chip-row">
-      <span class="trait-chip">${escapeHtml(card.size)}</span>
-      <span class="trait-chip">${escapeHtml(card.creatureType)}</span>
-      <span class="trait-chip">${escapeHtml(card.alignment)}</span>
-    </div>`;
+
+  if (is2024) {
+    html += `<div class="trait-chip-row">
+        <span class="trait-chip">${escapeHtml(card.size)}</span>
+        <span class="trait-chip">${escapeHtml(card.creatureType)}</span>
+        <span class="trait-chip">${escapeHtml(card.alignment)}</span>
+      </div>`;
+  } else {
+    html += `<div class="card-kind">${escapeHtml(card.size)} ${escapeHtml(card.creatureType)}, ${escapeHtml(card.alignment)}</div>`;
+  }
+
   if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
 
-  html += `<div class="core-stat-row">
-      <div class="core-stat"><b>AC</b> ${sub(card.ac)}</div>
-      <div class="core-stat"><b>Initiative</b> ${modifier(card.dex)} (${10 + dexMod})</div>
-      <div class="core-stat"><b>HP</b> ${sub(card.hp)}</div>
-      <div class="core-stat"><b>Speed</b> ${sub(card.speed)}</div>
-    </div>`;
+  if (is2024) {
+    html += `<div class="core-stat-row">
+        <div class="core-stat"><b>AC</b> ${sub(card.ac)}</div>
+        <div class="core-stat"><b>Initiative</b> ${modifier(card.dex)} (${10 + dexMod})</div>
+        <div class="core-stat"><b>HP</b> ${sub(card.hp)}</div>
+        <div class="core-stat"><b>Speed</b> ${sub(card.speed)}</div>
+      </div>`;
+  } else {
+    html += `<div class="card-line"><b>Armor Class</b> ${sub(card.ac)}</div>`;
+    html += `<div class="card-line"><b>Hit Points</b> ${sub(card.hp)}</div>`;
+    html += `<div class="card-line"><b>Speed</b> ${sub(card.speed)}</div>`;
+  }
 
   html += `<div class="ability-row">`;
   [['STR', card.str], ['DEX', card.dex], ['CON', card.con], ['INT', card.int], ['WIS', card.wis], ['CHA', card.cha]].forEach(([label, score]) => {
@@ -414,30 +439,49 @@ function cardInnerHtml(card) {
   });
   html += `</div>`;
 
-  html += `<div class="statblock-columns">`;
-  html += `<div class="col-left">`;
-  if (card.savingThrows) html += `<div class="card-line"><b>Saving Throws</b> ${sub(card.savingThrows)}</div>`;
-  if (card.skills) html += `<div class="card-line"><b>Skills</b> ${sub(card.skills)}</div>`;
-  if (card.damageResistances) html += `<div class="card-line"><b>Resistances</b> ${sub(card.damageResistances)}</div>`;
-  if (card.damageImmunities) html += `<div class="card-line"><b>Damage Immunities</b> ${sub(card.damageImmunities)}</div>`;
-  if (card.conditionImmunities) html += `<div class="card-line"><b>Condition Immunities</b> ${sub(card.conditionImmunities)}</div>`;
-  if (card.senses) html += `<div class="card-line"><b>Senses</b> ${sub(card.senses)}</div>`;
-  if (card.languages) html += `<div class="card-line"><b>Languages</b> ${sub(card.languages)}</div>`;
-  html += `</div>`;
+  const statLines = () => {
+    let s = '';
+    if (card.savingThrows) s += `<div class="card-line"><b>Saving Throws</b> ${sub(card.savingThrows)}</div>`;
+    if (card.skills) s += `<div class="card-line"><b>Skills</b> ${sub(card.skills)}</div>`;
+    if (is2024) {
+      if (card.damageResistances) s += `<div class="card-line"><b>Resistances</b> ${sub(card.damageResistances)}</div>`;
+      const combinedImmunities = [card.damageImmunities, card.conditionImmunities].filter(Boolean).map(t => applySubs(t, card)).join(', ');
+      if (combinedImmunities) s += `<div class="card-line"><b>Immunities</b> ${escapeHtml(combinedImmunities)}</div>`;
+    } else {
+      if (card.damageResistances) s += `<div class="card-line"><b>Damage Resistances</b> ${sub(card.damageResistances)}</div>`;
+      if (card.damageImmunities) s += `<div class="card-line"><b>Damage Immunities</b> ${sub(card.damageImmunities)}</div>`;
+      if (card.conditionImmunities) s += `<div class="card-line"><b>Condition Immunities</b> ${sub(card.conditionImmunities)}</div>`;
+    }
+    if (card.senses) s += `<div class="card-line"><b>Senses</b> ${sub(card.senses)}</div>`;
+    if (card.languages) s += `<div class="card-line"><b>Languages</b> ${sub(card.languages)}</div>`;
+    return s;
+  };
 
-  html += `<div class="col-right">`;
-  FEATURE_CATEGORIES.forEach(cat => {
-    const items = card.features.filter(f => f.category === cat);
-    if (!items.length) return;
-    html += `<div class="section-divider col-divider">${cat}s</div>`;
-    items.forEach(f => {
-      html += `<div class="card-feature">
-        <div class="feat-head"><span class="feat-name">${sub(f.name)}.</span><span class="feat-icon">${getFeatureIcon(cat)}</span></div>
-        <div class="feat-text">${sub(f.text)}</div>
-      </div>`;
+  const featureBlocks = () => {
+    let f = '';
+    FEATURE_CATEGORIES.forEach(cat => {
+      const items = card.features.filter(x => x.category === cat);
+      if (!items.length) return;
+      f += `<div class="section-divider col-divider">${cat}s</div>`;
+      items.forEach(x => {
+        f += `<div class="card-feature">
+          <div class="feat-head"><span class="feat-name">${sub(x.name)}.</span><span class="feat-icon">${getFeatureIcon(cat)}</span></div>
+          <div class="feat-text">${sub(x.text)}</div>
+        </div>`;
+      });
     });
-  });
-  html += `</div></div>`;
+    return f;
+  };
+
+  if (is2024) {
+    html += `<div class="statblock-columns">`;
+    html += `<div class="col-left">${statLines()}</div>`;
+    html += `<div class="col-right">${featureBlocks()}</div>`;
+    html += `</div>`;
+  } else {
+    html += statLines();
+    html += featureBlocks().replace(/col-divider/g, '');
+  }
 
   html += `<div class="card-footer">D&amp;D 5E Compatible &middot; built from the SRD under CC-BY-4.0</div>`;
   return html;
@@ -446,7 +490,7 @@ function cardInnerHtml(card) {
 function renderCard() {
   const card = currentCard();
   const el = $('statblock-card');
-  el.className = 'theme-' + card.theme;
+  el.className = 'theme-' + card.theme + ' format-' + (card.format || '2024');
   el.style.setProperty('--card-accent', card.accent);
   el.innerHTML = cardInnerHtml(card);
 }
@@ -516,7 +560,7 @@ $('import-json').addEventListener('change', (e) => {
 async function renderCardToCanvas(card) {
   const offscreen = document.createElement('div');
   offscreen.id = 'statblock-card';
-  offscreen.className = 'theme-' + card.theme;
+  offscreen.className = 'theme-' + card.theme + ' format-' + (card.format || '2024');
   offscreen.style.setProperty('--card-accent', card.accent);
   offscreen.style.position = 'fixed';
   offscreen.style.left = '-9999px';
@@ -587,7 +631,7 @@ $('print-sheet').addEventListener('click', () => {
   const styleLink = document.querySelector('link[rel="stylesheet"]').href;
   const cardsHtml = deck.map(card => {
     const wrapper = document.createElement('div');
-    wrapper.className = 'theme-' + card.theme;
+    wrapper.className = 'theme-' + card.theme + ' format-' + (card.format || '2024');
     wrapper.id = 'statblock-card';
     wrapper.style.setProperty('--card-accent', card.accent);
     wrapper.innerHTML = cardInnerHtml(card);

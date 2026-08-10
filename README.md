@@ -19,6 +19,7 @@ All three generators are functional:
 - JSON import/export, single-card PNG export, batch PNG export as `.zip`, print sheet
 - Four shared themes (parchment / ink / verdant / arcane) with an accent color picker
 - Original SVG iconography per system — none of it derived from official artwork or proprietary icon fonts (e.g. Pathfinder's action-cost icons are represented as plain text labels, not the trademarked Pathfinder-Icons font)
+- D&D 5E: toggle between 2014-style (narrow single column, separate resistance/immunity lines) and 2024-style (wide landscape layout, explicit Initiative line, combined Immunities line, two-column Traits/Actions) presentation — structure only, not official fonts/colors/backgrounds
 
 ## Roadmap
 
