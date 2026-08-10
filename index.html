@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Adversary Card Forge — Daggerheart Compatible Statblock Generator</title>
+<title>Statblock Forge — TTRPG Adversary Card Generators</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -11,141 +11,39 @@
 </head>
 <body>
 
-<header class="site-header">
-  <h1>Adversary Card Forge</h1>
-  <p class="tagline">A Daggerheart Compatible statblock card generator — build it, preview it, export a PNG.</p>
+<header class="hub-header">
+  <h1>Statblock Forge</h1>
+  <p class="tagline">Build a statblock, drop in your own illustration, export a print-ready PNG. One toolset, multiple systems.</p>
 </header>
 
-<main class="layout">
+<main class="hub-grid">
 
-  <section class="deck-panel" aria-label="Card deck">
-    <h2>Your Cards</h2>
-    <div id="deck-list"></div>
-    <button type="button" id="new-card">+ New Card</button>
-    <button type="button" id="duplicate-card">Duplicate Selected</button>
-    <button type="button" id="delete-card">Delete Selected</button>
+  <a class="system-card" href="daggerheart/">
+    <div class="system-card-accent" style="--card-accent:#7a2020"></div>
+    <h2>Daggerheart</h2>
+    <p>Adversary &amp; Environment cards, built from the Daggerheart SRD under the Darrington Press Community Gaming License.</p>
+    <span class="enter-link">Open generator &rarr;</span>
+  </a>
 
-    <div class="deck-io">
-      <button type="button" id="export-json">Export Deck (JSON)</button>
-      <label class="file-btn">Import Deck (JSON)
-        <input type="file" id="import-json" accept="application/json" hidden>
-      </label>
-      <button type="button" id="export-all-png">Export All as PNG (.zip)</button>
-      <button type="button" id="print-sheet">Print Sheet</button>
-    </div>
-    <span id="deck-status"></span>
-  </section>
+  <a class="system-card" href="dnd5e/">
+    <div class="system-card-accent" style="--card-accent:#8a2727"></div>
+    <h2>D&amp;D 5E</h2>
+    <p>Creature statblock cards, built from the 5E SRD (5.1 / 5.2), released by Wizards of the Coast under Creative Commons CC-BY-4.0.</p>
+    <span class="enter-link">Open generator &rarr;</span>
+  </a>
 
-  <section class="form-panel" aria-label="Statblock editor">
-    <div class="type-toggle">
-      <button type="button" class="type-btn active" data-type="adversary">Adversary</button>
-      <button type="button" class="type-btn" data-type="environment">Environment</button>
-    </div>
-
-    <form id="statblock-form">
-
-      <fieldset>
-        <legend>Illustration</legend>
-        <p class="hint">Upload a PNG with a transparent background (e.g. from your ComfyUI pipeline). Text will wrap around the character's actual silhouette, not just a rectangle.</p>
-        <label>Image <input type="file" id="image-upload" accept="image/*"></label>
-        <div id="image-preview-wrap"></div>
-        <label>Placement
-          <select data-field="imageAlign">
-            <option value="right">Float right</option>
-            <option value="left">Float left</option>
-            <option value="none">No image</option>
-          </select>
-        </label>
-        <label>Image width (px) <input type="range" data-field="imageWidth" min="100" max="260" step="10"></label>
-      </fieldset>
-
-      <fieldset>
-        <legend>Basics</legend>
-        <label>Name <input type="text" data-field="name"></label>
-        <label>Tier <input type="number" data-field="tier" min="1" max="4"></label>
-        <label class="adv-only">Type <input type="text" data-field="type" placeholder="Solo / Bruiser / Skulk / Support / Leader / Horde / Ranged / Standard / Colossus"></label>
-        <label class="env-only" hidden>Type <input type="text" data-field="envType" placeholder="Exploration / Traversal / Social..."></label>
-        <label>Description <textarea data-field="description" rows="2"></textarea></label>
-        <label class="adv-only">Motives &amp; Tactics <input type="text" data-field="motives"></label>
-        <label class="env-only" hidden>Impulses <input type="text" data-field="impulses"></label>
-      </fieldset>
-
-      <fieldset class="adv-only">
-        <legend>Attacks</legend>
-        <div id="attacks-list"></div>
-        <button type="button" id="add-attack">+ Add Attack</button>
-      </fieldset>
-
-      <fieldset class="adv-only">
-        <legend>Other Combat Stats</legend>
-        <label>Difficulty <input type="number" data-field="difficultyAdv"></label>
-        <label>Major Threshold <input type="number" data-field="thresholdMajor"></label>
-        <label>Severe Threshold <input type="number" data-field="thresholdSevere"></label>
-        <label>HP <input type="number" data-field="hp"></label>
-        <label>Stress <input type="number" data-field="stress"></label>
-        <label>Experience <input type="text" data-field="experience"></label>
-      </fieldset>
-
-      <fieldset class="env-only" hidden>
-        <legend>Environment</legend>
-        <label>Difficulty <input type="number" data-field="difficultyEnv"></label>
-        <label>Potential Adversaries <input type="text" data-field="potential"></label>
-      </fieldset>
-
-      <fieldset>
-        <legend>Custom Variables</legend>
-        <p class="hint">Define a value once, then reference it anywhere below by typing its token in brackets — e.g. a variable named <code>STR</code> can be used as <code>[STR]</code> in a feature, attack, or description field.</p>
-        <div id="variables-list"></div>
-        <button type="button" id="add-variable">+ Add Variable</button>
-      </fieldset>
-
-      <fieldset>
-        <legend>Features</legend>
-        <div id="features-list"></div>
-        <button type="button" id="add-feature">+ Add Feature</button>
-      </fieldset>
-
-      <fieldset>
-        <legend>Card Style</legend>
-        <label>Accent color <input type="color" data-field="accent"></label>
-        <label>Card theme
-          <select data-field="theme">
-            <option value="parchment">Parchment</option>
-            <option value="dark">Ink (Dark)</option>
-            <option value="verdant">Verdant</option>
-            <option value="arcane">Arcane</option>
-          </select>
-        </label>
-      </fieldset>
-
-    </form>
-  </section>
-
-  <section class="preview-panel" aria-label="Card preview">
-    <div id="card-wrapper">
-      <div id="statblock-card" class="theme-dark">
-        <!-- Rendered by script.js -->
-      </div>
-    </div>
-    <div class="export-controls">
-      <button type="button" id="export-png">Download PNG</button>
-      <span id="export-status"></span>
-    </div>
-    <p class="compliance-note">
-      Built using Public Game Content from the Daggerheart SRD 1.0 under the Darrington Press Community Gaming License.
-      This tool produces original card artwork — it does not reproduce official Daggerheart artwork, logos, or layouts.
-    </p>
-  </section>
+  <a class="system-card" href="pathfinder2e/">
+    <div class="system-card-accent" style="--card-accent:#1f5c4a"></div>
+    <h2>Pathfinder 2E</h2>
+    <p>Creature statblock cards, built from Pathfinder Second Edition rules text released under the ORC License.</p>
+    <span class="enter-link">Open generator &rarr;</span>
+  </a>
 
 </main>
 
-<footer class="site-footer">
-  <p>Fan-made tool. Not affiliated with or endorsed by Darrington Press or Critical Role, LLC. "Daggerheart" is a trademark of Critical Role, LLC.</p>
+<footer class="hub-footer">
+  <p>Fan-made tools. Not affiliated with or endorsed by Darrington Press, Critical Role LLC, Wizards of the Coast, or Paizo Inc. Each generator uses only openly-licensed rules text (SRD / ORC) and original visual design — see each system's page for its specific attribution.</p>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="icons.js"></script>
-<script src="script.js"></script>
 </body>
 </html>
