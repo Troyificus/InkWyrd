@@ -60,7 +60,8 @@ body {
 }
 
 .deck-panel { flex: 0 1 220px; min-width: 200px; }
-.form-panel, .preview-panel { flex: 1 1 420px; min-width: 320px; }
+.form-panel { flex: 1 1 420px; min-width: 320px; }
+.preview-panel { flex: 1 1 100%; min-width: 320px; }
 
 .deck-panel h2 {
   font-family: 'Cormorant Garamond', Georgia, serif;
@@ -407,8 +408,8 @@ textarea { resize: vertical; }
 /* ===== The card itself ===== */
 
 #statblock-card {
-  width: 440px;
-  padding: 30px 28px 22px;
+  width: 700px;
+  padding: 28px 34px 22px;
   font-family: 'EB Garamond', Georgia, serif;
   position: relative;
   box-shadow: 0 4px 18px rgba(0,0,0,0.35);
@@ -433,9 +434,33 @@ textarea { resize: vertical; }
 .card-illustration.align-right { float: right; margin-left: 14px; shape-margin: 12px; }
 .card-illustration.align-left { float: left; margin-right: 14px; shape-margin: 12px; }
 
-.card-name { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: 1.9rem; letter-spacing: 0.5px; margin: 0 0 2px; line-height: 1.1; }
-.card-kind { font-size: 0.82rem; font-style: italic; opacity: 0.75; border-bottom: 1.5px solid var(--card-accent, #8a2727); padding-bottom: 8px; margin-bottom: 10px; }
+.card-name { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: 1.9rem; letter-spacing: 0.5px; margin: 0 0 6px; line-height: 1.1; }
+
+.trait-chip-row { clear: both; display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.trait-chip {
+  border: 1px solid var(--card-accent, #8a2727);
+  padding: 2px 9px;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.85;
+}
+
 .card-desc { font-size: 0.88rem; font-style: italic; opacity: 0.85; margin-bottom: 10px; line-height: 1.4; }
+
+.core-stat-row {
+  clear: both;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+  border-top: 1.5px solid var(--card-accent, #8a2727);
+  border-bottom: 1.5px solid var(--card-accent, #8a2727);
+  padding: 8px 0;
+  margin-bottom: 4px;
+}
+
+.core-stat { font-size: 0.85rem; }
+.core-stat b { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; color: var(--card-accent, #8a2727); }
 
 .section-divider {
   clear: both;
@@ -460,8 +485,23 @@ textarea { resize: vertical; }
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 6px;
-  margin: 12px 0;
+  margin: 12px 0 16px;
 }
+
+.statblock-columns {
+  clear: both;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 0 26px;
+  align-items: start;
+}
+
+.col-right {
+  border-left: 1px solid var(--card-accent, #8a2727);
+  padding-left: 24px;
+}
+
+.col-right .col-divider:first-child { margin-top: 0; }
 
 .ability-box {
   border: 1px solid var(--card-accent, #8a2727);
@@ -528,4 +568,10 @@ textarea { resize: vertical; }
   .deck-panel { flex: 1 1 100%; order: -1; }
   #deck-list { max-height: 160px; }
   .ability-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .statblock-columns { grid-template-columns: 1fr; }
+  .col-right { border-left: none; padding-left: 0; border-top: 1px solid var(--card-accent, #8a2727); padding-top: 10px; margin-top: 6px; }
+  .ability-row { grid-template-columns: repeat(3, 1fr); }
 }

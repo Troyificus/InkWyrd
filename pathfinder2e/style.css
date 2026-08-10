@@ -460,7 +460,7 @@ textarea { resize: vertical; }
 /* ===== The card itself ===== */
 
 #statblock-card {
-  width: 440px;
+  width: 480px;
   padding: 30px 28px 22px;
   font-family: 'EB Garamond', Georgia, serif;
   position: relative;
@@ -486,8 +486,18 @@ textarea { resize: vertical; }
 .card-illustration.align-right { float: right; margin-left: 14px; shape-margin: 12px; }
 .card-illustration.align-left { float: left; margin-right: 14px; shape-margin: 12px; }
 
-.card-name { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: 1.9rem; letter-spacing: 0.5px; margin: 0 0 2px; line-height: 1.1; }
-.card-kind { font-size: 0.82rem; font-style: italic; opacity: 0.75; border-bottom: 1.5px solid var(--card-accent, #8a2727); padding-bottom: 8px; margin-bottom: 10px; }
+.card-name { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: 1.9rem; letter-spacing: 0.5px; margin: 0 0 6px; line-height: 1.1; }
+
+.trait-chip-row { clear: both; display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.trait-chip {
+  border: 1px solid var(--card-accent, #8a2727);
+  padding: 2px 9px;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.85;
+}
+
 .card-desc { font-size: 0.88rem; font-style: italic; opacity: 0.85; margin-bottom: 10px; line-height: 1.4; }
 
 .section-divider {

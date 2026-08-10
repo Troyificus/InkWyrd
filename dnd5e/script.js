@@ -380,6 +380,7 @@ function cardInnerHtml(card) {
   const hasImage = !!card.image && card.imageAlign !== 'none';
   const cornerSide = (hasImage && card.imageAlign === 'right') ? 'left' : 'right';
   const iconSvg = getTypeIcon(card.creatureType);
+  const dexMod = Math.floor((Number(card.dex) - 10) / 2);
 
   if (hasImage) {
     const w = card.imageWidth || 170;
@@ -393,12 +394,19 @@ function cardInnerHtml(card) {
     </div>`;
 
   html += `<div class="card-name" style="padding-${cornerSide}:70px">${escapeHtml(card.name)}</div>`;
-  html += `<div class="card-kind">${escapeHtml(card.size)} ${escapeHtml(card.creatureType)}, ${escapeHtml(card.alignment)}</div>`;
+  html += `<div class="trait-chip-row">
+      <span class="trait-chip">${escapeHtml(card.size)}</span>
+      <span class="trait-chip">${escapeHtml(card.creatureType)}</span>
+      <span class="trait-chip">${escapeHtml(card.alignment)}</span>
+    </div>`;
   if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
 
-  html += `<div class="card-line"><b>Armor Class</b> ${sub(card.ac)}</div>`;
-  html += `<div class="card-line"><b>Hit Points</b> ${sub(card.hp)}</div>`;
-  html += `<div class="card-line"><b>Speed</b> ${sub(card.speed)}</div>`;
+  html += `<div class="core-stat-row">
+      <div class="core-stat"><b>AC</b> ${sub(card.ac)}</div>
+      <div class="core-stat"><b>Initiative</b> ${modifier(card.dex)} (${10 + dexMod})</div>
+      <div class="core-stat"><b>HP</b> ${sub(card.hp)}</div>
+      <div class="core-stat"><b>Speed</b> ${sub(card.speed)}</div>
+    </div>`;
 
   html += `<div class="ability-row">`;
   [['STR', card.str], ['DEX', card.dex], ['CON', card.con], ['INT', card.int], ['WIS', card.wis], ['CHA', card.cha]].forEach(([label, score]) => {
@@ -406,18 +414,22 @@ function cardInnerHtml(card) {
   });
   html += `</div>`;
 
+  html += `<div class="statblock-columns">`;
+  html += `<div class="col-left">`;
   if (card.savingThrows) html += `<div class="card-line"><b>Saving Throws</b> ${sub(card.savingThrows)}</div>`;
   if (card.skills) html += `<div class="card-line"><b>Skills</b> ${sub(card.skills)}</div>`;
-  if (card.damageResistances) html += `<div class="card-line"><b>Damage Resistances</b> ${sub(card.damageResistances)}</div>`;
+  if (card.damageResistances) html += `<div class="card-line"><b>Resistances</b> ${sub(card.damageResistances)}</div>`;
   if (card.damageImmunities) html += `<div class="card-line"><b>Damage Immunities</b> ${sub(card.damageImmunities)}</div>`;
   if (card.conditionImmunities) html += `<div class="card-line"><b>Condition Immunities</b> ${sub(card.conditionImmunities)}</div>`;
   if (card.senses) html += `<div class="card-line"><b>Senses</b> ${sub(card.senses)}</div>`;
   if (card.languages) html += `<div class="card-line"><b>Languages</b> ${sub(card.languages)}</div>`;
+  html += `</div>`;
 
+  html += `<div class="col-right">`;
   FEATURE_CATEGORIES.forEach(cat => {
     const items = card.features.filter(f => f.category === cat);
     if (!items.length) return;
-    html += `<div class="section-divider">${cat}s</div>`;
+    html += `<div class="section-divider col-divider">${cat}s</div>`;
     items.forEach(f => {
       html += `<div class="card-feature">
         <div class="feat-head"><span class="feat-name">${sub(f.name)}.</span><span class="feat-icon">${getFeatureIcon(cat)}</span></div>
@@ -425,6 +437,7 @@ function cardInnerHtml(card) {
       </div>`;
     });
   });
+  html += `</div></div>`;
 
   html += `<div class="card-footer">D&amp;D 5E Compatible &middot; built from the SRD under CC-BY-4.0</div>`;
   return html;
@@ -587,7 +600,7 @@ $('print-sheet').addEventListener('click', () => {
     <link rel="stylesheet" href="${styleLink}">
     <style>
       body { background: #fff; padding: 20px; }
-      .print-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+      .print-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 760px; margin: 0 auto; }
       #statblock-card { width: 100%; }
       @media print { body { padding: 0; } .print-grid { gap: 10px; } }
     </style>

@@ -465,7 +465,11 @@ function cardInnerHtml(card) {
     </div>`;
 
   html += `<div class="card-name" style="padding-${cornerSide}:70px">${escapeHtml(card.name)}</div>`;
-  html += `<div class="card-kind">${escapeHtml(card.sizeType)}${card.traits ? ' — ' + escapeHtml(card.traits) : ''}</div>`;
+  html += `<div class="trait-chip-row">
+      <span class="trait-chip">${escapeHtml(card.rarity)}</span>
+      <span class="trait-chip">${escapeHtml(card.sizeType)}</span>
+      ${(card.traits || '').split(',').map(t => t.trim()).filter(Boolean).map(t => `<span class="trait-chip">${escapeHtml(t)}</span>`).join('')}
+    </div>`;
   if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
 
   html += `<div class="card-line"><b>Perception</b> ${sub(card.perception)}${card.senses ? '; ' + sub(card.senses) : ''}</div>`;
