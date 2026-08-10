@@ -608,7 +608,7 @@ async function renderCardToCanvas(card) {
   offscreen.style.top = '0';
   offscreen.innerHTML = cardInnerHtml(card);
   document.body.appendChild(offscreen);
-  const canvas = await html2canvas(offscreen, { scale: 2, backgroundColor: null });
+  const canvas = await html2canvas(offscreen, { scale: 2, backgroundColor: null, windowWidth: 1400, windowHeight: 2000 });
   document.body.removeChild(offscreen);
   return canvas;
 }
