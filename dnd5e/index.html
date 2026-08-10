@@ -94,6 +94,7 @@
           <label>WIS <input type="number" data-field="wis" min="1" max="30"></label>
           <label>CHA <input type="number" data-field="cha" min="1" max="30"></label>
         </div>
+        <label>Proficiency Bonus <input type="number" data-field="proficiencyBonus" min="0" max="9"></label>
       </fieldset>
 
       <fieldset>
@@ -111,7 +112,7 @@
 
       <details class="fieldset-details">
         <summary>Custom Variables</summary>
-        <p class="hint">Define a value once, then reference it anywhere below with <code>[TOKEN]</code>. Built-ins: <code>[STR]</code> <code>[DEX]</code> <code>[CON]</code> <code>[INT]</code> <code>[WIS]</code> <code>[CHA]</code> <code>[AC]</code> <code>[HP]</code> <code>[CR]</code> (ability tokens insert the modifier, e.g. +3).</p>
+        <p class="hint">Define a value once, then reference it anywhere below with <code>[TOKEN]</code>. Built-ins: <code>[STR]</code> etc. insert the modifier (e.g. +3); <code>[STRSAVE]</code> etc. insert the saving throw DC (e.g. 15); <code>[STRATK]</code> etc. insert the attack/check bonus (e.g. +6) — same for DEX/CON/INT/WIS/CHA. Also <code>[AC]</code>, <code>[HP]</code>, <code>[CR]</code>, <code>[PB]</code>.</p>
         <div id="variables-list"></div>
         <button type="button" id="add-variable">+ Add Variable</button>
       </details>

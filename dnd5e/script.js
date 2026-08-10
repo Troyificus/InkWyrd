@@ -15,6 +15,7 @@ function newCard(overrides = {}) {
     hp: '11 (2d8+2)',
     speed: '30 ft.',
     str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10,
+    proficiencyBonus: 2,
     savingThrows: '',
     skills: '',
     damageResistances: '',
@@ -47,6 +48,7 @@ function starterCard() {
     hp: '58 (9d10+9)',
     speed: '50 ft.',
     str: 17, dex: 16, con: 13, int: 4, wis: 13, cha: 7,
+    proficiencyBonus: 2,
     savingThrows: 'Dex +6, Con +4',
     skills: 'Perception +5, Stealth +8',
     senses: 'darkvision 60 ft., passive Perception 15',
@@ -84,6 +86,7 @@ function migrateCard(card) {
   if (card.image === undefined) card.image = null;
   if (!card.imageAlign) card.imageAlign = 'right';
   if (!card.imageWidth) card.imageWidth = 170;
+  if (card.proficiencyBonus === undefined) card.proficiencyBonus = 2;
   return card;
 }
 
@@ -154,6 +157,10 @@ function escapeHtml(str) {
 function modifier(score) {
   const m = Math.floor((Number(score) - 10) / 2);
   return m >= 0 ? `+${m}` : `${m}`;
+}
+
+function signed(n) {
+  return n >= 0 ? `+${n}` : `${n}`;
 }
 
 // ===== Features (Traits/Actions/Bonus Actions/Reactions/Legendary Actions) UI =====
@@ -284,11 +291,15 @@ $('add-variable').addEventListener('click', () => {
 
 function applySubs(text, card) {
   if (!text) return text;
-  const builtins = {
-    STR: modifier(card.str), DEX: modifier(card.dex), CON: modifier(card.con),
-    INT: modifier(card.int), WIS: modifier(card.wis), CHA: modifier(card.cha),
-    AC: card.ac, HP: card.hp, CR: card.cr
-  };
+  const pb = Number(card.proficiencyBonus) || 0;
+  const abilities = { STR: card.str, DEX: card.dex, CON: card.con, INT: card.int, WIS: card.wis, CHA: card.cha };
+  const builtins = { AC: card.ac, HP: card.hp, CR: card.cr, PB: signed(pb) };
+  Object.keys(abilities).forEach(k => {
+    const mod = Math.floor((Number(abilities[k]) - 10) / 2);
+    builtins[k] = modifier(abilities[k]);           // e.g. [STR] -> +3
+    builtins[k + 'SAVE'] = 8 + pb + mod;             // e.g. [STRSAVE] -> 15 (the DC)
+    builtins[k + 'ATK'] = signed(pb + mod);          // e.g. [STRATK] -> +6 (attack/check bonus)
+  });
   const custom = {};
   (card.variables || []).forEach(v => { if (v.key) custom[v.key.toUpperCase()] = v.value; });
   const lookup = Object.assign({}, builtins, custom);
