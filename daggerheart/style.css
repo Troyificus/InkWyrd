@@ -659,11 +659,31 @@ textarea { resize: vertical; }
   display: block;
   height: auto;
   margin: 4px 0 14px;
-  border: 1px solid var(--card-accent, #8a2727);
 }
 
 .card-illustration.align-left { margin-right: auto; margin-left: 0; }
 .card-illustration.align-right { margin-left: auto; margin-right: 0; }
+
+.stat-image-row {
+  clear: both;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin: 8px 0 4px;
+}
+
+.stat-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-image-row .card-illustration {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.two-col-item.stacked { margin-bottom: 10px; }
+.two-col-item.stacked:last-child { margin-bottom: 0; }
 
 .card-name {
   font-family: 'Cormorant Garamond', Georgia, serif;

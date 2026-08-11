@@ -357,16 +357,25 @@ function cardInnerHtml(card) {
     </div>`;
   if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
 
-  if (hasImage) {
-    const w = card.imageWidth || 170;
-    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
-  }
-
+  let statHtml = '';
   if (card.itemTypeName || card.itemBaseStats) {
-    html += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
+    statHtml += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
   }
   if (card.itemRange) {
-    html += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
+    statHtml += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
+  }
+
+  if (hasImage && statHtml) {
+    const w = card.imageWidth || 170;
+    const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
+    const statCol = `<div class="stat-col">${statHtml}</div>`;
+    html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
+  } else {
+    html += statHtml;
+    if (hasImage) {
+      const w = card.imageWidth || 170;
+      html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
+    }
   }
 
   html += `<div class="section-divider">Effect</div>`;

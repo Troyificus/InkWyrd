@@ -532,38 +532,66 @@ function cardInnerHtml(card) {
   html += `<div class="card-kind">${isAdv ? 'Adversary' : 'Environment'}</div>`;
   if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
 
-  if (hasImage) {
-    const w = card.imageWidth || 170;
-    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
-  }
-
+  // Build the stat lines separately so they can either sit full-width (no
+  // image) or share a row with the illustration (image present) — the
+  // divider that follows always sits outside this block, so it can never
+  // run through the image regardless of how tall either side is.
+  let statHtml = '';
   if (isAdv) {
-    html += `<div class="card-line"><b>Difficulty:</b> ${escapeHtml(card.difficultyAdv)}</div>`;
+    statHtml += `<div class="card-line"><b>Difficulty:</b> ${escapeHtml(card.difficultyAdv)}</div>`;
     (card.attacks || []).forEach(a => {
-      html += `<div class="card-line"><b>Attack (${sub(a.atk)}):</b> ${sub(a.name)} — ${sub(a.range)}, ${sub(a.damage)}</div>`;
+      statHtml += `<div class="card-line"><b>Attack (${sub(a.atk)}):</b> ${sub(a.name)} — ${sub(a.range)}, ${sub(a.damage)}</div>`;
     });
 
-    html += `<div class="two-col">
-      <div class="two-col-item">
+    if (hasImage) {
+      // Stacked, not side-by-side, so both stay readable in the narrower column.
+      statHtml += `<div class="two-col-item stacked">
         <div class="two-col-head">Experience</div>
         <div class="two-col-body">${card.experience ? sub(card.experience) : '—'}</div>
-      </div>
-      <div class="two-col-item">
+      </div>`;
+      statHtml += `<div class="two-col-item stacked">
         <div class="two-col-head">Motives &amp; Tactics</div>
         <div class="two-col-body italic">${card.motives ? sub(card.motives) : '—'}</div>
-      </div>
-    </div>`;
+      </div>`;
+    } else {
+      statHtml += `<div class="two-col">
+        <div class="two-col-item">
+          <div class="two-col-head">Experience</div>
+          <div class="two-col-body">${card.experience ? sub(card.experience) : '—'}</div>
+        </div>
+        <div class="two-col-item">
+          <div class="two-col-head">Motives &amp; Tactics</div>
+          <div class="two-col-body italic">${card.motives ? sub(card.motives) : '—'}</div>
+        </div>
+      </div>`;
+    }
   } else {
-    html += `<div class="card-line"><b>Difficulty:</b> ${escapeHtml(card.difficultyEnv)}</div>`;
-    html += `<div class="two-col two-col-single">
-      <div class="two-col-item">
+    statHtml += `<div class="card-line"><b>Difficulty:</b> ${escapeHtml(card.difficultyEnv)}</div>`;
+    if (hasImage) {
+      statHtml += `<div class="two-col-item stacked">
         <div class="two-col-head">Impulses</div>
         <div class="two-col-body italic">${card.impulses ? sub(card.impulses) : '—'}</div>
-      </div>
-    </div>`;
-    if (card.potential) {
-      html += `<div class="card-line"><b>Potential Adversaries:</b> ${sub(card.potential)}</div>`;
+      </div>`;
+    } else {
+      statHtml += `<div class="two-col two-col-single">
+        <div class="two-col-item">
+          <div class="two-col-head">Impulses</div>
+          <div class="two-col-body italic">${card.impulses ? sub(card.impulses) : '—'}</div>
+        </div>
+      </div>`;
     }
+    if (card.potential) {
+      statHtml += `<div class="card-line"><b>Potential Adversaries:</b> ${sub(card.potential)}</div>`;
+    }
+  }
+
+  if (hasImage) {
+    const w = card.imageWidth || 170;
+    const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
+    const statCol = `<div class="stat-col">${statHtml}</div>`;
+    html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
+  } else {
+    html += statHtml;
   }
 
   if (card.features.length) {
