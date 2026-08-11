@@ -82,6 +82,22 @@
             <option value="wondrous">Wondrous Item</option>
           </select>
         </label>
+        <label class="item-only" hidden>Weapon/Armor Type (if applicable)
+          <input type="text" data-field="itemTypeName" list="weapon-armor-type-list" placeholder="Longsword, Studded Leather, etc.">
+        </label>
+        <datalist id="weapon-armor-type-list">
+          <option value="Dagger"><option value="Shortsword"><option value="Longsword"><option value="Greatsword">
+          <option value="Rapier"><option value="Scimitar"><option value="Mace"><option value="Warhammer">
+          <option value="Battleaxe"><option value="Greataxe"><option value="Spear"><option value="Halberd">
+          <option value="Quarterstaff"><option value="Flail"><option value="Whip"><option value="Shortbow">
+          <option value="Longbow"><option value="Light Crossbow"><option value="Heavy Crossbow"><option value="Sling">
+          <option value="Padded"><option value="Leather"><option value="Studded Leather"><option value="Hide">
+          <option value="Chain Shirt"><option value="Scale Mail"><option value="Breastplate"><option value="Half Plate">
+          <option value="Ring Mail"><option value="Chain Mail"><option value="Splint"><option value="Plate"><option value="Shield">
+        </datalist>
+        <label class="item-only" hidden>Base Stats
+          <input type="text" data-field="itemBaseStats" placeholder="e.g. 1d8 slashing, or AC 12 + Dex modifier">
+        </label>
         <label class="item-only" hidden>Rarity
           <select data-field="itemRarity">
             <option value="Common">Common</option>

@@ -1,6 +1,7 @@
-// Original word pools for procedurally generating magic item concepts.
-// Nothing here reproduces named items, effects, or tables from any
-// publisher's books — these are original words/phrases combined at random.
+// Original word pools and mechanical baselines for procedurally generating
+// magic item concepts. Nothing here reproduces named items or exact tables
+// from any publisher's books — these are original words/phrases and our own
+// reasonable approximate baseline stats, combined at random.
 
 const ITEM_PREFIXES = [
   'Ashwrought', 'Duskwoven', 'Sunlit', 'Moonsilvered', 'Frostbound', 'Emberkissed',
@@ -24,10 +25,6 @@ const ITEM_ORIGINS = [
 ];
 
 const ITEM_NOUNS = {
-  weapon: ['Blade', 'Dagger', 'Axe', 'Warhammer', 'Longbow', 'Spear', 'Rapier', 'Mace',
-    'Quarterstaff', 'Flail', 'Glaive', 'Scythe', 'Shortsword', 'Crossbow', 'Sickle', 'Halberd', 'Cutlass'],
-  armor: ['Cuirass', 'Gauntlets', 'Greaves', 'Helm', 'Shield', 'Breastplate', 'Pauldrons',
-    'Bracers', 'Warplate', 'Chainshirt', 'Vambraces', 'Faceguard', 'Targe', 'Scaleharness'],
   wearable: ['Amulet', 'Ring', 'Cloak', 'Boots', 'Belt', 'Circlet', 'Brooch', 'Talisman',
     'Pendant', 'Mask', 'Sash', 'Charm', 'Bracelet', 'Earring', 'Diadem', 'Signet', 'Locket'],
   consumable: ['Draught', 'Elixir', 'Tonic', 'Powder', 'Vial', 'Tincture', 'Salve', 'Philtre',
@@ -36,8 +33,67 @@ const ITEM_NOUNS = {
     'Coin', 'Dice', 'Flute', 'Lockbox', 'Idol', 'Prism', 'Censer', 'Quill', 'Inkwell']
 };
 
-// Effect phrases grouped into 5 power tiers (1 = weakest/most common, 5 = strongest/rarest).
-// Each phrase can be used as-is or combined with a charges/uses clause by the caller.
+// Real baseline weapon stats (our own reasonable approximation of common fantasy
+// weapon conventions — die, damage type). Used both by the randomizer and by the
+// "look up base stats for this weapon" helper in the form.
+const WEAPON_TYPES = [
+  { name: 'Dagger', die: '1d4', type: 'piercing' },
+  { name: 'Shortsword', die: '1d6', type: 'piercing' },
+  { name: 'Longsword', die: '1d8', type: 'slashing' },
+  { name: 'Greatsword', die: '2d6', type: 'slashing' },
+  { name: 'Rapier', die: '1d8', type: 'piercing' },
+  { name: 'Scimitar', die: '1d6', type: 'slashing' },
+  { name: 'Mace', die: '1d6', type: 'bludgeoning' },
+  { name: 'Warhammer', die: '1d8', type: 'bludgeoning' },
+  { name: 'Battleaxe', die: '1d8', type: 'slashing' },
+  { name: 'Greataxe', die: '1d12', type: 'slashing' },
+  { name: 'Spear', die: '1d6', type: 'piercing' },
+  { name: 'Halberd', die: '1d10', type: 'slashing' },
+  { name: 'Quarterstaff', die: '1d6', type: 'bludgeoning' },
+  { name: 'Flail', die: '1d8', type: 'bludgeoning' },
+  { name: 'Whip', die: '1d4', type: 'slashing' },
+  { name: 'Shortbow', die: '1d6', type: 'piercing' },
+  { name: 'Longbow', die: '1d8', type: 'piercing' },
+  { name: 'Light Crossbow', die: '1d8', type: 'piercing' },
+  { name: 'Heavy Crossbow', die: '1d10', type: 'piercing' },
+  { name: 'Sling', die: '1d4', type: 'bludgeoning' }
+];
+
+// Real baseline armor stats (our own reasonable approximation). acText is
+// written to be usable across systems without assuming one exact formula.
+const ARMOR_TYPES = [
+  { name: 'Padded', acText: 'base AC 11 + Dex modifier' },
+  { name: 'Leather', acText: 'base AC 11 + Dex modifier' },
+  { name: 'Studded Leather', acText: 'base AC 12 + Dex modifier' },
+  { name: 'Hide', acText: 'base AC 12 + Dex modifier (max 2)' },
+  { name: 'Chain Shirt', acText: 'base AC 13 + Dex modifier (max 2)' },
+  { name: 'Scale Mail', acText: 'base AC 14 + Dex modifier (max 2)' },
+  { name: 'Breastplate', acText: 'base AC 14 + Dex modifier (max 2)' },
+  { name: 'Half Plate', acText: 'base AC 15 + Dex modifier (max 2)' },
+  { name: 'Ring Mail', acText: 'base AC 14' },
+  { name: 'Chain Mail', acText: 'base AC 16' },
+  { name: 'Splint', acText: 'base AC 17' },
+  { name: 'Plate', acText: 'base AC 18' },
+  { name: 'Shield', acText: '+2 AC while carried' }
+];
+
+const DAMAGE_TYPES = ['fire', 'cold', 'lightning', 'acid', 'poison', 'necrotic', 'radiant', 'force', 'thunder', 'psychic'];
+
+// Bonus damage dice added on top of a weapon's base damage, scaled by power tier.
+const WEAPON_BONUS_DICE = { 1: '1d4', 2: '1d6', 3: '2d6', 4: '3d6', 5: '4d8' };
+// Larger dice for a once-per-day area/ranged blast effect (wearables/wondrous items).
+const BLAST_DICE = { 1: '2d6', 2: '3d6', 3: '4d6', 4: '6d6', 5: '8d10' };
+// Flat numeric bonus (attack/damage rolls, or AC), scaled by power tier.
+const FLAT_BONUS = { 1: 1, 2: 1, 3: 2, 4: 2, 5: 3 };
+
+function saveDcForTier(tier) {
+  return 11 + tier;
+}
+
+// Effect phrases for wearable / consumable / wondrous items, grouped by power
+// tier (1 = weakest/most common, 5 = strongest/rarest). Use {dice}, {type},
+// and {dc} placeholders — these get filled with a concrete damage type, dice
+// notation, and save DC at generation time so nothing reads as vague.
 const ITEM_EFFECTS = {
   1: [
     'Grants a faint, steady light in a 10-foot radius when the command word is spoken.',
@@ -45,10 +101,10 @@ const ITEM_EFFECTS = {
     'Keeps its wearer comfortably warm or cool regardless of the weather.',
     'Mends a single small tear, crack, or fray once per day, as if new.',
     'Faintly hums when a hidden door or trap lies within 10 feet.',
-    'Never needs cleaning and always looks freshly presentable.',
     'Grants advantage on one check to recall local rumors or directions, once per day.',
     'Softens the sound of its wearer\'s footsteps by half, always active.',
     'Once per day, calms a single frightened animal that can see it.',
+    'Once per day, the item can deal {dice} {type} damage to a single creature it touches.',
     'Floats gently to the ground instead of falling if dropped or knocked loose.'
   ],
   2: [
@@ -56,7 +112,7 @@ const ITEM_EFFECTS = {
     'Grants resistance to one chosen minor discomfort (extreme heat, extreme cold, or bright light).',
     'Once per short rest, sheds a burst of light bright enough to blind a nearby foe briefly.',
     'The wearer can breathe comfortably in thin air or light smoke for up to an hour per day.',
-    'Grants a faint danger sense — a brief tingling warning before an ambush, once per day.',
+    'Once per short rest, unleash a {dice} {type} damage bolt at a target within 30 feet.',
     'Once per day, the item can be used to send a short whispered message to a person the user has met.',
     'The wielder\'s grip cannot be forced open against their will.',
     'Once per short rest, grants a short burst of speed, covering ground faster than normal.',
@@ -67,31 +123,31 @@ const ITEM_EFFECTS = {
     'Once per day, the item can shrug off a single blow that would otherwise connect.',
     'Grants a limited number of charges that restore a small measure of vitality once per day.',
     'The wielder can call the item to their hand from a short distance, up to three times per day.',
-    'Once per day, the item conceals its bearer from a single instance of magical detection.',
+    'Once per day, the item deals {dice} {type} damage to each creature within 10 feet (DC {dc} save for half).',
     'Grants resistance to one type of harm chosen when the item is first attuned or bonded.',
     'Once per short rest, the item lets its bearer act with unusual speed for a few moments.',
-    'The item stores a small number of charges, each able to fuel a minor burst of its granted effect.',
+    'The item stores a small number of charges, each able to fuel a {dice} {type} damage blast at a target within 60 feet.',
     'Once per day, it can ward off a single instance of exhaustion or lingering fatigue.',
     'Grants the bearer a hazy, useful glimpse of the immediate future once per day.',
     'The item can briefly render its bearer difficult to pinpoint by sound or scent, a few times per day.'
   ],
   4: [
-    'The item stores several charges, each capable of unleashing a significant burst of its bound power.',
+    'The item stores several charges, each able to unleash a {dice} {type} damage blast at a target within 90 feet.',
     'Once per day, the bearer can shrug off an effect that would otherwise incapacitate them.',
     'Grants the bearer the ability to move through a solid obstacle once per day, briefly and carefully.',
     'The item can restore a companion from the brink of death, once, before it must recover its power.',
     'Once per day, the bearer can turn aside a serious blow entirely, taking no harm from it.',
-    'Grants resistance to nearly all harm of one chosen type for as long as the item is worn.',
-    'The item\'s charges can be spent to duplicate a powerful, rare effect, though they recover slowly.',
+    'Grants resistance to {type} damage for as long as the item is worn.',
+    'Once per day, the item unleashes a {dice} {type} damage burst in a 20-foot radius (DC {dc} save for half).',
     'Once per day, the bearer can vanish from sight for a short while, even under scrutiny.',
     'The item allows its bearer to communicate with a chosen kind of creature as if sharing a language.',
     'Once per week, the item can undo a single significant injury or affliction entirely.'
   ],
   5: [
-    'The item\'s power is nearly limitless — its charges regenerate fully with each new day.',
+    'The item\'s charges regenerate fully with each new day, each able to unleash a {dice} {type} damage blast at a target within 120 feet.',
     'Once per day, the bearer can achieve something normally thought impossible, at great cost.',
     'The item can be called upon, once, to reverse a single moment that has already passed.',
-    'Grants the bearer command over a chosen domain (fire, shadow, growth, or similar) in a limited but potent way.',
+    'Once per day, the item can call down a {dice} {type} damage strike on a chosen point within sight (DC {dc} save for half).',
     'The item\'s presence alone reshapes the immediate area around it in a way tied to its nature.',
     'Once per year, the item can grant a wish-like effect of modest, GM-approved scope.',
     'The bearer becomes exceptionally difficult to kill while the item remains active and bonded.',
@@ -113,36 +169,81 @@ function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function pickMany(arr, n) {
-  const copy = arr.slice();
-  const out = [];
-  while (out.length < n && copy.length) {
-    out.push(copy.splice(Math.floor(Math.random() * copy.length), 1)[0]);
-  }
-  return out;
+function clampTier(t) {
+  return Math.max(1, Math.min(5, Math.round(t) || 1));
+}
+
+// Looks up known base stats for a typed-in weapon or armor name (case-insensitive,
+// partial match). Returns null if nothing matches, so callers can leave a custom
+// name's stats untouched rather than overwriting them.
+function lookupWeaponStats(name) {
+  const key = (name || '').toLowerCase().trim();
+  const found = WEAPON_TYPES.find(w => w.name.toLowerCase() === key) ||
+    WEAPON_TYPES.find(w => key.includes(w.name.toLowerCase()));
+  return found ? `${found.die} ${found.type}` : null;
+}
+
+function lookupArmorStats(name) {
+  const key = (name || '').toLowerCase().trim();
+  const found = ARMOR_TYPES.find(a => a.name.toLowerCase() === key) ||
+    ARMOR_TYPES.find(a => key.includes(a.name.toLowerCase()));
+  return found ? found.acText : null;
 }
 
 // category: 'weapon' | 'armor' | 'wearable' | 'consumable' | 'wondrous'
 // powerTier: 1-5 (how strong the generated effect should feel)
 // chargesLikely: whether this generation should lean toward including a charges clause
+// Returns { name, description, itemType, baseStats, effect, charges }
 function generateItemConcept(category, powerTier, chargesLikely) {
-  const cat = ITEM_NOUNS[category] ? category : 'wondrous';
-  const noun = pick(ITEM_NOUNS[cat]);
+  const tier = clampTier(powerTier);
   const prefix = pick(ITEM_PREFIXES);
   const origin = pick(ITEM_ORIGINS);
-  const tier = Math.max(1, Math.min(5, Math.round(powerTier) || 1));
-
-  const name = `${prefix} ${noun}`;
   const description = `Said to have come from ${origin}.`;
+  const charges = chargesLikely ? pick(CHARGE_PHRASES) : '';
 
-  const effectCount = tier >= 4 ? 2 : 1;
-  const effects = pickMany(ITEM_EFFECTS[tier], effectCount);
-  let effect = effects.join(' ');
-
-  let charges = '';
-  if (chargesLikely) {
-    charges = pick(CHARGE_PHRASES);
+  if (category === 'weapon') {
+    const w = pick(WEAPON_TYPES);
+    const name = `${prefix} ${w.name}`;
+    const baseStats = `${w.die} ${w.type}`;
+    let effect;
+    if (tier >= 3 || Math.random() < 0.6) {
+      const dmgType = pick(DAMAGE_TYPES);
+      const dice = WEAPON_BONUS_DICE[tier];
+      effect = `Deals an additional ${dice} ${dmgType} damage on a hit.`;
+      if (tier >= 3 && Math.random() < 0.5) {
+        effect += ` Grants a +${FLAT_BONUS[tier]} bonus to attack and damage rolls.`;
+      }
+    } else {
+      effect = `Grants a +${FLAT_BONUS[tier]} bonus to attack and damage rolls.`;
+    }
+    return { name, description, itemType: w.name, baseStats, effect, charges };
   }
 
-  return { name, description, effect, charges };
+  if (category === 'armor') {
+    const a = pick(ARMOR_TYPES);
+    const name = `${prefix} ${a.name}`;
+    const baseStats = a.acText;
+    let effect;
+    if (tier >= 2 && Math.random() < 0.5) {
+      const dmgType = pick(DAMAGE_TYPES);
+      effect = tier >= 4
+        ? `Grants immunity to ${dmgType} damage while worn.`
+        : `Grants resistance to ${dmgType} damage while worn.`;
+    } else {
+      effect = `Grants a +${FLAT_BONUS[tier]} bonus to AC.`;
+    }
+    return { name, description, itemType: a.name, baseStats, effect, charges };
+  }
+
+  // wearable / consumable / wondrous — no inherent base stats
+  const noun = pick(ITEM_NOUNS[category] || ITEM_NOUNS.wondrous);
+  const name = `${prefix} ${noun}`;
+  const dmgType = pick(DAMAGE_TYPES);
+  const dice = BLAST_DICE[tier];
+  const dc = saveDcForTier(tier);
+  const effect = pick(ITEM_EFFECTS[tier])
+    .replace(/\{dice\}/g, dice)
+    .replace(/\{type\}/g, dmgType)
+    .replace(/\{dc\}/g, dc);
+  return { name, description, itemType: '', baseStats: '', effect, charges };
 }

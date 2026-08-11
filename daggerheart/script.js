@@ -29,6 +29,8 @@ function newCard(overrides = {}) {
     imageAlign: 'right',
     imageWidth: 170,
     itemCategory: 'weapon',
+    itemTypeName: '',
+    itemBaseStats: '',
     itemRarity: 'Common',
     itemEffect: '',
     itemCharges: null,
@@ -111,6 +113,8 @@ function migrateCard(card) {
   if (!card.imageAlign) card.imageAlign = 'right';
   if (!card.imageWidth) card.imageWidth = 170;
   if (!card.itemCategory) card.itemCategory = 'weapon';
+  if (card.itemTypeName === undefined) card.itemTypeName = '';
+  if (card.itemBaseStats === undefined) card.itemBaseStats = '';
   if (!card.itemRarity) card.itemRarity = 'Common';
   if (card.itemEffect === undefined) card.itemEffect = '';
   if (card.itemCharges === undefined) card.itemCharges = null;
@@ -233,12 +237,27 @@ $('randomize-item').addEventListener('click', () => {
   const concept = generateItemConcept(card.itemCategory, powerTier, chargesLikely);
   card.name = concept.name;
   card.description = concept.description;
+  card.itemTypeName = concept.itemType;
+  card.itemBaseStats = concept.baseStats;
   card.itemEffect = concept.effect;
   card.itemCharges = chargesLikely ? (powerTier + 1) : null;
   card.itemRecharge = chargesLikely ? concept.charges : '';
   renderForm();
   renderCard();
   saveDeck();
+});
+
+// Auto-fill Base Stats when the user types/picks a recognized weapon or armor name.
+document.querySelector('[data-field="itemTypeName"]').addEventListener('input', (e) => {
+  const card = currentCard();
+  const lookup = card.itemCategory === 'armor' ? lookupArmorStats(e.target.value) : lookupWeaponStats(e.target.value);
+  if (lookup) {
+    card.itemBaseStats = lookup;
+    const baseStatsInput = document.querySelector('[data-field="itemBaseStats"]');
+    if (baseStatsInput) baseStatsInput.value = lookup;
+    renderCard();
+    saveDeck();
+  }
 });
 
 document.getElementById('statblock-form').addEventListener('input', (e) => {
@@ -565,6 +584,10 @@ function itemCardInnerHtml(card) {
       <span class="trait-chip">${escapeHtml(card.itemRarity)}</span>
     </div>`;
   if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
+
+  if (card.itemTypeName || card.itemBaseStats) {
+    html += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || escapeHtml(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
+  }
 
   html += `<div class="section-divider">Effect</div>`;
   html += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;

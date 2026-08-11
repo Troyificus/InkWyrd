@@ -65,6 +65,8 @@ function newCard(overrides = {}) {
       { category: 'Ability', name: 'Attack of Opportunity', text: 'Reaction triggered by an adjacent enemy using a manipulate action, moving out of a reach, or making a ranged attack.' }
     ],
     itemCategory: 'weapon',
+    itemTypeName: '',
+    itemBaseStats: '',
     itemRarity: 'Common',
     itemLevel: 1,
     bulk: 'L',
@@ -132,6 +134,8 @@ function migrateCard(card) {
   if (!card.imageWidth) card.imageWidth = 170;
   if (!card.cardType) card.cardType = 'creature';
   if (!card.itemCategory) card.itemCategory = 'weapon';
+  if (card.itemTypeName === undefined) card.itemTypeName = '';
+  if (card.itemBaseStats === undefined) card.itemBaseStats = '';
   if (!card.itemRarity) card.itemRarity = 'Common';
   if (card.itemLevel === undefined) card.itemLevel = 1;
   if (card.bulk === undefined) card.bulk = 'L';
@@ -213,6 +217,8 @@ $('randomize-item').addEventListener('click', () => {
   const concept = generateItemConcept(card.itemCategory, powerTier, chargesLikely);
   card.name = concept.name;
   card.itemDescription = concept.description;
+  card.itemTypeName = concept.itemType;
+  card.itemBaseStats = concept.baseStats;
   card.itemEffect = concept.effect;
   card.itemCharges = chargesLikely ? (powerTier + 1) : null;
   card.itemRecharge = chargesLikely ? concept.charges : '';
@@ -220,6 +226,18 @@ $('randomize-item').addEventListener('click', () => {
   renderForm();
   renderCard();
   saveDeck();
+});
+
+document.querySelector('[data-field="itemTypeName"]').addEventListener('input', (e) => {
+  const card = currentCard();
+  const lookup = card.itemCategory === 'armor' ? lookupArmorStats(e.target.value) : lookupWeaponStats(e.target.value);
+  if (lookup) {
+    card.itemBaseStats = lookup;
+    const baseStatsInput = document.querySelector('[data-field="itemBaseStats"]');
+    if (baseStatsInput) baseStatsInput.value = lookup;
+    renderCard();
+    saveDeck();
+  }
 });
 
 function updateHints() {
@@ -583,6 +601,10 @@ function itemCardInnerHtml(card) {
       ${card.price ? `<span class="trait-chip">${escapeHtml(card.price)}</span>` : ''}
     </div>`;
   if (card.itemDescription) html += `<div class="card-desc">${sub(card.itemDescription)}</div>`;
+
+  if (card.itemTypeName || card.itemBaseStats) {
+    html += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || escapeHtml(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
+  }
 
   if (card.itemActivate) html += `<div class="card-line"><b>Activate</b> ${sub(card.itemActivate)}</div>`;
 
