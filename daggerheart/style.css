@@ -1,10 +1,10 @@
 :root {
-  --bg: #1a1510;
-  --panel: #241d16;
-  --panel-border: #4d4130;
+  --bg: #170f1e;
+  --panel: #21162f;
+  --panel-border: #4a3760;
   --text: #e8ddc7;
   --text-dim: #a3937a;
-  --accent: #8a2727;
+  --accent: #6b3fa0;
   --gold: #a9843f;
   --mono: 'Courier New', monospace;
 }
@@ -14,7 +14,7 @@
 body {
   margin: 0;
   background:
-    radial-gradient(ellipse at top, #221b13 0%, #171209 70%);
+    radial-gradient(ellipse at top, #2a1f3d 0%, #170f1e 70%);
   color: var(--text);
   font-family: 'EB Garamond', Georgia, serif;
 }
@@ -537,7 +537,7 @@ textarea { resize: vertical; }
   display: flex;
   justify-content: center;
   padding: 24px;
-  background: #100c07;
+  background: var(--bg);
   border: 1px solid var(--panel-border);
 }
 

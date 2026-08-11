@@ -1,109 +1,139 @@
 :root {
-  --bg: #1a1510;
-  --panel: #241d16;
-  --panel-border: #4d4130;
-  --text: #e8ddc7;
-  --text-dim: #a3937a;
+  --bone: #f2ead9;
+  --bone-dim: #d9cdae;
+  --ink: #2a2216;
+  --ink-dim: #6b5f47;
   --gold: #a9843f;
+  --cream: #f3ead8;
+
+  --dh-color: #4b2e73;
+  --dh-color-dark: #3a2359;
+  --dnd-color: #7a1f2b;
+  --dnd-color-dark: #601721;
+  --pf-color: #1e5c3f;
+  --pf-color-dark: #16452f;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  background: radial-gradient(ellipse at top, #221b13 0%, #171209 70%);
-  color: var(--text);
+  background: var(--bone);
+  color: var(--ink);
   font-family: 'EB Garamond', Georgia, serif;
   min-height: 100vh;
 }
 
 .hub-header {
-  padding: 60px 20px 30px;
+  padding: 56px 20px 28px;
   text-align: center;
-  border-bottom: 1px solid var(--panel-border);
+  border-bottom: 3px solid var(--gold);
 }
 
 .hub-header h1 {
   margin: 0;
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 700;
-  font-size: 2.8rem;
+  font-size: 2.9rem;
   letter-spacing: 1.5px;
+  color: var(--ink);
 }
 
 .tagline {
-  color: var(--text-dim);
+  color: var(--ink-dim);
   font-style: italic;
   max-width: 480px;
-  margin: 12px auto 0;
+  margin: 14px auto 0;
   font-size: 1.05rem;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
-.hub-grid {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 40px 20px 60px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 22px;
+.hub-columns {
+  display: flex;
+  min-height: 68vh;
+  border-bottom: 3px solid var(--gold);
 }
 
-.system-card {
-  display: block;
-  background: var(--panel);
-  border: 1px solid var(--panel-border);
-  padding: 26px 24px 22px;
-  text-decoration: none;
-  color: var(--text);
+.hub-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 32px;
+  color: var(--cream);
+  border-left: 3px solid var(--gold);
+  border-right: 3px solid var(--gold);
   position: relative;
-  overflow: hidden;
-  transition: border-color 0.15s ease, transform 0.15s ease;
 }
 
-.system-card:hover {
-  border-color: var(--card-accent, var(--gold));
-  transform: translateY(-2px);
+.hub-col + .hub-col {
+  border-left: none;
 }
 
-.system-card-accent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--card-accent, var(--gold));
-}
+.hub-col-daggerheart { background: linear-gradient(160deg, var(--dh-color) 0%, var(--dh-color-dark) 100%); }
+.hub-col-dnd5e { background: linear-gradient(160deg, var(--dnd-color) 0%, var(--dnd-color-dark) 100%); }
+.hub-col-pathfinder { background: linear-gradient(160deg, var(--pf-color) 0%, var(--pf-color-dark) 100%); }
 
-.system-card h2 {
+.hub-col h2 {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 700;
-  font-size: 1.5rem;
-  margin: 10px 0 8px;
+  font-size: 2.1rem;
+  margin: 0 0 16px;
   letter-spacing: 0.5px;
 }
 
-.system-card p {
+.hub-col-desc {
   font-size: 0.92rem;
-  color: var(--text-dim);
-  line-height: 1.5;
-  margin: 0 0 16px;
+  line-height: 1.6;
+  opacity: 0.9;
+  max-width: 320px;
+  margin: 0 0 28px;
 }
 
-.enter-link {
-  font-size: 0.78rem;
+.hub-col-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 260px;
+}
+
+.hub-link {
+  display: block;
+  padding: 12px 18px;
+  border: 1.5px solid var(--cream);
+  color: var(--cream);
+  text-decoration: none;
+  font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: var(--card-accent, var(--gold));
+  transition: background 0.15s ease, color 0.15s ease;
 }
+
+.hub-link:hover {
+  background: var(--cream);
+}
+
+.hub-col-daggerheart .hub-link:hover { color: var(--dh-color-dark); }
+.hub-col-dnd5e .hub-link:hover { color: var(--dnd-color-dark); }
+.hub-col-pathfinder .hub-link:hover { color: var(--pf-color-dark); }
 
 .hub-footer {
   text-align: center;
-  color: var(--text-dim);
+  color: var(--ink-dim);
   font-size: 0.75rem;
-  padding: 24px 20px 40px;
+  padding: 22px 20px 36px;
   font-style: italic;
   max-width: 680px;
   margin: 0 auto;
   line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+  .hub-columns { flex-direction: column; min-height: auto; }
+  .hub-col { border-left: none; border-right: none; border-top: 3px solid var(--gold); padding: 40px 24px; }
+  .hub-col:first-child { border-top: none; }
+  .hub-col + .hub-col { border-top: 3px solid var(--gold); }
 }
