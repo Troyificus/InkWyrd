@@ -169,7 +169,11 @@ $('randomize-item').addEventListener('click', () => {
   card.itemBaseStats = concept.baseStats;
   card.itemRange = concept.range || '';
   card.itemEffect = concept.effect;
-  card.itemUsage = pickDHUsage(powerTier);
+  // A weapon's bonus damage or an armor's resistance is always active while
+  // worn/wielded — only active-use items (wearable/consumable/wondrous) get
+  // a rest/session usage restriction.
+  const isPassiveCategory = card.itemCategory === 'weapon' || card.itemCategory === 'armor';
+  card.itemUsage = isPassiveCategory ? '' : pickDHUsage(powerTier);
   card.itemTrigger = '';
   card.itemFeatureName = '';
   renderForm();
@@ -205,6 +209,11 @@ function escapeHtml(str) {
   return (str || '').toString().replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
+}
+
+function capitalize(str) {
+  const s = (str || '').toString();
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 function renderVariableInputs() {
@@ -350,13 +359,13 @@ function cardInnerHtml(card) {
 
   html += `<div class="card-name" style="padding-${cornerSide}:70px">${escapeHtml(card.name)}</div>`;
   html += `<div class="trait-chip-row">
-      <span class="trait-chip">${escapeHtml(card.itemCategory)}</span>
+      <span class="trait-chip">${capitalize(card.itemCategory)}</span>
       <span class="trait-chip">${escapeHtml(card.itemRarity)}</span>
     </div>`;
   if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
 
   if (card.itemTypeName || card.itemBaseStats) {
-    html += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || escapeHtml(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
+    html += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
   }
   if (card.itemRange) {
     html += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;

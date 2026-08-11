@@ -249,7 +249,11 @@ $('randomize-item').addEventListener('click', () => {
   card.itemBaseStats = concept.baseStats;
   card.itemRange = concept.range || '';
   card.itemEffect = concept.effect;
-  card.itemFrequency = pickPF2EFrequency(powerTier);
+  // A weapon's bonus damage or an armor's resistance is a passive property
+  // (rune-like), always active — only active-use items (wearable/consumable/
+  // wondrous) get a Frequency/Activate entry.
+  const isPassiveCategory = card.itemCategory === 'weapon' || card.itemCategory === 'armor';
+  card.itemFrequency = isPassiveCategory ? '' : pickPF2EFrequency(powerTier);
   card.itemActivate = card.itemFrequency ? '1 Action (command)' : '';
   card.itemUsage = card.itemCategory === 'weapon' ? 'held in 1 hand' : card.itemCategory === 'armor' ? 'worn' : 'worn';
   card.itemTrigger = '';
@@ -328,6 +332,11 @@ function escapeHtml(str) {
   return (str || '').toString().replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
+}
+
+function capitalize(str) {
+  const s = (str || '').toString();
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 // ===== Strikes (attacks) UI =====
@@ -635,7 +644,7 @@ function itemCardInnerHtml(card) {
 
   html += `<div class="card-name" style="padding-${cornerSide}:70px">${escapeHtml(card.name)}</div>`;
   html += `<div class="trait-chip-row">
-      <span class="trait-chip">${escapeHtml(card.itemCategory)}</span>
+      <span class="trait-chip">${capitalize(card.itemCategory)}</span>
       <span class="trait-chip">${escapeHtml(card.itemRarity)}</span>
       ${card.bulk ? `<span class="trait-chip">Bulk ${escapeHtml(card.bulk)}</span>` : ''}
       ${card.price ? `<span class="trait-chip">${escapeHtml(card.price)}</span>` : ''}
@@ -643,7 +652,7 @@ function itemCardInnerHtml(card) {
   if (card.itemDescription) html += `<div class="card-desc">${sub(card.itemDescription)}</div>`;
 
   if (card.itemTypeName || card.itemBaseStats) {
-    html += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || escapeHtml(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
+    html += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
   }
   if (card.itemRange) {
     html += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;

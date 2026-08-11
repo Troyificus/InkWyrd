@@ -682,6 +682,16 @@ textarea { resize: vertical; }
   line-height: 1.1;
 }
 
+.trait-chip-row { clear: both; display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.trait-chip {
+  border: 1px solid var(--card-accent, #8a2727);
+  padding: 2px 9px;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.85;
+}
+
 .card-kind {
   font-size: 0.68rem;
   text-transform: uppercase;

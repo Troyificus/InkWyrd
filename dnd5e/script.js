@@ -184,7 +184,11 @@ const RARITY_TIER_5E = { Common: 1, Uncommon: 2, Rare: 3, 'Very Rare': 4, Legend
 $('randomize-item').addEventListener('click', () => {
   const card = currentCard();
   const powerTier = RARITY_TIER_5E[card.itemRarity] || 1;
-  const chargesLikely = powerTier >= 3 && Math.random() < 0.6;
+  // Weapon/armor effects from the shared engine are always passive (bonus
+  // damage on hit, AC bonus, resistance while worn) — they should never
+  // carry a charge/recharge restriction, only active-use items do.
+  const isPassiveCategory = card.itemCategory === 'weapon' || card.itemCategory === 'armor';
+  const chargesLikely = !isPassiveCategory && powerTier >= 3 && Math.random() < 0.6;
   const concept = generateItemConcept(card.itemCategory, powerTier, chargesLikely);
   card.name = concept.name;
   card.itemDescription = concept.description;
@@ -277,6 +281,11 @@ function escapeHtml(str) {
   return (str || '').toString().replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
+}
+
+function capitalize(str) {
+  const s = (str || '').toString();
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 // ===== Ability modifiers =====
@@ -563,19 +572,19 @@ function itemCardInnerHtml(card) {
 
   html += `<div class="corner-tag corner-${cornerSide}">
       <div class="corner-tier">${escapeHtml(card.itemRarity)}</div>
-      <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(card.itemCategory)}</div>
+      <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${capitalize(card.itemCategory)}</div>
     </div>`;
 
   html += `<div class="card-name" style="padding-${cornerSide}:70px">${escapeHtml(card.name)}</div>`;
   html += `<div class="trait-chip-row">
-      <span class="trait-chip">${escapeHtml(card.itemCategory)}</span>
+      <span class="trait-chip">${capitalize(card.itemCategory)}</span>
       <span class="trait-chip">${escapeHtml(card.itemRarity)}</span>
       ${card.requiresAttunement ? `<span class="trait-chip">Requires Attunement${card.attunementRequirement ? ' ' + escapeHtml(card.attunementRequirement) : ''}</span>` : ''}
     </div>`;
   if (card.itemDescription) html += `<div class="card-desc">${sub(card.itemDescription)}</div>`;
 
   if (card.itemTypeName || card.itemBaseStats) {
-    html += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || escapeHtml(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
+    html += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
   }
   if (card.itemRange) {
     html += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
