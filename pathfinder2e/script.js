@@ -7,6 +7,29 @@ function fmtMod(n) {
   return v >= 0 ? `+${v}` : `${v}`;
 }
 
+// ===== Level-based guidance (approximate ballpark ranges, our own derivation —
+// not a reproduction of any publisher's specific creature-building tables) =====
+function levelGuidance(levelVal) {
+  const level = Number(levelVal) || 0;
+  const ac = 16 + level;
+  const hpMid = Math.round(16 * (level + 2));
+  const hpLow = Math.round(hpMid * 0.8);
+  const hpHigh = Math.round(hpMid * 1.2);
+  const baseline = level + 8;
+  const strikeBonus = level + 9;
+  const dmgMid = Math.max(2, Math.round(hpMid / 4));
+  const dmgLow = Math.round(dmgMid * 0.85);
+  const dmgHigh = Math.round(dmgMid * 1.15);
+  return { level, ac, hpLow, hpHigh, baseline, strikeBonus, dmgLow, dmgHigh };
+}
+
+function hintClass(value, low, high) {
+  const v = Number(value);
+  if (!Number.isFinite(v)) return '';
+  if (v < low || v > high) return 'field-hint warn';
+  return 'field-hint';
+}
+
 // ===== Card data model =====
 function newCard(overrides = {}) {
   return Object.assign({
@@ -144,6 +167,39 @@ function renderForm() {
   renderAttackInputs();
   renderVariableInputs();
   renderImagePreview();
+  updateHints();
+}
+
+function updateHints() {
+  const card = currentCard();
+  const g = levelGuidance(card.level);
+
+  const set = (id, text, value, low, high) => {
+    const el = $(id);
+    if (!el) return;
+    el.textContent = text;
+    el.className = hintClass(value, low, high);
+  };
+
+  set('hint-ac', `Typical for level ${g.level}: around AC ${g.ac}`, parseInt(card.ac, 10), g.ac - 1, g.ac + 1);
+  set('hint-hp', `Typical for level ${g.level}: roughly ${g.hpLow}–${g.hpHigh} HP`, parseInt(card.hp, 10), g.hpLow, g.hpHigh);
+  set('hint-perception', `Moderate baseline for level ${g.level}: around +${g.baseline}`, parseInt(String(card.perception).replace('+', ''), 10), g.baseline - 1, g.baseline + 2);
+  set('hint-fort', `Moderate baseline: around +${g.baseline}`, parseInt(String(card.fort).replace('+', ''), 10), g.baseline - 2, g.baseline + 2);
+  set('hint-ref', `Moderate baseline: around +${g.baseline}`, parseInt(String(card.ref).replace('+', ''), 10), g.baseline - 2, g.baseline + 2);
+  set('hint-will', `Moderate baseline: around +${g.baseline}`, parseInt(String(card.will).replace('+', ''), 10), g.baseline - 2, g.baseline + 2);
+
+  document.querySelectorAll('[data-strike-hint]').forEach(el => {
+    const idx = +el.dataset.strikeIdx;
+    const a = card.attacks[idx];
+    if (!a) return;
+    if (el.dataset.strikeHint === 'bonus') {
+      el.textContent = `Typical: around +${g.strikeBonus}`;
+      el.className = hintClass(parseInt(String(a.bonus).replace('+', ''), 10), g.strikeBonus - 1, g.strikeBonus + 1);
+    } else {
+      el.textContent = `Typical hit: roughly ${g.dmgLow}–${g.dmgHigh} damage`;
+      el.className = 'field-hint';
+    }
+  });
 }
 
 document.getElementById('statblock-form').addEventListener('input', (e) => {
@@ -154,6 +210,7 @@ document.getElementById('statblock-form').addEventListener('input', (e) => {
   card[field] = el.type === 'number' ? Number(el.value) : el.value;
   if (field === 'name') renderDeckList();
   renderCard();
+  updateHints();
   saveDeck();
 });
 
@@ -193,14 +250,15 @@ function renderAttackInputs() {
             </select>
           </label>
           <label>Name <input type="text" data-idx="${i}" data-key="name" class="attack-input" value="${escapeHtml(a.name)}"></label>
-          <label>Bonus <input type="text" data-idx="${i}" data-key="bonus" class="attack-input" value="${escapeHtml(a.bonus)}"></label>
-          <label>Damage <input type="text" data-idx="${i}" data-key="damage" class="attack-input" value="${escapeHtml(a.damage)}"></label>
+          <label>Bonus <input type="text" data-idx="${i}" data-key="bonus" class="attack-input" value="${escapeHtml(a.bonus)}"><span class="field-hint" data-strike-hint="bonus" data-strike-idx="${i}"></span></label>
+          <label>Damage <input type="text" data-idx="${i}" data-key="damage" class="attack-input" value="${escapeHtml(a.damage)}"><span class="field-hint" data-strike-hint="damage" data-strike-idx="${i}"></span></label>
         </div>
       </div>
     `;
     container.appendChild(row);
   });
   autoOpenAttackIdx = null;
+  updateHints();
 
   container.querySelectorAll('.attack-input').forEach(inp => {
     const sync = (e) => {
@@ -213,6 +271,7 @@ function renderAttackInputs() {
         summaryEl.innerHTML = `${escapeHtml(a.name) || '(unnamed)'} <span class="summary-type">— ${escapeHtml(a.type)}</span>`;
       }
       renderCard();
+      updateHints();
       saveDeck();
     };
     inp.addEventListener('input', sync);

@@ -158,6 +158,47 @@ function renderForm() {
   renderAttackInputs();
   renderVariableInputs();
   renderImagePreview();
+  updateHints();
+}
+
+function updateHints() {
+  const card = currentCard();
+  if (card.cardType !== 'adversary') {
+    ['hint-difficulty', 'hint-major', 'hint-severe', 'hint-hp', 'hint-stress'].forEach(id => {
+      const el = $(id);
+      if (el) el.textContent = '';
+    });
+    document.querySelectorAll('[data-attack-hint]').forEach(el => el.textContent = '');
+    return;
+  }
+  const g = tierGuidance(card.tier);
+
+  const set = (id, text, value, low, high) => {
+    const el = $(id);
+    if (!el) return;
+    el.textContent = text;
+    el.className = hintClass(value, low, high);
+  };
+
+  set('hint-difficulty', `Typical for Tier ${card.tier}: ${g.difficultyLow}–${g.difficultyHigh}`, card.difficultyAdv, g.difficultyLow, g.difficultyHigh);
+  set('hint-major', `Typical for Tier ${card.tier}: ${g.majorLow}–${g.majorHigh}`, card.thresholdMajor, g.majorLow, g.majorHigh);
+  set('hint-severe', `Typical for Tier ${card.tier}: ${g.severeLow}–${g.severeHigh}`, card.thresholdSevere, g.severeLow, g.severeHigh);
+  set('hint-hp', `Typical for Tier ${card.tier}: ${g.hpLow}–${g.hpHigh}`, card.hp, g.hpLow, g.hpHigh);
+  set('hint-stress', `Typical for Tier ${card.tier}: ${g.stressLow}–${g.stressHigh}`, card.stress, g.stressLow, g.stressHigh);
+
+  document.querySelectorAll('[data-attack-hint]').forEach(el => {
+    const idx = +el.dataset.attackIdx;
+    const a = card.attacks[idx];
+    if (!a) return;
+    if (el.dataset.attackHint === 'atk') {
+      const atkNum = parseInt(String(a.atk).replace('+', ''), 10);
+      el.textContent = `Typical: +${g.atkLow} to +${g.atkHigh}`;
+      el.className = hintClass(atkNum, g.atkLow, g.atkHigh);
+    } else {
+      el.textContent = `Typical average: ${g.dmgLow}–${g.dmgHigh} damage`;
+      el.className = 'field-hint';
+    }
+  });
 }
 
 document.querySelectorAll('.type-btn').forEach(btn => {
@@ -177,6 +218,7 @@ document.getElementById('statblock-form').addEventListener('input', (e) => {
   card[field] = el.type === 'number' ? Number(el.value) : el.value;
   if (field === 'name') renderDeckList();
   renderCard();
+  updateHints();
   saveDeck();
 });
 
@@ -185,6 +227,26 @@ function escapeHtml(str) {
   return (str || '').toString().replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
+}
+
+// ===== Tier-based guidance (approximate ballpark ranges, our own derivation —
+// not a reproduction of official Daggerheart adversary-building tables) =====
+const TIER_GUIDANCE = {
+  1: { difficultyLow: 11, difficultyHigh: 13, majorLow: 5,  majorHigh: 7,  severeLow: 9,  severeHigh: 12, hpLow: 3, hpHigh: 6,  stressLow: 2, stressHigh: 4, atkLow: 1, atkHigh: 3, dmgLow: 4,  dmgHigh: 8 },
+  2: { difficultyLow: 12, difficultyHigh: 14, majorLow: 7,  majorHigh: 10, severeLow: 13, severeHigh: 17, hpLow: 5, hpHigh: 8,  stressLow: 3, stressHigh: 5, atkLow: 2, atkHigh: 4, dmgLow: 8,  dmgHigh: 14 },
+  3: { difficultyLow: 14, difficultyHigh: 16, majorLow: 11, majorHigh: 15, severeLow: 18, severeHigh: 24, hpLow: 7, hpHigh: 10, stressLow: 4, stressHigh: 6, atkLow: 3, atkHigh: 5, dmgLow: 14, dmgHigh: 20 },
+  4: { difficultyLow: 16, difficultyHigh: 18, majorLow: 16, majorHigh: 22, severeLow: 25, severeHigh: 32, hpLow: 9, hpHigh: 14, stressLow: 5, stressHigh: 8, atkLow: 4, atkHigh: 6, dmgLow: 20, dmgHigh: 30 }
+};
+
+function tierGuidance(tier) {
+  return TIER_GUIDANCE[tier] || TIER_GUIDANCE[1];
+}
+
+function hintClass(value, low, high) {
+  const v = Number(value);
+  if (!Number.isFinite(v)) return '';
+  if (v < low || v > high) return 'field-hint warn';
+  return 'field-hint';
 }
 
 let autoOpenFeatureIdx = null;
@@ -270,14 +332,15 @@ function renderAttackInputs() {
         ${card.attacks.length > 1 ? `<button type="button" class="remove-attack" data-idx="${i}">✕</button>` : ''}
       </div>
       <div class="attack-row-grid">
-        <label>ATK <input type="text" data-idx="${i}" data-key="atk" class="attack-input" value="${escapeHtml(a.atk)}"></label>
+        <label>ATK <input type="text" data-idx="${i}" data-key="atk" class="attack-input" value="${escapeHtml(a.atk)}"><span class="field-hint" data-attack-hint="atk" data-attack-idx="${i}"></span></label>
         <label>Name <input type="text" data-idx="${i}" data-key="name" class="attack-input" value="${escapeHtml(a.name)}"></label>
         <label>Range <input type="text" data-idx="${i}" data-key="range" class="attack-input" value="${escapeHtml(a.range)}"></label>
-        <label>Damage <input type="text" data-idx="${i}" data-key="damage" class="attack-input" value="${escapeHtml(a.damage)}"></label>
+        <label>Damage <input type="text" data-idx="${i}" data-key="damage" class="attack-input" value="${escapeHtml(a.damage)}"><span class="field-hint" data-attack-hint="damage" data-attack-idx="${i}"></span></label>
       </div>
     `;
     container.appendChild(row);
   });
+  updateHints();
 
   container.querySelectorAll('.attack-input').forEach(inp => {
     inp.addEventListener('input', (e) => {
@@ -285,6 +348,7 @@ function renderAttackInputs() {
       const key = e.target.dataset.key;
       currentCard().attacks[idx][key] = e.target.value;
       renderCard();
+      updateHints();
       saveDeck();
     });
   });

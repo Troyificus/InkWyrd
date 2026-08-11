@@ -361,6 +361,28 @@ textarea { resize: vertical; }
   color: var(--gold);
 }
 
+.field-hint {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-top: 3px;
+  font-style: italic;
+  min-height: 1.1em;
+}
+
+.field-hint.warn { color: #c98; }
+
+.guidance-box {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  border: 1px solid var(--panel-border);
+  border-left: 3px solid var(--gold);
+  background: rgba(169, 132, 63, 0.08);
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  line-height: 1.45;
+}
+
 .variable-row {
   display: grid;
   grid-template-columns: 1fr 1.6fr auto;

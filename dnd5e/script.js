@@ -137,6 +137,37 @@ function renderForm() {
   renderFeatureInputs();
   renderVariableInputs();
   renderImagePreview();
+  updateHints();
+}
+
+function updateHints() {
+  const card = currentCard();
+  const g = crGuidance(card.cr);
+
+  const acHint = $('hint-ac');
+  if (acHint) {
+    const acNum = parseInt(card.ac, 10);
+    acHint.textContent = `Typical for CR ${escapeHtml(card.cr)}: around AC ${g.ac}`;
+    acHint.className = hintClass(acNum, g.ac - 1, g.ac + 1);
+  }
+
+  const hpHint = $('hint-hp');
+  if (hpHint) {
+    const hpNum = parseInt(card.hp, 10);
+    hpHint.textContent = `Typical for CR ${escapeHtml(card.cr)}: roughly ${g.hpLow}–${g.hpHigh} HP`;
+    hpHint.className = hintClass(hpNum, g.hpLow, g.hpHigh);
+  }
+
+  const pbHint = $('hint-pb');
+  if (pbHint) {
+    pbHint.textContent = `Standard proficiency bonus for CR ${escapeHtml(card.cr)}: +${g.pb}`;
+    pbHint.className = hintClass(card.proficiencyBonus, g.pb, g.pb);
+  }
+
+  const guidanceBox = $('cr-guidance-box');
+  if (guidanceBox) {
+    guidanceBox.textContent = `Ballpark guidance for CR ${escapeHtml(card.cr)} — attack bonus around +${g.atk}, save DC around ${g.dc}, ~${g.dmgLow}–${g.dmgHigh} damage per hit. ${g.legendary}`;
+  }
 }
 
 document.querySelectorAll('.type-btn[data-format]').forEach(btn => {
@@ -156,6 +187,7 @@ document.getElementById('statblock-form').addEventListener('input', (e) => {
   card[field] = el.type === 'number' ? Number(el.value) : el.value;
   if (field === 'name') renderDeckList();
   renderCard();
+  updateHints();
   saveDeck();
 });
 
@@ -173,6 +205,54 @@ function modifier(score) {
 
 function signed(n) {
   return n >= 0 ? `+${n}` : `${n}`;
+}
+
+// ===== CR-based guidance (approximate ballpark ranges, our own derivation —
+// not a reproduction of any publisher's specific monster-building tables) =====
+function parseCR(crText) {
+  const t = String(crText || '').trim();
+  if (t.includes('/')) {
+    const [num, den] = t.split('/').map(Number);
+    return (den ? num / den : 0);
+  }
+  const n = parseFloat(t);
+  return Number.isFinite(n) ? n : 1;
+}
+
+function pbForCR(cr) {
+  if (cr < 5) return 2;
+  if (cr < 9) return 3;
+  if (cr < 13) return 4;
+  if (cr < 17) return 5;
+  if (cr < 21) return 6;
+  if (cr < 25) return 7;
+  return 8;
+}
+
+function crGuidance(crText) {
+  const cr = parseCR(crText);
+  const pb = pbForCR(cr);
+  let ac, hpMid;
+  if (cr < 1) { ac = 12; hpMid = Math.max(1, Math.round(cr * 40) + 5); }
+  else { ac = Math.min(19, 12 + Math.floor(cr / 3)); hpMid = Math.round(15 * cr + 65); }
+  const hpLow = Math.round(hpMid * 0.8);
+  const hpHigh = Math.round(hpMid * 1.2);
+  const atk = pb + 3;
+  const dc = 8 + pb + 3;
+  const dmgMid = Math.max(2, Math.round(hpMid / 3.5));
+  const dmgLow = Math.round(dmgMid * 0.85);
+  const dmgHigh = Math.round(dmgMid * 1.15);
+  const legendary = cr >= 11 ? '2–3 Legendary Actions is common for a solo boss at this CR.'
+    : cr >= 5 ? '1 Legendary Action is sometimes used for a solo boss at this CR.'
+    : 'Legendary Actions are uncommon below CR 5.';
+  return { pb, ac, hpLow, hpHigh, atk, dc, dmgLow, dmgHigh, legendary };
+}
+
+function hintClass(value, low, high) {
+  const v = Number(value);
+  if (!Number.isFinite(v)) return '';
+  if (v < low || v > high) return 'field-hint warn';
+  return 'field-hint';
 }
 
 // ===== Features (Traits/Actions/Bonus Actions/Reactions/Legendary Actions) UI =====

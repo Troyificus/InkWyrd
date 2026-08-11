@@ -83,8 +83,8 @@
 
       <fieldset>
         <legend>Core Stats</legend>
-        <label>Armor Class <input type="text" data-field="ac" placeholder="15 (natural armor)"></label>
-        <label>Hit Points <input type="text" data-field="hp" placeholder="45 (6d10+12)"></label>
+        <label>Armor Class <input type="text" data-field="ac" placeholder="15 (natural armor)"><span class="field-hint" id="hint-ac"></span></label>
+        <label>Hit Points <input type="text" data-field="hp" placeholder="45 (6d10+12)"><span class="field-hint" id="hint-hp"></span></label>
         <label>Speed <input type="text" data-field="speed" placeholder="30 ft., fly 60 ft."></label>
       </fieldset>
 
@@ -98,7 +98,7 @@
           <label>WIS <input type="number" data-field="wis" min="1" max="30"></label>
           <label>CHA <input type="number" data-field="cha" min="1" max="30"></label>
         </div>
-        <label>Proficiency Bonus <input type="number" data-field="proficiencyBonus" min="0" max="9"></label>
+        <label>Proficiency Bonus <input type="number" data-field="proficiencyBonus" min="0" max="9"><span class="field-hint" id="hint-pb"></span></label>
       </fieldset>
 
       <fieldset>
@@ -124,6 +124,7 @@
       <fieldset>
         <legend>Traits, Actions &amp; Reactions</legend>
         <p class="hint">Pick a category to add an ability — click its header to expand and edit.</p>
+        <div class="guidance-box" id="cr-guidance-box"></div>
         <div class="quick-add-row">
           <button type="button" class="quick-add" data-feat-cat="Trait">+ Trait</button>
           <button type="button" class="quick-add" data-feat-cat="Action">+ Action</button>
