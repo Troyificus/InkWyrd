@@ -3,25 +3,67 @@
 // from any publisher's books — these are original words/phrases and our own
 // reasonable approximate baseline stats, combined at random.
 
-const ITEM_PREFIXES = [
-  'Ashwrought', 'Duskwoven', 'Sunlit', 'Moonsilvered', 'Frostbound', 'Emberkissed',
-  'Stormcalled', 'Voidtouched', 'Gloomforged', 'Thornbound', 'Verdant', 'Hollowed',
-  'Wyrmscaled', 'Graveworn', 'Starforged', 'Ironclad', 'Bloodroot', 'Whispering',
-  'Sunken', 'Obsidian', 'Ivoryclasped', 'Shardlight', 'Ebonwreathed', 'Tidewrought',
-  'Cinderborn', 'Hallowed', 'Ruinous', 'Wanderer\'s', 'Bramblewrought', 'Coldforged',
-  'Sableveined', 'Amberlit', 'Windcarved', 'Nightspun', 'Sunscarred', 'Ashenfold',
-  'Prismatic', 'Rustbitten', 'Silverthorn', 'Deepdwelling'
-];
-
-const ITEM_ORIGINS = [
-  'a collapsed foundry beneath the salt flats', 'the drowned archives of a forgotten order',
-  'a hermit\'s workshop lost to the frost line', 'the ashes of a burned cathedral',
-  'a caravan that never reached the coast', 'the roots of a tree older than the kingdom',
-  'a battlefield the crows still avoid', 'the last forge of a dead guild',
-  'a shrine reclaimed by the tide', 'the hoard of a beast long since slain',
-  'a market stall in a city that no longer exists', 'the hands of a wandering tinker',
-  'the wreck of a ship that sailed too far', 'a monastery sealed after the plague',
-  'the workshop of an artificer who vanished mid-project', 'a crypt sealed three generations ago'
+// Themes tie a prefix, an origin, and a damage type together so a generated
+// item reads as coherent — "Sunken" and "reclaimed by the tide" both point at
+// water/cold, so the theme's damage type is cold, not an unrelated fire roll.
+// damageType: null marks the neutral theme, used for items that shouldn't
+// read as elemental at all (prestige/utility flavor instead).
+const THEMES = [
+  {
+    damageType: 'fire',
+    prefixes: ['Emberkissed', 'Cinderborn', 'Ashenfold', 'Sunscarred'],
+    origins: ['the ashes of a burned cathedral', 'the last forge of a dead guild', 'a volcanic vent that never cooled']
+  },
+  {
+    damageType: 'cold',
+    prefixes: ['Frostbound', 'Sunken', 'Tidewrought', 'Coldforged', 'Deepdwelling'],
+    origins: ['a shrine reclaimed by the tide', 'the wreck of a ship that sailed too far', 'a hermit\'s workshop lost to the frost line', 'the drowned archives of a forgotten order']
+  },
+  {
+    damageType: 'lightning',
+    prefixes: ['Stormcalled', 'Windcarved'],
+    origins: ['a tower struck by lightning a hundred times over', 'a caravan caught in an endless storm']
+  },
+  {
+    damageType: 'thunder',
+    prefixes: ['Thunderforged', 'Ruinous'],
+    origins: ['a canyon that still echoes with old war-horns', 'a battlefield the crows still avoid']
+  },
+  {
+    damageType: 'acid',
+    prefixes: ['Rustbitten', 'Obsidian'],
+    origins: ['a collapsed foundry beneath the salt flats', 'a swamp that dissolves anything left too long']
+  },
+  {
+    damageType: 'poison',
+    prefixes: ['Bramblewrought', 'Verdant', 'Bloodroot', 'Thornbound'],
+    origins: ['the roots of a tree older than the kingdom', 'a poisoner\'s garden gone wild']
+  },
+  {
+    damageType: 'necrotic',
+    prefixes: ['Gloomforged', 'Hollowed', 'Graveworn', 'Ebonwreathed', 'Sableveined'],
+    origins: ['a crypt sealed three generations ago', 'the hoard of a beast long since slain', 'a monastery sealed after the plague']
+  },
+  {
+    damageType: 'radiant',
+    prefixes: ['Hallowed', 'Ivoryclasped', 'Shardlight', 'Starforged'],
+    origins: ['a temple where the sun never set', 'a shrine to a forgotten light']
+  },
+  {
+    damageType: 'force',
+    prefixes: ['Prismatic', 'Wyrmscaled', 'Voidtouched'],
+    origins: ['the workshop of an artificer who vanished mid-project', 'a rift that was never fully sealed']
+  },
+  {
+    damageType: 'psychic',
+    prefixes: ['Whispering', 'Nightspun', 'Silverthorn'],
+    origins: ['a mind that shattered under a curse', 'an asylum abandoned overnight']
+  },
+  {
+    damageType: null,
+    prefixes: ['Ashwrought', 'Duskwoven', 'Sunlit', 'Moonsilvered', 'Ironclad', 'Wanderer\'s', 'Amberlit'],
+    origins: ['a market stall in a city that no longer exists', 'the hands of a wandering tinker', 'a caravan that never reached the coast']
+  }
 ];
 
 const ITEM_NOUNS = {
@@ -203,20 +245,21 @@ function lookupArmorStats(name) {
 // Returns { name, description, itemType, baseStats, effect, charges }
 function generateItemConcept(category, powerTier, chargesLikely) {
   const tier = clampTier(powerTier);
-  const prefix = pick(ITEM_PREFIXES);
-  const origin = pick(ITEM_ORIGINS);
+  const theme = pick(THEMES);
+  const prefix = pick(theme.prefixes);
+  const origin = pick(theme.origins);
   const description = `Said to have come from ${origin}.`;
   const charges = chargesLikely ? pick(CHARGE_PHRASES) : '';
+  const isElemental = theme.damageType !== null;
 
   if (category === 'weapon') {
     const w = pick(WEAPON_TYPES);
     const name = `${prefix} ${w.name}`;
     const baseStats = `${w.die} ${w.type}`;
     let effect;
-    if (tier >= 3 || Math.random() < 0.6) {
-      const dmgType = pick(DAMAGE_TYPES);
+    if (isElemental && (tier >= 3 || Math.random() < 0.6)) {
       const dice = WEAPON_BONUS_DICE[tier];
-      effect = `Deals an additional ${dice} ${dmgType} damage on a hit.`;
+      effect = `Deals an additional ${dice} ${theme.damageType} damage on a hit.`;
       if (tier >= 3 && Math.random() < 0.5) {
         effect += ` Grants a +${FLAT_BONUS[tier]} bonus to attack and damage rolls.`;
       }
@@ -231,11 +274,10 @@ function generateItemConcept(category, powerTier, chargesLikely) {
     const name = `${prefix} ${a.name}`;
     const baseStats = a.acText;
     let effect;
-    if (tier >= 2 && Math.random() < 0.5) {
-      const dmgType = pick(DAMAGE_TYPES);
+    if (isElemental && tier >= 2 && Math.random() < 0.5) {
       effect = tier >= 4
-        ? `Grants immunity to ${dmgType} damage while worn.`
-        : `Grants resistance to ${dmgType} damage while worn.`;
+        ? `Grants immunity to ${theme.damageType} damage while worn.`
+        : `Grants resistance to ${theme.damageType} damage while worn.`;
     } else {
       effect = `Grants a +${FLAT_BONUS[tier]} bonus to AC.`;
     }
@@ -245,12 +287,14 @@ function generateItemConcept(category, powerTier, chargesLikely) {
   // wearable / consumable / wondrous — no inherent base stats
   const noun = pick(ITEM_NOUNS[category] || ITEM_NOUNS.wondrous);
   const name = `${prefix} ${noun}`;
-  const dmgType = pick(DAMAGE_TYPES);
   const dice = BLAST_DICE[tier];
   const dc = saveDcForTier(tier);
-  const effect = pick(ITEM_EFFECTS[tier])
+  const pool = isElemental
+    ? ITEM_EFFECTS[tier]
+    : ITEM_EFFECTS[tier].filter(e => !e.includes('{dice}') && !e.includes('{type}'));
+  const effect = pick(pool.length ? pool : ITEM_EFFECTS[tier])
     .replace(/\{dice\}/g, dice)
-    .replace(/\{type\}/g, dmgType)
+    .replace(/\{type\}/g, theme.damageType || 'force')
     .replace(/\{dc\}/g, dc);
   return { name, description, itemType: '', baseStats: '', range: '', effect, charges };
 }
