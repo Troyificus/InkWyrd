@@ -67,6 +67,7 @@ function newCard(overrides = {}) {
     itemCategory: 'weapon',
     itemTypeName: '',
     itemBaseStats: '',
+    itemRange: '',
     itemRarity: 'Common',
     itemLevel: 1,
     bulk: 'L',
@@ -136,6 +137,7 @@ function migrateCard(card) {
   if (!card.itemCategory) card.itemCategory = 'weapon';
   if (card.itemTypeName === undefined) card.itemTypeName = '';
   if (card.itemBaseStats === undefined) card.itemBaseStats = '';
+  if (card.itemRange === undefined) card.itemRange = '';
   if (!card.itemRarity) card.itemRarity = 'Common';
   if (card.itemLevel === undefined) card.itemLevel = 1;
   if (card.bulk === undefined) card.bulk = 'L';
@@ -219,6 +221,7 @@ $('randomize-item').addEventListener('click', () => {
   card.itemDescription = concept.description;
   card.itemTypeName = concept.itemType;
   card.itemBaseStats = concept.baseStats;
+  card.itemRange = concept.range || '';
   card.itemEffect = concept.effect;
   card.itemCharges = chargesLikely ? (powerTier + 1) : null;
   card.itemRecharge = chargesLikely ? concept.charges : '';
@@ -235,6 +238,16 @@ document.querySelector('[data-field="itemTypeName"]').addEventListener('input', 
     card.itemBaseStats = lookup;
     const baseStatsInput = document.querySelector('[data-field="itemBaseStats"]');
     if (baseStatsInput) baseStatsInput.value = lookup;
+  }
+  if (card.itemCategory === 'weapon') {
+    const rangeLookup = lookupWeaponRange(e.target.value);
+    if (rangeLookup) {
+      card.itemRange = rangeLookup;
+      const rangeInput = document.querySelector('[data-field="itemRange"]');
+      if (rangeInput) rangeInput.value = rangeLookup;
+    }
+  }
+  if (lookup) {
     renderCard();
     saveDeck();
   }
@@ -604,6 +617,9 @@ function itemCardInnerHtml(card) {
 
   if (card.itemTypeName || card.itemBaseStats) {
     html += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || escapeHtml(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
+  }
+  if (card.itemRange) {
+    html += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
   }
 
   if (card.itemActivate) html += `<div class="card-line"><b>Activate</b> ${sub(card.itemActivate)}</div>`;

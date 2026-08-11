@@ -37,26 +37,26 @@ const ITEM_NOUNS = {
 // weapon conventions — die, damage type). Used both by the randomizer and by the
 // "look up base stats for this weapon" helper in the form.
 const WEAPON_TYPES = [
-  { name: 'Dagger', die: '1d4', type: 'piercing' },
-  { name: 'Shortsword', die: '1d6', type: 'piercing' },
-  { name: 'Longsword', die: '1d8', type: 'slashing' },
-  { name: 'Greatsword', die: '2d6', type: 'slashing' },
-  { name: 'Rapier', die: '1d8', type: 'piercing' },
-  { name: 'Scimitar', die: '1d6', type: 'slashing' },
-  { name: 'Mace', die: '1d6', type: 'bludgeoning' },
-  { name: 'Warhammer', die: '1d8', type: 'bludgeoning' },
-  { name: 'Battleaxe', die: '1d8', type: 'slashing' },
-  { name: 'Greataxe', die: '1d12', type: 'slashing' },
-  { name: 'Spear', die: '1d6', type: 'piercing' },
-  { name: 'Halberd', die: '1d10', type: 'slashing' },
-  { name: 'Quarterstaff', die: '1d6', type: 'bludgeoning' },
-  { name: 'Flail', die: '1d8', type: 'bludgeoning' },
-  { name: 'Whip', die: '1d4', type: 'slashing' },
-  { name: 'Shortbow', die: '1d6', type: 'piercing' },
-  { name: 'Longbow', die: '1d8', type: 'piercing' },
-  { name: 'Light Crossbow', die: '1d8', type: 'piercing' },
-  { name: 'Heavy Crossbow', die: '1d10', type: 'piercing' },
-  { name: 'Sling', die: '1d4', type: 'bludgeoning' }
+  { name: 'Dagger', die: '1d4', type: 'piercing', range: 'Melee (or thrown, range 20/60 ft)' },
+  { name: 'Shortsword', die: '1d6', type: 'piercing', range: 'Melee' },
+  { name: 'Longsword', die: '1d8', type: 'slashing', range: 'Melee' },
+  { name: 'Greatsword', die: '2d6', type: 'slashing', range: 'Melee' },
+  { name: 'Rapier', die: '1d8', type: 'piercing', range: 'Melee' },
+  { name: 'Scimitar', die: '1d6', type: 'slashing', range: 'Melee' },
+  { name: 'Mace', die: '1d6', type: 'bludgeoning', range: 'Melee' },
+  { name: 'Warhammer', die: '1d8', type: 'bludgeoning', range: 'Melee' },
+  { name: 'Battleaxe', die: '1d8', type: 'slashing', range: 'Melee' },
+  { name: 'Greataxe', die: '1d12', type: 'slashing', range: 'Melee' },
+  { name: 'Spear', die: '1d6', type: 'piercing', range: 'Melee (or thrown, range 20/60 ft)' },
+  { name: 'Halberd', die: '1d10', type: 'slashing', range: 'Melee, reach 10 ft' },
+  { name: 'Quarterstaff', die: '1d6', type: 'bludgeoning', range: 'Melee' },
+  { name: 'Flail', die: '1d8', type: 'bludgeoning', range: 'Melee' },
+  { name: 'Whip', die: '1d4', type: 'slashing', range: 'Melee, reach 10 ft' },
+  { name: 'Shortbow', die: '1d6', type: 'piercing', range: 'Range 80/320 ft' },
+  { name: 'Longbow', die: '1d8', type: 'piercing', range: 'Range 150/600 ft' },
+  { name: 'Light Crossbow', die: '1d8', type: 'piercing', range: 'Range 80/320 ft' },
+  { name: 'Heavy Crossbow', die: '1d10', type: 'piercing', range: 'Range 100/400 ft' },
+  { name: 'Sling', die: '1d4', type: 'bludgeoning', range: 'Range 30/120 ft' }
 ];
 
 // Real baseline armor stats (our own reasonable approximation). acText is
@@ -183,6 +183,13 @@ function lookupWeaponStats(name) {
   return found ? `${found.die} ${found.type}` : null;
 }
 
+function lookupWeaponRange(name) {
+  const key = (name || '').toLowerCase().trim();
+  const found = WEAPON_TYPES.find(w => w.name.toLowerCase() === key) ||
+    WEAPON_TYPES.find(w => key.includes(w.name.toLowerCase()));
+  return found ? found.range : null;
+}
+
 function lookupArmorStats(name) {
   const key = (name || '').toLowerCase().trim();
   const found = ARMOR_TYPES.find(a => a.name.toLowerCase() === key) ||
@@ -216,7 +223,7 @@ function generateItemConcept(category, powerTier, chargesLikely) {
     } else {
       effect = `Grants a +${FLAT_BONUS[tier]} bonus to attack and damage rolls.`;
     }
-    return { name, description, itemType: w.name, baseStats, effect, charges };
+    return { name, description, itemType: w.name, baseStats, range: w.range, effect, charges };
   }
 
   if (category === 'armor') {
@@ -232,7 +239,7 @@ function generateItemConcept(category, powerTier, chargesLikely) {
     } else {
       effect = `Grants a +${FLAT_BONUS[tier]} bonus to AC.`;
     }
-    return { name, description, itemType: a.name, baseStats, effect, charges };
+    return { name, description, itemType: a.name, baseStats, range: '', effect, charges };
   }
 
   // wearable / consumable / wondrous — no inherent base stats
@@ -245,5 +252,5 @@ function generateItemConcept(category, powerTier, chargesLikely) {
     .replace(/\{dice\}/g, dice)
     .replace(/\{type\}/g, dmgType)
     .replace(/\{dc\}/g, dc);
-  return { name, description, itemType: '', baseStats: '', effect, charges };
+  return { name, description, itemType: '', baseStats: '', range: '', effect, charges };
 }
