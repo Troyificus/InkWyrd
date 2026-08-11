@@ -644,20 +644,29 @@ function itemCardInnerHtml(card) {
     </div>`;
   if (card.itemDescription) html += `<div class="card-desc">${sub(card.itemDescription)}</div>`;
 
-  if (hasImage) {
-    const w = card.imageWidth || 170;
-    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
-  }
-
+  let statHtml = '';
   if (card.itemTypeName || card.itemBaseStats) {
-    html += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
+    statHtml += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
   }
   if (card.itemRange) {
-    html += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
+    statHtml += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
   }
-  if (card.itemUsage) html += `<div class="card-line"><b>Usage</b> ${sub(card.itemUsage)}</div>`;
-  if (card.itemActivate) html += `<div class="card-line"><b>Activate</b> ${sub(card.itemActivate)}</div>`;
-  if (card.itemTrigger) html += `<div class="card-line"><b>Trigger</b> ${sub(card.itemTrigger)}</div>`;
+  if (card.itemUsage) statHtml += `<div class="card-line"><b>Usage</b> ${sub(card.itemUsage)}</div>`;
+  if (card.itemActivate) statHtml += `<div class="card-line"><b>Activate</b> ${sub(card.itemActivate)}</div>`;
+  if (card.itemTrigger) statHtml += `<div class="card-line"><b>Trigger</b> ${sub(card.itemTrigger)}</div>`;
+
+  if (hasImage && statHtml) {
+    const w = card.imageWidth || 170;
+    const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
+    const statCol = `<div class="stat-col">${statHtml}</div>`;
+    html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
+  } else {
+    html += statHtml;
+    if (hasImage) {
+      const w = card.imageWidth || 170;
+      html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
+    }
+  }
 
   html += `<div class="section-divider">Effect</div>`;
   html += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
@@ -690,22 +699,30 @@ function cardInnerHtml(card) {
     </div>`;
   if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
 
+  // Perception/Languages/Skills/ability scores/Items are the "short" content
+  // that pairs with the image; Defense/Offense/Abilities (with their own
+  // dividers) always render full width after this section closes.
+  let coreHtml = '';
+  coreHtml += `<div class="card-line"><b>Perception</b> ${sub(card.perception)}${card.senses ? '; ' + sub(card.senses) : ''}</div>`;
+  if (card.languages) coreHtml += `<div class="card-line"><b>Languages</b> ${sub(card.languages)}</div>`;
+  if (card.skills) coreHtml += `<div class="card-line"><b>Skills</b> ${sub(card.skills)}</div>`;
+
+  coreHtml += `<div class="ability-row">`;
+  [['STR', card.str], ['DEX', card.dex], ['CON', card.con], ['INT', card.int], ['WIS', card.wis], ['CHA', card.cha]].forEach(([label, mod]) => {
+    coreHtml += `<div class="ability-box"><div class="ability-lbl">${label}</div><div class="ability-val">${fmtMod(mod)}</div></div>`;
+  });
+  coreHtml += `</div>`;
+
+  if (card.items) coreHtml += `<div class="card-line"><b>Items</b> ${sub(card.items)}</div>`;
+
   if (hasImage) {
     const w = card.imageWidth || 170;
-    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
+    const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
+    const statCol = `<div class="stat-col">${coreHtml}</div>`;
+    html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
+  } else {
+    html += coreHtml;
   }
-
-  html += `<div class="card-line"><b>Perception</b> ${sub(card.perception)}${card.senses ? '; ' + sub(card.senses) : ''}</div>`;
-  if (card.languages) html += `<div class="card-line"><b>Languages</b> ${sub(card.languages)}</div>`;
-  if (card.skills) html += `<div class="card-line"><b>Skills</b> ${sub(card.skills)}</div>`;
-
-  html += `<div class="ability-row">`;
-  [['STR', card.str], ['DEX', card.dex], ['CON', card.con], ['INT', card.int], ['WIS', card.wis], ['CHA', card.cha]].forEach(([label, mod]) => {
-    html += `<div class="ability-box"><div class="ability-lbl">${label}</div><div class="ability-val">${fmtMod(mod)}</div></div>`;
-  });
-  html += `</div>`;
-
-  if (card.items) html += `<div class="card-line"><b>Items</b> ${sub(card.items)}</div>`;
 
   html += `<div class="section-divider">Defense</div>`;
   html += `<div class="card-line"><b>AC</b> ${sub(card.ac)}; <b>Fort</b> ${sub(card.fort)}, <b>Ref</b> ${sub(card.ref)}, <b>Will</b> ${sub(card.will)}</div>`;

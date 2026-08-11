@@ -576,16 +576,25 @@ function itemCardInnerHtml(card) {
     </div>`;
   if (card.itemDescription) html += `<div class="card-desc">${sub(card.itemDescription)}</div>`;
 
-  if (hasImage) {
-    const w = card.imageWidth || 170;
-    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
-  }
-
+  let statHtml = '';
   if (card.itemTypeName || card.itemBaseStats) {
-    html += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
+    statHtml += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
   }
   if (card.itemRange) {
-    html += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
+    statHtml += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
+  }
+
+  if (hasImage && statHtml) {
+    const w = card.imageWidth || 170;
+    const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
+    const statCol = `<div class="stat-col">${statHtml}</div>`;
+    html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
+  } else {
+    html += statHtml;
+    if (hasImage) {
+      const w = card.imageWidth || 170;
+      html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
+    }
   }
 
   html += `<div class="section-divider">Effect</div>`;
@@ -627,29 +636,37 @@ function cardInnerHtml(card) {
 
   if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
 
-  if (hasImage) {
-    const w = card.imageWidth || 170;
-    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
-  }
-
+  // Core stats + ability scores are the "short" content that pairs with the
+  // image; everything else (saves/skills/senses, features) always renders
+  // full width after this section closes, so dividers can never cross the image.
+  let coreHtml = '';
   if (is2024) {
-    html += `<div class="core-stat-row">
+    coreHtml += `<div class="core-stat-row">
         <div class="core-stat"><b>AC</b> ${sub(card.ac)}</div>
         <div class="core-stat"><b>Initiative</b> ${modifier(card.dex)} (${10 + dexMod})</div>
         <div class="core-stat"><b>HP</b> ${sub(card.hp)}</div>
         <div class="core-stat"><b>Speed</b> ${sub(card.speed)}</div>
       </div>`;
   } else {
-    html += `<div class="card-line"><b>Armor Class</b> ${sub(card.ac)}</div>`;
-    html += `<div class="card-line"><b>Hit Points</b> ${sub(card.hp)}</div>`;
-    html += `<div class="card-line"><b>Speed</b> ${sub(card.speed)}</div>`;
+    coreHtml += `<div class="card-line"><b>Armor Class</b> ${sub(card.ac)}</div>`;
+    coreHtml += `<div class="card-line"><b>Hit Points</b> ${sub(card.hp)}</div>`;
+    coreHtml += `<div class="card-line"><b>Speed</b> ${sub(card.speed)}</div>`;
   }
 
-  html += `<div class="ability-row">`;
+  coreHtml += `<div class="ability-row">`;
   [['STR', card.str], ['DEX', card.dex], ['CON', card.con], ['INT', card.int], ['WIS', card.wis], ['CHA', card.cha]].forEach(([label, score]) => {
-    html += `<div class="ability-box"><div class="ability-lbl">${label}</div><div class="ability-val">${escapeHtml(score)}</div><div class="ability-mod">${modifier(score)}</div></div>`;
+    coreHtml += `<div class="ability-box"><div class="ability-lbl">${label}</div><div class="ability-val">${escapeHtml(score)}</div><div class="ability-mod">${modifier(score)}</div></div>`;
   });
-  html += `</div>`;
+  coreHtml += `</div>`;
+
+  if (hasImage) {
+    const w = card.imageWidth || 170;
+    const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
+    const statCol = `<div class="stat-col">${coreHtml}</div>`;
+    html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
+  } else {
+    html += coreHtml;
+  }
 
   const statLines = () => {
     let s = '';

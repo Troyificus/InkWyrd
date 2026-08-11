@@ -498,9 +498,13 @@ textarea { resize: vertical; }
 .corner-icon { width: 11px; height: 11px; flex: 0 0 11px; color: var(--card-accent, #8a2727); }
 .corner-icon svg { width: 100%; height: 100%; display: block; }
 
-.card-illustration { display: block; height: auto; margin: 4px 0 14px; border: 1px solid var(--card-accent, #8a2727); }
+.card-illustration { display: block; height: auto; margin: 4px 0 14px; }
 .card-illustration.align-left { margin-right: auto; margin-left: 0; }
 .card-illustration.align-right { margin-left: auto; margin-right: 0; }
+
+.stat-image-row { clear: both; display: flex; align-items: flex-start; gap: 18px; margin: 8px 0 4px; }
+.stat-col { flex: 1; min-width: 0; }
+.stat-image-row .card-illustration { flex: 0 0 auto; margin: 0; }
 
 .card-name { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: 1.9rem; letter-spacing: 0.5px; margin: 0 0 6px; line-height: 1.1; }
 .card-kind { clear: both; font-size: 0.82rem; font-style: italic; opacity: 0.75; border-bottom: 1.5px solid var(--card-accent, #8a2727); padding-bottom: 8px; margin-bottom: 10px; }
