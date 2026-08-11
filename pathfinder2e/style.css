@@ -548,9 +548,9 @@ textarea { resize: vertical; }
 .corner-icon { width: 11px; height: 11px; flex: 0 0 11px; color: var(--card-accent, #8a2727); }
 .corner-icon svg { width: 100%; height: 100%; display: block; }
 
-.card-illustration { display: block; height: auto; margin-bottom: 10px; }
-.card-illustration.align-right { float: right; margin-left: 14px; shape-margin: 12px; }
-.card-illustration.align-left { float: left; margin-right: 14px; shape-margin: 12px; }
+.card-illustration { display: block; height: auto; margin: 4px 0 14px; border: 1px solid var(--card-accent, #8a2727); }
+.card-illustration.align-left { margin-right: auto; margin-left: 0; }
+.card-illustration.align-right { margin-left: auto; margin-right: 0; }
 
 .card-name { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: 1.9rem; letter-spacing: 0.5px; margin: 0 0 6px; line-height: 1.1; }
 

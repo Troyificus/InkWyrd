@@ -48,13 +48,13 @@
 
       <fieldset>
         <legend>Illustration</legend>
-        <p class="hint">Upload a PNG with a transparent background (e.g. from your ComfyUI pipeline). Text will wrap around the character's actual silhouette, not just a rectangle.</p>
+        <p class="hint">Upload a PNG with a transparent background (e.g. from your ComfyUI pipeline). It appears as its own block under the name and description, so tall portraits don't distort the layout.</p>
         <label>Image <input type="file" id="image-upload" accept="image/*"></label>
         <div id="image-preview-wrap"></div>
         <label>Placement
           <select data-field="imageAlign">
-            <option value="right">Float right</option>
-            <option value="left">Float left</option>
+            <option value="right">Align right</option>
+            <option value="left">Align left</option>
             <option value="none">No image</option>
           </select>
         </label>

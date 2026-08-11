@@ -561,27 +561,25 @@ function itemCardInnerHtml(card) {
   let html = '';
   const sub = (text) => escapeHtml(applySubs(text, card));
   const hasImage = !!card.image && card.imageAlign !== 'none';
-  const cornerSide = (hasImage && card.imageAlign === 'right') ? 'left' : 'right';
   const iconSvg = getTypeIcon(card.itemCategory);
 
-  if (hasImage) {
-    const w = card.imageWidth || 170;
-    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}"
-      style="float:${card.imageAlign}; width:${w}px; shape-outside:url('${card.image}');" alt="">`;
-  }
-
-  html += `<div class="corner-tag corner-${cornerSide}">
+  html += `<div class="corner-tag corner-right">
       <div class="corner-tier">${escapeHtml(card.itemRarity)}</div>
       <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${capitalize(card.itemCategory)}</div>
     </div>`;
 
-  html += `<div class="card-name" style="padding-${cornerSide}:70px">${escapeHtml(card.name)}</div>`;
+  html += `<div class="card-name" style="padding-right:70px">${escapeHtml(card.name)}</div>`;
   html += `<div class="trait-chip-row">
       <span class="trait-chip">${capitalize(card.itemCategory)}</span>
       <span class="trait-chip">${escapeHtml(card.itemRarity)}</span>
       ${card.requiresAttunement ? `<span class="trait-chip">Requires Attunement${card.attunementRequirement ? ' ' + escapeHtml(card.attunementRequirement) : ''}</span>` : ''}
     </div>`;
   if (card.itemDescription) html += `<div class="card-desc">${sub(card.itemDescription)}</div>`;
+
+  if (hasImage) {
+    const w = card.imageWidth || 170;
+    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
+  }
 
   if (card.itemTypeName || card.itemBaseStats) {
     html += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
@@ -606,23 +604,16 @@ function cardInnerHtml(card) {
   let html = '';
   const sub = (text) => escapeHtml(applySubs(text, card));
   const hasImage = !!card.image && card.imageAlign !== 'none';
-  const cornerSide = (hasImage && card.imageAlign === 'right') ? 'left' : 'right';
   const iconSvg = getTypeIcon(card.creatureType);
   const dexMod = Math.floor((Number(card.dex) - 10) / 2);
   const is2024 = card.format !== '2014';
 
-  if (hasImage) {
-    const w = card.imageWidth || 170;
-    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}"
-      style="float:${card.imageAlign}; width:${w}px; shape-outside:url('${card.image}');" alt="">`;
-  }
-
-  html += `<div class="corner-tag corner-${cornerSide}">
+  html += `<div class="corner-tag corner-right">
       <div class="corner-tier">CR ${escapeHtml(card.cr)}</div>
       <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(card.xp)} XP</div>
     </div>`;
 
-  html += `<div class="card-name" style="padding-${cornerSide}:70px">${escapeHtml(card.name)}</div>`;
+  html += `<div class="card-name" style="padding-right:70px">${escapeHtml(card.name)}</div>`;
 
   if (is2024) {
     html += `<div class="trait-chip-row">
@@ -635,6 +626,11 @@ function cardInnerHtml(card) {
   }
 
   if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
+
+  if (hasImage) {
+    const w = card.imageWidth || 170;
+    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
+  }
 
   if (is2024) {
     html += `<div class="core-stat-row">

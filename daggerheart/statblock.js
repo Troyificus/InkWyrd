@@ -522,23 +522,20 @@ function cardInnerHtml(card) {
   const sub = (text) => escapeHtml(applySubs(text, card));
 
   const hasImage = !!card.image && card.imageAlign !== 'none';
-  // Keep the corner tag on whichever side the illustration isn't floating on.
-  const cornerSide = (hasImage && card.imageAlign === 'right') ? 'left' : 'right';
 
-  if (hasImage) {
-    const w = card.imageWidth || 170;
-    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}"
-      style="float:${card.imageAlign}; width:${w}px; shape-outside:url('${card.image}');" alt="">`;
-  }
-
-  html += `<div class="corner-tag corner-${cornerSide}">
+  html += `<div class="corner-tag corner-right">
       <div class="corner-tier">T${escapeHtml(card.tier)}</div>
       <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(typeLabel)}</div>
     </div>`;
 
-  html += `<div class="card-name" style="padding-${cornerSide}:70px">${escapeHtml(card.name)}</div>`;
+  html += `<div class="card-name" style="padding-right:70px">${escapeHtml(card.name)}</div>`;
   html += `<div class="card-kind">${isAdv ? 'Adversary' : 'Environment'}</div>`;
   if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
+
+  if (hasImage) {
+    const w = card.imageWidth || 170;
+    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
+  }
 
   if (isAdv) {
     html += `<div class="card-line"><b>Difficulty:</b> ${escapeHtml(card.difficultyAdv)}</div>`;
