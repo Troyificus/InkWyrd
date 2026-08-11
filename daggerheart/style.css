@@ -25,6 +25,27 @@ body {
   border-bottom: 1px solid var(--panel-border);
 }
 
+.back-link {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+.back-link:hover { color: var(--gold); }
+
+.cross-link {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.82rem;
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.cross-link:hover { text-decoration: underline; }
+
 .site-header h1 {
   margin: 0;
   font-family: 'Cormorant Garamond', Georgia, serif;

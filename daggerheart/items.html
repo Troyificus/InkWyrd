@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daggerheart Magic Item Generator — Statblock Forge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="../">&larr; Statblock Forge</a>
+  <h1>Daggerheart Magic Item Generator</h1>
+  <p class="tagline">Build an original magic item, or roll one at random — export a print-ready PNG.</p>
+  <a class="cross-link" href="statblock.html">Looking for the Statblock Generator? &rarr;</a>
+</header>
+
+<main class="layout">
+
+  <section class="deck-panel" aria-label="Item deck">
+    <h2>Your Items</h2>
+    <div id="deck-list"></div>
+    <button type="button" id="new-card">+ New Item</button>
+    <button type="button" id="duplicate-card">Duplicate Selected</button>
+    <button type="button" id="delete-card">Delete Selected</button>
+
+    <div class="deck-io">
+      <button type="button" id="export-json">Export Deck (JSON)</button>
+      <label class="file-btn">Import Deck (JSON)
+        <input type="file" id="import-json" accept="application/json" hidden>
+      </label>
+      <button type="button" id="export-all-png">Export All as PNG (.zip)</button>
+      <button type="button" id="print-sheet">Print Sheet</button>
+    </div>
+    <span id="deck-status"></span>
+  </section>
+
+  <section class="form-panel" aria-label="Item editor">
+    <form id="statblock-form">
+
+      <fieldset>
+        <legend>Illustration</legend>
+        <p class="hint">Upload a PNG with a transparent background (e.g. from your ComfyUI pipeline).</p>
+        <label>Image <input type="file" id="image-upload" accept="image/*"></label>
+        <div id="image-preview-wrap"></div>
+        <label>Placement
+          <select data-field="imageAlign">
+            <option value="right">Float right</option>
+            <option value="left">Float left</option>
+            <option value="none">No image</option>
+          </select>
+        </label>
+        <label>Image width (px) <input type="range" data-field="imageWidth" min="100" max="260" step="10"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Item Basics</legend>
+        <label>Name <input type="text" data-field="name"></label>
+        <label>Tier (used for random power scaling) <input type="number" data-field="tier" min="1" max="4"></label>
+        <label>Item Category
+          <select data-field="itemCategory">
+            <option value="weapon">Weapon</option>
+            <option value="armor">Armor</option>
+            <option value="wearable">Wearable</option>
+            <option value="consumable">Consumable</option>
+            <option value="wondrous">Wondrous Item</option>
+          </select>
+        </label>
+        <label>Weapon/Armor Type (if applicable)
+          <input type="text" data-field="itemTypeName" list="weapon-armor-type-list" placeholder="Longsword, Studded Leather, etc.">
+        </label>
+        <datalist id="weapon-armor-type-list">
+          <option value="Dagger"><option value="Shortsword"><option value="Longsword"><option value="Greatsword">
+          <option value="Rapier"><option value="Scimitar"><option value="Mace"><option value="Warhammer">
+          <option value="Battleaxe"><option value="Greataxe"><option value="Spear"><option value="Halberd">
+          <option value="Quarterstaff"><option value="Flail"><option value="Whip"><option value="Shortbow">
+          <option value="Longbow"><option value="Light Crossbow"><option value="Heavy Crossbow"><option value="Sling">
+          <option value="Padded"><option value="Leather"><option value="Studded Leather"><option value="Hide">
+          <option value="Chain Shirt"><option value="Scale Mail"><option value="Breastplate"><option value="Half Plate">
+          <option value="Ring Mail"><option value="Chain Mail"><option value="Splint"><option value="Plate"><option value="Shield">
+        </datalist>
+        <label>Base Stats
+          <input type="text" data-field="itemBaseStats" placeholder="e.g. 1d8 slashing, or AC 12 + Dex modifier">
+        </label>
+        <label>Range (if a ranged weapon or ranged effect)
+          <input type="text" data-field="itemRange" placeholder="e.g. Range 150/600 ft, or Melee">
+        </label>
+        <label>Rarity
+          <select data-field="itemRarity">
+            <option value="Common">Common</option>
+            <option value="Uncommon">Uncommon</option>
+            <option value="Rare">Rare</option>
+            <option value="Legendary">Legendary</option>
+          </select>
+        </label>
+        <label>Description <textarea data-field="description" rows="2"></textarea></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Random Item Generator</legend>
+        <p class="hint">Roll a full original item concept — name, description, and effect — based on the Category, Rarity, and Tier set above. You can edit anything afterward.</p>
+        <button type="button" id="randomize-item">🎲 Randomize Item</button>
+      </fieldset>
+
+      <fieldset>
+        <legend>Effect &amp; Charges</legend>
+        <label>Effect <textarea data-field="itemEffect" rows="3" placeholder="What the item does mechanically"></textarea></label>
+        <label>Charges (leave blank if not applicable) <input type="number" data-field="itemCharges" min="0"></label>
+        <label>Recharge <input type="text" data-field="itemRecharge" placeholder="Recovers 1d4 charges each dawn"></label>
+      </fieldset>
+
+      <details class="fieldset-details">
+        <summary>Custom Variables</summary>
+        <p class="hint">Define a value once, then reference it anywhere below by typing its token in brackets — e.g. a variable named <code>STR</code> can be used as <code>[STR]</code> in the description or effect field.</p>
+        <div id="variables-list"></div>
+        <button type="button" id="add-variable">+ Add Variable</button>
+      </details>
+
+      <details class="fieldset-details">
+        <summary>Card Style</summary>
+        <label>Accent color <input type="color" data-field="accent"></label>
+        <label>Card theme
+          <select data-field="theme">
+            <option value="parchment">Parchment</option>
+            <option value="dark">Ink (Dark)</option>
+            <option value="verdant">Verdant</option>
+            <option value="arcane">Arcane</option>
+          </select>
+        </label>
+      </details>
+
+    </form>
+  </section>
+
+  <section class="preview-panel" aria-label="Card preview">
+    <div id="card-wrapper">
+      <div id="statblock-card" class="theme-parchment">
+        <!-- Rendered by items.js -->
+      </div>
+    </div>
+    <div class="export-controls">
+      <button type="button" id="export-png">Download PNG</button>
+      <span id="export-status"></span>
+    </div>
+    <p class="compliance-note">
+      Built using Public Game Content from the Daggerheart SRD 1.0 under the Darrington Press Community Gaming License.
+      This tool produces original card artwork and original item concepts — it does not reproduce official Daggerheart artwork, logos, layouts, or named items.
+    </p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Fan-made tool. Not affiliated with or endorsed by Darrington Press or Critical Role, LLC. "Daggerheart" is a trademark of Critical Role, LLC.</p>
+  <p>The card layout, the balance-guidance hints, and the random item generator's names/effects are this project's own original work — not a reproduction of any official Daggerheart adversary- or item-building tables, art, or book design.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="icons.js"></script>
+<script src="../assets/item-words.js"></script>
+<script src="items.js"></script>
+</body>
+</html>

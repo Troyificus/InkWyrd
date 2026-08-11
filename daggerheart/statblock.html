@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Adversary Card Forge — Daggerheart Compatible Statblock Generator</title>
+<title>Daggerheart Statblock Generator — Statblock Forge</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -12,8 +12,10 @@
 <body>
 
 <header class="site-header">
-  <h1>Adversary Card Forge</h1>
-  <p class="tagline">A Daggerheart Compatible statblock card generator — build it, preview it, export a PNG.</p>
+  <a class="back-link" href="../">&larr; Statblock Forge</a>
+  <h1>Daggerheart Statblock Generator</h1>
+  <p class="tagline">Adversary &amp; Environment cards — build it, preview it, export a PNG.</p>
+  <a class="cross-link" href="items.html">Looking for the Magic Item Generator? &rarr;</a>
 </header>
 
 <main class="layout">
@@ -40,7 +42,6 @@
     <div class="type-toggle">
       <button type="button" class="type-btn active" data-type="adversary">Adversary</button>
       <button type="button" class="type-btn" data-type="environment">Environment</button>
-      <button type="button" class="type-btn" data-type="item">Item</button>
     </div>
 
     <form id="statblock-form">
@@ -63,7 +64,7 @@
       <fieldset>
         <legend>Basics</legend>
         <label>Name <input type="text" data-field="name"></label>
-        <label class="not-item-only">Tier <input type="number" data-field="tier" min="1" max="4"></label>
+        <label>Tier <input type="number" data-field="tier" min="1" max="4"></label>
         <label class="adv-only">Type <input type="text" data-field="type" list="dh-type-list" placeholder="Start typing or pick a role..."></label>
         <label class="env-only" hidden>Type <input type="text" data-field="envType" list="dh-env-type-list" placeholder="Start typing or pick a role..."></label>
         <datalist id="dh-type-list">
@@ -73,59 +74,9 @@
         <datalist id="dh-env-type-list">
           <option value="Exploration"><option value="Traversal"><option value="Social"><option value="Event">
         </datalist>
-        <label class="item-only" hidden>Item Category
-          <select data-field="itemCategory">
-            <option value="weapon">Weapon</option>
-            <option value="armor">Armor</option>
-            <option value="wearable">Wearable</option>
-            <option value="consumable">Consumable</option>
-            <option value="wondrous">Wondrous Item</option>
-          </select>
-        </label>
-        <label class="item-only" hidden>Weapon/Armor Type (if applicable)
-          <input type="text" data-field="itemTypeName" list="weapon-armor-type-list" placeholder="Longsword, Studded Leather, etc.">
-        </label>
-        <datalist id="weapon-armor-type-list">
-          <option value="Dagger"><option value="Shortsword"><option value="Longsword"><option value="Greatsword">
-          <option value="Rapier"><option value="Scimitar"><option value="Mace"><option value="Warhammer">
-          <option value="Battleaxe"><option value="Greataxe"><option value="Spear"><option value="Halberd">
-          <option value="Quarterstaff"><option value="Flail"><option value="Whip"><option value="Shortbow">
-          <option value="Longbow"><option value="Light Crossbow"><option value="Heavy Crossbow"><option value="Sling">
-          <option value="Padded"><option value="Leather"><option value="Studded Leather"><option value="Hide">
-          <option value="Chain Shirt"><option value="Scale Mail"><option value="Breastplate"><option value="Half Plate">
-          <option value="Ring Mail"><option value="Chain Mail"><option value="Splint"><option value="Plate"><option value="Shield">
-        </datalist>
-        <label class="item-only" hidden>Base Stats
-          <input type="text" data-field="itemBaseStats" placeholder="e.g. 1d8 slashing, or AC 12 + Dex modifier">
-        </label>
-        <label class="item-only" hidden>Range (if a ranged weapon or ranged effect)
-          <input type="text" data-field="itemRange" placeholder="e.g. Range 150/600 ft, or Melee">
-        </label>
-        <label class="item-only" hidden>Rarity
-          <select data-field="itemRarity">
-            <option value="Common">Common</option>
-            <option value="Uncommon">Uncommon</option>
-            <option value="Rare">Rare</option>
-            <option value="Legendary">Legendary</option>
-          </select>
-        </label>
-        <label class="item-only" hidden>Tier (used for random power scaling) <input type="number" data-field="tier" min="1" max="4"></label>
         <label>Description <textarea data-field="description" rows="2"></textarea></label>
         <label class="adv-only">Motives &amp; Tactics <input type="text" data-field="motives"></label>
         <label class="env-only" hidden>Impulses <input type="text" data-field="impulses"></label>
-      </fieldset>
-
-      <fieldset class="item-only" hidden>
-        <legend>Random Item Generator</legend>
-        <p class="hint">Roll a full original item concept — name, description, and effect — based on the Category, Rarity, and Tier set above. You can edit anything afterward.</p>
-        <button type="button" id="randomize-item">🎲 Randomize Item</button>
-      </fieldset>
-
-      <fieldset class="item-only" hidden>
-        <legend>Effect &amp; Charges</legend>
-        <label>Effect <textarea data-field="itemEffect" rows="3" placeholder="What the item does mechanically"></textarea></label>
-        <label>Charges (leave blank if not applicable) <input type="number" data-field="itemCharges" min="0"></label>
-        <label>Recharge <input type="text" data-field="itemRecharge" placeholder="Recovers 1d4 charges each dawn"></label>
       </fieldset>
 
       <fieldset class="adv-only">
@@ -150,7 +101,7 @@
         <label>Potential Adversaries <input type="text" data-field="potential"></label>
       </fieldset>
 
-      <fieldset class="not-item-only">
+      <fieldset>
         <legend>Features</legend>
         <p class="hint">Pick a type to add a feature — click its header to expand and edit.</p>
         <div class="quick-add-row">
@@ -210,7 +161,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="icons.js"></script>
-<script src="../assets/item-words.js"></script>
-<script src="script.js"></script>
+<script src="statblock.js"></script>
 </body>
 </html>
