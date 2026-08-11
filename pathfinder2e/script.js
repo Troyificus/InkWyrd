@@ -34,6 +34,7 @@ function hintClass(value, low, high) {
 function newCard(overrides = {}) {
   return Object.assign({
     id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
+    cardType: 'creature',
     name: 'New Creature',
     level: 1,
     rarity: 'Common',
@@ -62,7 +63,17 @@ function newCard(overrides = {}) {
     imageWidth: 170,
     features: [
       { category: 'Ability', name: 'Attack of Opportunity', text: 'Reaction triggered by an adjacent enemy using a manipulate action, moving out of a reach, or making a ranged attack.' }
-    ]
+    ],
+    itemCategory: 'weapon',
+    itemRarity: 'Common',
+    itemLevel: 1,
+    bulk: 'L',
+    price: '35 gp',
+    itemDescription: '',
+    itemActivate: '',
+    itemEffect: '',
+    itemCharges: null,
+    itemRecharge: ''
   }, overrides);
 }
 
@@ -119,6 +130,17 @@ function migrateCard(card) {
   if (card.image === undefined) card.image = null;
   if (!card.imageAlign) card.imageAlign = 'right';
   if (!card.imageWidth) card.imageWidth = 170;
+  if (!card.cardType) card.cardType = 'creature';
+  if (!card.itemCategory) card.itemCategory = 'weapon';
+  if (!card.itemRarity) card.itemRarity = 'Common';
+  if (card.itemLevel === undefined) card.itemLevel = 1;
+  if (card.bulk === undefined) card.bulk = 'L';
+  if (card.price === undefined) card.price = '';
+  if (card.itemDescription === undefined) card.itemDescription = '';
+  if (card.itemActivate === undefined) card.itemActivate = '';
+  if (card.itemEffect === undefined) card.itemEffect = '';
+  if (card.itemCharges === undefined) card.itemCharges = null;
+  if (card.itemRecharge === undefined) card.itemRecharge = '';
   return card;
 }
 
@@ -163,12 +185,42 @@ function renderForm() {
     const field = el.dataset.field;
     if (field in card) el.value = card[field];
   });
+  document.querySelectorAll('.type-btn[data-cardtype]').forEach(b => b.classList.toggle('active', b.dataset.cardtype === card.cardType));
+  document.querySelectorAll('.item-only').forEach(el => el.hidden = card.cardType !== 'item');
+  document.querySelectorAll('.not-item-only').forEach(el => el.hidden = card.cardType === 'item');
   renderFeatureInputs();
   renderAttackInputs();
   renderVariableInputs();
   renderImagePreview();
   updateHints();
 }
+
+document.querySelectorAll('.type-btn[data-cardtype]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentCard().cardType = btn.dataset.cardtype;
+    renderForm();
+    renderCard();
+    saveDeck();
+  });
+});
+
+const RARITY_TIER_PF2E = { Common: 1, Uncommon: 2, Rare: 4, Unique: 5 };
+
+$('randomize-item').addEventListener('click', () => {
+  const card = currentCard();
+  const powerTier = RARITY_TIER_PF2E[card.itemRarity] || 1;
+  const chargesLikely = powerTier >= 3 && Math.random() < 0.6;
+  const concept = generateItemConcept(card.itemCategory, powerTier, chargesLikely);
+  card.name = concept.name;
+  card.itemDescription = concept.description;
+  card.itemEffect = concept.effect;
+  card.itemCharges = chargesLikely ? (powerTier + 1) : null;
+  card.itemRecharge = chargesLikely ? concept.charges : '';
+  card.itemActivate = chargesLikely ? '1 Action (command)' : '';
+  renderForm();
+  renderCard();
+  saveDeck();
+});
 
 function updateHints() {
   const card = currentCard();
@@ -505,7 +557,48 @@ function renderImagePreview() {
 }
 
 // ===== Card rendering =====
+function itemCardInnerHtml(card) {
+  let html = '';
+  const sub = (text) => escapeHtml(applySubs(text, card));
+  const hasImage = !!card.image && card.imageAlign !== 'none';
+  const cornerSide = (hasImage && card.imageAlign === 'right') ? 'left' : 'right';
+  const iconSvg = getTypeIcon(card.itemCategory);
+
+  if (hasImage) {
+    const w = card.imageWidth || 170;
+    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}"
+      style="float:${card.imageAlign}; width:${w}px; shape-outside:url('${card.image}');" alt="">`;
+  }
+
+  html += `<div class="corner-tag corner-${cornerSide}">
+      <div class="corner-tier">LVL ${escapeHtml(card.itemLevel)}</div>
+      <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(card.itemRarity)}</div>
+    </div>`;
+
+  html += `<div class="card-name" style="padding-${cornerSide}:70px">${escapeHtml(card.name)}</div>`;
+  html += `<div class="trait-chip-row">
+      <span class="trait-chip">${escapeHtml(card.itemCategory)}</span>
+      <span class="trait-chip">${escapeHtml(card.itemRarity)}</span>
+      ${card.bulk ? `<span class="trait-chip">Bulk ${escapeHtml(card.bulk)}</span>` : ''}
+      ${card.price ? `<span class="trait-chip">${escapeHtml(card.price)}</span>` : ''}
+    </div>`;
+  if (card.itemDescription) html += `<div class="card-desc">${sub(card.itemDescription)}</div>`;
+
+  if (card.itemActivate) html += `<div class="card-line"><b>Activate</b> ${sub(card.itemActivate)}</div>`;
+
+  html += `<div class="section-divider">Effect</div>`;
+  html += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
+
+  if (card.itemCharges) {
+    html += `<div class="card-line" style="margin-top:10px"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
+  }
+
+  html += `<div class="card-footer">Pathfinder 2E Compatible &middot; original item concept</div>`;
+  return html;
+}
+
 function cardInnerHtml(card) {
+  if (card.cardType === 'item') return itemCardInnerHtml(card);
   let html = '';
   const sub = (text) => escapeHtml(applySubs(text, card));
   const hasImage = !!card.image && card.imageAlign !== 'none';

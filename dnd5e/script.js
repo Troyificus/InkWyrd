@@ -6,6 +6,7 @@ const FEATURE_CATEGORIES = ['Trait', 'Action', 'Bonus Action', 'Reaction', 'Lege
 function newCard(overrides = {}) {
   return Object.assign({
     id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
+    cardType: 'creature',
     format: '2024',
     name: 'New Creature',
     size: 'Medium',
@@ -34,7 +35,15 @@ function newCard(overrides = {}) {
     imageWidth: 170,
     features: [
       { category: 'Action', name: 'Slam', text: 'Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6+2) bludgeoning damage.' }
-    ]
+    ],
+    itemCategory: 'weapon',
+    itemRarity: 'Common',
+    requiresAttunement: false,
+    attunementRequirement: '',
+    itemDescription: '',
+    itemEffect: '',
+    itemCharges: null,
+    itemRecharge: ''
   }, overrides);
 }
 
@@ -89,6 +98,15 @@ function migrateCard(card) {
   if (!card.imageWidth) card.imageWidth = 170;
   if (card.proficiencyBonus === undefined) card.proficiencyBonus = 2;
   if (!card.format) card.format = '2024';
+  if (!card.cardType) card.cardType = 'creature';
+  if (!card.itemCategory) card.itemCategory = 'weapon';
+  if (!card.itemRarity) card.itemRarity = 'Common';
+  if (card.requiresAttunement === undefined) card.requiresAttunement = false;
+  if (card.attunementRequirement === undefined) card.attunementRequirement = '';
+  if (card.itemDescription === undefined) card.itemDescription = '';
+  if (card.itemEffect === undefined) card.itemEffect = '';
+  if (card.itemCharges === undefined) card.itemCharges = null;
+  if (card.itemRecharge === undefined) card.itemRecharge = '';
   return card;
 }
 
@@ -131,14 +149,46 @@ function renderForm() {
   const card = currentCard();
   document.querySelectorAll('[data-field]').forEach(el => {
     const field = el.dataset.field;
-    if (field in card) el.value = card[field];
+    if (field in card) {
+      if (el.type === 'checkbox') el.checked = !!card[field];
+      else el.value = card[field];
+    }
   });
   document.querySelectorAll('.type-btn[data-format]').forEach(b => b.classList.toggle('active', b.dataset.format === card.format));
+  document.querySelectorAll('.type-btn[data-cardtype]').forEach(b => b.classList.toggle('active', b.dataset.cardtype === card.cardType));
+  document.querySelectorAll('.item-only').forEach(el => el.hidden = card.cardType !== 'item');
+  document.querySelectorAll('.not-item-only').forEach(el => el.hidden = card.cardType === 'item');
   renderFeatureInputs();
   renderVariableInputs();
   renderImagePreview();
   updateHints();
 }
+
+document.querySelectorAll('.type-btn[data-cardtype]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentCard().cardType = btn.dataset.cardtype;
+    renderForm();
+    renderCard();
+    saveDeck();
+  });
+});
+
+const RARITY_TIER_5E = { Common: 1, Uncommon: 2, Rare: 3, 'Very Rare': 4, Legendary: 5, Artifact: 5 };
+
+$('randomize-item').addEventListener('click', () => {
+  const card = currentCard();
+  const powerTier = RARITY_TIER_5E[card.itemRarity] || 1;
+  const chargesLikely = powerTier >= 3 && Math.random() < 0.6;
+  const concept = generateItemConcept(card.itemCategory, powerTier, chargesLikely);
+  card.name = concept.name;
+  card.itemDescription = concept.description;
+  card.itemEffect = concept.effect;
+  card.itemCharges = chargesLikely ? (powerTier + 1) : null;
+  card.itemRecharge = chargesLikely ? concept.charges : '';
+  renderForm();
+  renderCard();
+  saveDeck();
+});
 
 function updateHints() {
   const card = currentCard();
@@ -184,7 +234,8 @@ document.getElementById('statblock-form').addEventListener('input', (e) => {
   const field = el.dataset.field;
   if (!field) return;
   const card = currentCard();
-  card[field] = el.type === 'number' ? Number(el.value) : el.value;
+  if (el.type === 'checkbox') card[field] = el.checked;
+  else card[field] = el.type === 'number' ? Number(el.value) : el.value;
   if (field === 'name') renderDeckList();
   renderCard();
   updateHints();
@@ -466,7 +517,45 @@ function renderImagePreview() {
 }
 
 // ===== Card rendering =====
+function itemCardInnerHtml(card) {
+  let html = '';
+  const sub = (text) => escapeHtml(applySubs(text, card));
+  const hasImage = !!card.image && card.imageAlign !== 'none';
+  const cornerSide = (hasImage && card.imageAlign === 'right') ? 'left' : 'right';
+  const iconSvg = getTypeIcon(card.itemCategory);
+
+  if (hasImage) {
+    const w = card.imageWidth || 170;
+    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}"
+      style="float:${card.imageAlign}; width:${w}px; shape-outside:url('${card.image}');" alt="">`;
+  }
+
+  html += `<div class="corner-tag corner-${cornerSide}">
+      <div class="corner-tier">${escapeHtml(card.itemRarity)}</div>
+      <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(card.itemCategory)}</div>
+    </div>`;
+
+  html += `<div class="card-name" style="padding-${cornerSide}:70px">${escapeHtml(card.name)}</div>`;
+  html += `<div class="trait-chip-row">
+      <span class="trait-chip">${escapeHtml(card.itemCategory)}</span>
+      <span class="trait-chip">${escapeHtml(card.itemRarity)}</span>
+      ${card.requiresAttunement ? `<span class="trait-chip">Requires Attunement${card.attunementRequirement ? ' ' + escapeHtml(card.attunementRequirement) : ''}</span>` : ''}
+    </div>`;
+  if (card.itemDescription) html += `<div class="card-desc">${sub(card.itemDescription)}</div>`;
+
+  html += `<div class="section-divider">Effect</div>`;
+  html += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
+
+  if (card.itemCharges) {
+    html += `<div class="card-line" style="margin-top:10px"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
+  }
+
+  html += `<div class="card-footer">D&amp;D 5E Compatible &middot; original item concept</div>`;
+  return html;
+}
+
 function cardInnerHtml(card) {
+  if (card.cardType === 'item') return itemCardInnerHtml(card);
   let html = '';
   const sub = (text) => escapeHtml(applySubs(text, card));
   const hasImage = !!card.image && card.imageAlign !== 'none';

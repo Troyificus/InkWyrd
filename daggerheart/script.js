@@ -28,6 +28,11 @@ function newCard(overrides = {}) {
     image: null,
     imageAlign: 'right',
     imageWidth: 170,
+    itemCategory: 'weapon',
+    itemRarity: 'Common',
+    itemEffect: '',
+    itemCharges: null,
+    itemRecharge: '',
     features: [{ type: 'Passive', name: 'New Feature', text: 'Describe what it does.' }]
   }, overrides);
 }
@@ -105,6 +110,11 @@ function migrateCard(card) {
   if (card.image === undefined) card.image = null;
   if (!card.imageAlign) card.imageAlign = 'right';
   if (!card.imageWidth) card.imageWidth = 170;
+  if (!card.itemCategory) card.itemCategory = 'weapon';
+  if (!card.itemRarity) card.itemRarity = 'Common';
+  if (card.itemEffect === undefined) card.itemEffect = '';
+  if (card.itemCharges === undefined) card.itemCharges = null;
+  if (card.itemRecharge === undefined) card.itemRecharge = '';
   return card;
 }
 
@@ -148,6 +158,8 @@ function renderForm() {
   document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === card.cardType));
   document.querySelectorAll('.adv-only').forEach(el => el.hidden = card.cardType !== 'adversary');
   document.querySelectorAll('.env-only').forEach(el => el.hidden = card.cardType !== 'environment');
+  document.querySelectorAll('.item-only').forEach(el => el.hidden = card.cardType !== 'item');
+  document.querySelectorAll('.not-item-only').forEach(el => el.hidden = card.cardType === 'item');
 
   document.querySelectorAll('[data-field]').forEach(el => {
     const field = el.dataset.field;
@@ -208,6 +220,25 @@ document.querySelectorAll('.type-btn').forEach(btn => {
     renderCard();
     saveDeck();
   });
+});
+
+const DH_RARITY_TIER = { Common: 1, Uncommon: 2, Rare: 3, Legendary: 4 };
+
+$('randomize-item').addEventListener('click', () => {
+  const card = currentCard();
+  const basePower = DH_RARITY_TIER[card.itemRarity] || 1;
+  const tierBoost = Math.floor((card.tier - 1) / 1.3);
+  const powerTier = Math.max(1, Math.min(5, basePower + tierBoost));
+  const chargesLikely = powerTier >= 3 && Math.random() < 0.6;
+  const concept = generateItemConcept(card.itemCategory, powerTier, chargesLikely);
+  card.name = concept.name;
+  card.description = concept.description;
+  card.itemEffect = concept.effect;
+  card.itemCharges = chargesLikely ? (powerTier + 1) : null;
+  card.itemRecharge = chargesLikely ? concept.charges : '';
+  renderForm();
+  renderCard();
+  saveDeck();
 });
 
 document.getElementById('statblock-form').addEventListener('input', (e) => {
@@ -510,7 +541,44 @@ function featureIconFor(type) {
   return FEATURE_ICONS[t] || FEATURE_ICONS.passive;
 }
 
+function itemCardInnerHtml(card) {
+  let html = '';
+  const sub = (text) => escapeHtml(applySubs(text, card));
+  const hasImage = !!card.image && card.imageAlign !== 'none';
+  const cornerSide = (hasImage && card.imageAlign === 'right') ? 'left' : 'right';
+  const iconSvg = getTypeIcon(card.itemCategory);
+
+  if (hasImage) {
+    const w = card.imageWidth || 170;
+    html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}"
+      style="float:${card.imageAlign}; width:${w}px; shape-outside:url('${card.image}');" alt="">`;
+  }
+
+  html += `<div class="corner-tag corner-${cornerSide}">
+      <div class="corner-tier">T${escapeHtml(card.tier)}</div>
+      <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(card.itemRarity)}</div>
+    </div>`;
+
+  html += `<div class="card-name" style="padding-${cornerSide}:70px">${escapeHtml(card.name)}</div>`;
+  html += `<div class="trait-chip-row">
+      <span class="trait-chip">${escapeHtml(card.itemCategory)}</span>
+      <span class="trait-chip">${escapeHtml(card.itemRarity)}</span>
+    </div>`;
+  if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
+
+  html += `<div class="section-divider">Effect</div>`;
+  html += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
+
+  if (card.itemCharges) {
+    html += `<div class="card-line" style="margin-top:10px"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
+  }
+
+  html += `<div class="card-footer">Daggerheart Compatible &middot; original item concept</div>`;
+  return html;
+}
+
 function cardInnerHtml(card) {
+  if (card.cardType === 'item') return itemCardInnerHtml(card);
   let html = '';
   const isAdv = card.cardType === 'adversary';
   const iconSvg = getTypeIcon(isAdv ? card.type : card.envType);

@@ -38,6 +38,10 @@
   </section>
 
   <section class="form-panel" aria-label="Statblock editor">
+    <div class="type-toggle">
+      <button type="button" class="type-btn active" data-cardtype="creature">Creature</button>
+      <button type="button" class="type-btn" data-cardtype="item">Magic Item</button>
+    </div>
     <form id="statblock-form">
 
       <fieldset>
@@ -55,7 +59,7 @@
         <label>Image width (px) <input type="range" data-field="imageWidth" min="100" max="260" step="10"></label>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="not-item-only">
         <legend>Basics</legend>
         <label>Name <input type="text" data-field="name"></label>
         <label>Level <input type="number" data-field="level" min="-1" max="25"></label>
@@ -77,7 +81,47 @@
         <label>Description <textarea data-field="description" rows="2" placeholder="Optional flavor text"></textarea></label>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="item-only" hidden>
+        <legend>Item Basics</legend>
+        <label>Name <input type="text" data-field="name"></label>
+        <label>Item Category
+          <select data-field="itemCategory">
+            <option value="weapon">Weapon</option>
+            <option value="armor">Armor</option>
+            <option value="wearable">Wearable</option>
+            <option value="consumable">Consumable</option>
+            <option value="wondrous">Wondrous Item</option>
+          </select>
+        </label>
+        <label>Rarity
+          <select data-field="itemRarity">
+            <option value="Common">Common</option>
+            <option value="Uncommon">Uncommon</option>
+            <option value="Rare">Rare</option>
+            <option value="Unique">Unique</option>
+          </select>
+        </label>
+        <label>Item Level <input type="number" data-field="itemLevel" min="0" max="25"></label>
+        <label>Bulk <input type="text" data-field="bulk" placeholder="L, 1, or —"></label>
+        <label>Price <input type="text" data-field="price" placeholder="35 gp"></label>
+        <label>Description <textarea data-field="itemDescription" rows="2" placeholder="Optional flavor text"></textarea></label>
+      </fieldset>
+
+      <fieldset class="item-only" hidden>
+        <legend>Random Item Generator</legend>
+        <p class="hint">Roll a full original item concept — name, description, and effect — based on the Category and Rarity above. You can edit anything afterward.</p>
+        <button type="button" id="randomize-item">🎲 Randomize Item</button>
+      </fieldset>
+
+      <fieldset class="item-only" hidden>
+        <legend>Activation &amp; Effect</legend>
+        <label>Activate (leave blank if passive) <input type="text" data-field="itemActivate" placeholder="1 Action (command)"></label>
+        <label>Effect <textarea data-field="itemEffect" rows="3" placeholder="What the item does mechanically"></textarea></label>
+        <label>Charges (leave blank if not applicable) <input type="number" data-field="itemCharges" min="0"></label>
+        <label>Recharge <input type="text" data-field="itemRecharge" placeholder="Recharges at the next dawn"></label>
+      </fieldset>
+
+      <fieldset class="not-item-only">
         <legend>Senses &amp; Skills</legend>
         <label>Perception <input type="text" data-field="perception" placeholder="+14"><span class="field-hint" id="hint-perception"></span></label>
         <label>Senses <input type="text" data-field="senses" placeholder="darkvision, scent (imprecise) 30 feet"></label>
@@ -86,7 +130,7 @@
         <label>Items <input type="text" data-field="items" placeholder="+1 greataxe, hide armor"></label>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="not-item-only">
         <legend>Ability Modifiers</legend>
         <div class="ability-grid">
           <label>STR <input type="number" data-field="str"></label>
@@ -98,7 +142,7 @@
         </div>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="not-item-only">
         <legend>Defense</legend>
         <label>AC <input type="text" data-field="ac" placeholder="24"><span class="field-hint" id="hint-ac"></span></label>
         <label>Fortitude <input type="text" data-field="fort" placeholder="+16"><span class="field-hint" id="hint-fort"></span></label>
@@ -110,12 +154,12 @@
         <label>Weaknesses <input type="text" data-field="weaknesses"></label>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="not-item-only">
         <legend>Speed</legend>
         <label>Speed <input type="text" data-field="speed" placeholder="25 feet, climb 25 feet"></label>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="not-item-only">
         <legend>Strikes</legend>
         <p class="hint">Click its header to expand and edit.</p>
         <div class="quick-add-row">
@@ -132,7 +176,7 @@
         <button type="button" id="add-variable">+ Add Variable</button>
       </details>
 
-      <fieldset>
+      <fieldset class="not-item-only">
         <legend>Abilities, Reactions &amp; Free Actions</legend>
         <p class="hint">Pick a category to add an ability — click its header to expand and edit.</p>
         <div class="quick-add-row">
@@ -184,6 +228,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="icons.js"></script>
+<script src="../assets/item-words.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

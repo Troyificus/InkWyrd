@@ -20,6 +20,8 @@ All three generators are functional:
 - Four shared themes (parchment / ink / verdant / arcane) with an accent color picker
 - Original SVG iconography per system — none of it derived from official artwork or proprietary icon fonts (e.g. Pathfinder's action-cost icons are represented as plain text labels, not the trademarked Pathfinder-Icons font)
 - D&D 5E: toggle between 2014-style (narrow single column, separate resistance/immunity lines) and 2024-style (wide landscape layout, explicit Initiative line, combined Immunities line, two-column Traits/Actions) presentation — structure only, not official fonts/colors/backgrounds
+- Analogue balance-guidance hints (CR/Level/Tier-based, our own approximate formulas — not a reproduction of any publisher's monster-building tables): quiet inline text under AC, HP, saves, attack bonus, etc. that flags when a value looks off for the current power level
+- Magic Item card type in all three generators, alongside the existing creature/adversary/environment types, with a "Randomize Item" button that procedurally generates an original name, description, and effect from a shared word-pool engine (`/assets/item-words.js`) — scaled by the chosen Category and Rarity, fully editable afterward. No AI, no backend, no network calls — everything runs client-side from static word lists.
 
 ## Roadmap
 
@@ -56,6 +58,9 @@ Built from the 5E System Reference Document (5.1 and 5.2), released by Wizards o
 
 ### Pathfinder 2E (`/pathfinder2e/`)
 Built from Pathfinder Second Edition rules text released under the [ORC License](https://paizo.com/licenses) (Open RPG Creative License). The ORC covers rules mechanics only — it does **not** cover Paizo's trademarks or "Restricted Material" (character names, settings, logos, the Pathfinder-Icons font). This project doesn't use the Pathfinder or Paizo names in its product title, doesn't use Paizo's compatibility logos or proprietary icon font, and uses original visual design throughout. "Pathfinder" is a registered trademark of Paizo Inc.; this project is unofficial fan content, not affiliated with or endorsed by Paizo.
+
+### Random Magic Item Generator
+The random item generator (all three systems) composes original item concepts from `/assets/item-words.js` — original prefix/noun/origin/effect word pools written for this project. It does not reproduce named items, effects, or tables from any publisher's books (e.g. it will never generate something claiming to be a *Bag of Holding* or a *Vorpal Sword* — those are the publishers' own creative content, not generic mechanics).
 
 If monetizing generated content or these tools (e.g. via Ko-fi), stay within each license's terms — SRD/rules text only, original art/logos, no implication of official status.
 
