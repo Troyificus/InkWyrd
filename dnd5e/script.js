@@ -584,24 +584,23 @@ function itemCardInnerHtml(card) {
     statHtml += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
   }
 
-  if (hasImage && statHtml) {
+  if (hasImage) {
+    statHtml += `<div class="section-divider">Effect</div>`;
+    statHtml += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
+    if (card.itemCharges) {
+      statHtml += `<div class="card-line" style="margin-top:10px"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
+    }
     const w = card.imageWidth || 170;
     const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
     const statCol = `<div class="stat-col">${statHtml}</div>`;
     html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
   } else {
     html += statHtml;
-    if (hasImage) {
-      const w = card.imageWidth || 170;
-      html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
+    html += `<div class="section-divider">Effect</div>`;
+    html += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
+    if (card.itemCharges) {
+      html += `<div class="card-line" style="margin-top:10px"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
     }
-  }
-
-  html += `<div class="section-divider">Effect</div>`;
-  html += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
-
-  if (card.itemCharges) {
-    html += `<div class="card-line" style="margin-top:10px"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
   }
 
   html += `<div class="card-footer">D&amp;D 5E Compatible &middot; original item concept</div>`;
@@ -659,15 +658,6 @@ function cardInnerHtml(card) {
   });
   coreHtml += `</div>`;
 
-  if (hasImage) {
-    const w = card.imageWidth || 170;
-    const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
-    const statCol = `<div class="stat-col">${coreHtml}</div>`;
-    html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
-  } else {
-    html += coreHtml;
-  }
-
   const statLines = () => {
     let s = '';
     if (card.savingThrows) s += `<div class="card-line"><b>Saving Throws</b> ${sub(card.savingThrows)}</div>`;
@@ -702,14 +692,30 @@ function cardInnerHtml(card) {
     return f;
   };
 
-  if (is2024) {
-    html += `<div class="statblock-columns">`;
-    html += `<div class="col-left">${statLines()}</div>`;
-    html += `<div class="col-right">${featureBlocks()}</div>`;
-    html += `</div>`;
+  if (hasImage) {
+    // Fold saves/skills/senses and the Traits/Actions/etc. sections into the
+    // same column as the core stats, so they fill the space beside the image
+    // instead of waiting until below it — each divider is then a child of
+    // the narrower column and can never cross the image. This replaces the
+    // two-column stat/feature split (there's no room for two more columns
+    // once the image has one), so it applies for both card formats.
+    coreHtml += statLines();
+    coreHtml += featureBlocks().replace(/col-divider/g, '');
+    const w = card.imageWidth || 170;
+    const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
+    const statCol = `<div class="stat-col">${coreHtml}</div>`;
+    html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
   } else {
-    html += statLines();
-    html += featureBlocks().replace(/col-divider/g, '');
+    html += coreHtml;
+    if (is2024) {
+      html += `<div class="statblock-columns">`;
+      html += `<div class="col-left">${statLines()}</div>`;
+      html += `<div class="col-right">${featureBlocks()}</div>`;
+      html += `</div>`;
+    } else {
+      html += statLines();
+      html += featureBlocks().replace(/col-divider/g, '');
+    }
   }
 
   html += `<div class="card-footer">D&amp;D 5E Compatible &middot; built from the SRD under CC-BY-4.0</div>`;

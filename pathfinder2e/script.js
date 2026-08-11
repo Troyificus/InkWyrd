@@ -655,24 +655,23 @@ function itemCardInnerHtml(card) {
   if (card.itemActivate) statHtml += `<div class="card-line"><b>Activate</b> ${sub(card.itemActivate)}</div>`;
   if (card.itemTrigger) statHtml += `<div class="card-line"><b>Trigger</b> ${sub(card.itemTrigger)}</div>`;
 
-  if (hasImage && statHtml) {
+  if (hasImage) {
+    statHtml += `<div class="section-divider">Effect</div>`;
+    statHtml += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
+    if (card.itemFrequency) {
+      statHtml += `<div class="card-line" style="margin-top:10px"><b>Frequency:</b> ${sub(card.itemFrequency)}</div>`;
+    }
     const w = card.imageWidth || 170;
     const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
     const statCol = `<div class="stat-col">${statHtml}</div>`;
     html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
   } else {
     html += statHtml;
-    if (hasImage) {
-      const w = card.imageWidth || 170;
-      html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
+    html += `<div class="section-divider">Effect</div>`;
+    html += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
+    if (card.itemFrequency) {
+      html += `<div class="card-line" style="margin-top:10px"><b>Frequency:</b> ${sub(card.itemFrequency)}</div>`;
     }
-  }
-
-  html += `<div class="section-divider">Effect</div>`;
-  html += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
-
-  if (card.itemFrequency) {
-    html += `<div class="card-line" style="margin-top:10px"><b>Frequency:</b> ${sub(card.itemFrequency)}</div>`;
   }
 
   html += `<div class="card-footer">Pathfinder 2E Compatible &middot; original item concept</div>`;
@@ -715,39 +714,46 @@ function cardInnerHtml(card) {
 
   if (card.items) coreHtml += `<div class="card-line"><b>Items</b> ${sub(card.items)}</div>`;
 
+  // Defense/Offense/Abilities, folded into the same column when an image is
+  // present so they fill the space beside it instead of waiting below —
+  // each divider becomes a child of the narrower column and can never cross
+  // the image.
+  let restHtml = '';
+  restHtml += `<div class="section-divider">Defense</div>`;
+  restHtml += `<div class="card-line"><b>AC</b> ${sub(card.ac)}; <b>Fort</b> ${sub(card.fort)}, <b>Ref</b> ${sub(card.ref)}, <b>Will</b> ${sub(card.will)}</div>`;
+  restHtml += `<div class="card-line"><b>HP</b> ${sub(card.hp)}</div>`;
+  if (card.immunities) restHtml += `<div class="card-line"><b>Immunities</b> ${sub(card.immunities)}</div>`;
+  if (card.resistances) restHtml += `<div class="card-line"><b>Resistances</b> ${sub(card.resistances)}</div>`;
+  if (card.weaknesses) restHtml += `<div class="card-line"><b>Weaknesses</b> ${sub(card.weaknesses)}</div>`;
+
+  restHtml += `<div class="section-divider">Offense</div>`;
+  restHtml += `<div class="card-line"><b>Speed</b> ${sub(card.speed)}</div>`;
+  (card.attacks || []).forEach(a => {
+    restHtml += `<div class="card-line"><b>${escapeHtml(a.type)}</b> (${escapeHtml(a.actionCost)}) ${sub(a.name)} ${sub(a.bonus)}, <b>Damage</b> ${sub(a.damage)}</div>`;
+  });
+
+  FEATURE_CATEGORIES.forEach(cat => {
+    const items = card.features.filter(f => f.category === cat);
+    if (!items.length) return;
+    restHtml += `<div class="section-divider">${cat === 'Ability' ? 'Abilities' : cat + 's'}</div>`;
+    items.forEach(f => {
+      restHtml += `<div class="card-feature">
+        <div class="feat-head"><span class="feat-name">${sub(f.name)}.</span><span class="feat-icon">${getFeatureIcon(cat)}</span></div>
+        <div class="feat-text">${sub(f.text)}</div>
+      </div>`;
+    });
+  });
+
   if (hasImage) {
+    coreHtml += restHtml;
     const w = card.imageWidth || 170;
     const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
     const statCol = `<div class="stat-col">${coreHtml}</div>`;
     html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
   } else {
     html += coreHtml;
+    html += restHtml;
   }
-
-  html += `<div class="section-divider">Defense</div>`;
-  html += `<div class="card-line"><b>AC</b> ${sub(card.ac)}; <b>Fort</b> ${sub(card.fort)}, <b>Ref</b> ${sub(card.ref)}, <b>Will</b> ${sub(card.will)}</div>`;
-  html += `<div class="card-line"><b>HP</b> ${sub(card.hp)}</div>`;
-  if (card.immunities) html += `<div class="card-line"><b>Immunities</b> ${sub(card.immunities)}</div>`;
-  if (card.resistances) html += `<div class="card-line"><b>Resistances</b> ${sub(card.resistances)}</div>`;
-  if (card.weaknesses) html += `<div class="card-line"><b>Weaknesses</b> ${sub(card.weaknesses)}</div>`;
-
-  html += `<div class="section-divider">Offense</div>`;
-  html += `<div class="card-line"><b>Speed</b> ${sub(card.speed)}</div>`;
-  (card.attacks || []).forEach(a => {
-    html += `<div class="card-line"><b>${escapeHtml(a.type)}</b> (${escapeHtml(a.actionCost)}) ${sub(a.name)} ${sub(a.bonus)}, <b>Damage</b> ${sub(a.damage)}</div>`;
-  });
-
-  FEATURE_CATEGORIES.forEach(cat => {
-    const items = card.features.filter(f => f.category === cat);
-    if (!items.length) return;
-    html += `<div class="section-divider">${cat === 'Ability' ? 'Abilities' : cat + 's'}</div>`;
-    items.forEach(f => {
-      html += `<div class="card-feature">
-        <div class="feat-head"><span class="feat-name">${sub(f.name)}.</span><span class="feat-icon">${getFeatureIcon(cat)}</span></div>
-        <div class="feat-text">${sub(f.text)}</div>
-      </div>`;
-    });
-  });
 
   html += `<div class="card-footer">Pathfinder 2E Compatible &middot; built from rules text under the ORC License</div>`;
   return html;

@@ -365,30 +365,36 @@ function cardInnerHtml(card) {
     statHtml += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
   }
 
-  if (hasImage && statHtml) {
+  const effectLine = card.itemTrigger
+    ? `<b>When</b> ${sub(card.itemTrigger)}, ${sub(card.itemEffect) || '<i>describe what happens.</i>'}`
+    : (sub(card.itemEffect) || '<i>No effect written yet.</i>');
+
+  if (hasImage) {
+    // Fold Effect into the same column as the stats, so it fills the space
+    // beside the image instead of waiting until below it — the divider is
+    // then a child of the narrower column and can never cross the image.
+    statHtml += `<div class="section-divider">Effect</div>`;
+    if (card.itemFeatureName) {
+      statHtml += `<div class="card-feature"><div class="feat-head"><span class="feat-name">${sub(card.itemFeatureName)}</span></div></div>`;
+    }
+    statHtml += `<div class="card-line">${effectLine}</div>`;
+    if (card.itemUsage) {
+      statHtml += `<div class="card-line" style="margin-top:10px"><b>Usage:</b> ${sub(card.itemUsage)}</div>`;
+    }
     const w = card.imageWidth || 170;
     const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
     const statCol = `<div class="stat-col">${statHtml}</div>`;
     html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
   } else {
     html += statHtml;
-    if (hasImage) {
-      const w = card.imageWidth || 170;
-      html += `<img class="card-illustration align-${card.imageAlign}" src="${card.image}" style="width:${w}px;" alt="">`;
+    html += `<div class="section-divider">Effect</div>`;
+    if (card.itemFeatureName) {
+      html += `<div class="card-feature"><div class="feat-head"><span class="feat-name">${sub(card.itemFeatureName)}</span></div></div>`;
     }
-  }
-
-  html += `<div class="section-divider">Effect</div>`;
-  if (card.itemFeatureName) {
-    html += `<div class="card-feature"><div class="feat-head"><span class="feat-name">${sub(card.itemFeatureName)}</span></div></div>`;
-  }
-  const effectLine = card.itemTrigger
-    ? `<b>When</b> ${sub(card.itemTrigger)}, ${sub(card.itemEffect) || '<i>describe what happens.</i>'}`
-    : (sub(card.itemEffect) || '<i>No effect written yet.</i>');
-  html += `<div class="card-line">${effectLine}</div>`;
-
-  if (card.itemUsage) {
-    html += `<div class="card-line" style="margin-top:10px"><b>Usage:</b> ${sub(card.itemUsage)}</div>`;
+    html += `<div class="card-line">${effectLine}</div>`;
+    if (card.itemUsage) {
+      html += `<div class="card-line" style="margin-top:10px"><b>Usage:</b> ${sub(card.itemUsage)}</div>`;
+    }
   }
 
   html += `<div class="card-footer">Daggerheart Compatible &middot; original item concept</div>`;

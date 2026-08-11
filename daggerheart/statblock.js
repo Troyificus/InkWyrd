@@ -586,22 +586,34 @@ function cardInnerHtml(card) {
   }
 
   if (hasImage) {
+    // Fold Features into the same column as the stats, so it fills the
+    // space beside the image instead of waiting until below it — the
+    // divider is then a child of the narrower column, so its rule line
+    // is physically bounded by that column and can never cross the image.
+    if (card.features.length) {
+      statHtml += `<div class="section-divider">Features</div>`;
+      card.features.forEach(f => {
+        statHtml += `<div class="card-feature">
+          <div class="feat-head"><span class="feat-name">${sub(f.name)}</span><span class="feat-type-tag">— ${escapeHtml(f.type)}</span><span class="feat-icon">${featureIconFor(f.type)}</span></div>
+          <div class="feat-text">${sub(f.text)}</div>
+        </div>`;
+      });
+    }
     const w = card.imageWidth || 170;
     const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
     const statCol = `<div class="stat-col">${statHtml}</div>`;
     html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
   } else {
     html += statHtml;
-  }
-
-  if (card.features.length) {
-    html += `<div class="section-divider">Features</div>`;
-    card.features.forEach(f => {
-      html += `<div class="card-feature">
-        <div class="feat-head"><span class="feat-name">${sub(f.name)}</span><span class="feat-type-tag">— ${escapeHtml(f.type)}</span><span class="feat-icon">${featureIconFor(f.type)}</span></div>
-        <div class="feat-text">${sub(f.text)}</div>
-      </div>`;
-    });
+    if (card.features.length) {
+      html += `<div class="section-divider">Features</div>`;
+      card.features.forEach(f => {
+        html += `<div class="card-feature">
+          <div class="feat-head"><span class="feat-name">${sub(f.name)}</span><span class="feat-type-tag">— ${escapeHtml(f.type)}</span><span class="feat-icon">${featureIconFor(f.type)}</span></div>
+          <div class="feat-text">${sub(f.text)}</div>
+        </div>`;
+      });
+    }
   }
 
   if (isAdv) {
