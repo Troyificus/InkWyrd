@@ -106,15 +106,25 @@
       </fieldset>
 
       <fieldset>
-        <legend>Effect &amp; Charges</legend>
-        <label>Effect <textarea data-field="itemEffect" rows="3" placeholder="What the item does mechanically"></textarea></label>
-        <label>Charges (leave blank if not applicable) <input type="number" data-field="itemCharges" min="0"></label>
-        <label>Recharge <input type="text" data-field="itemRecharge" placeholder="Recovers 1d4 charges each dawn"></label>
+        <legend>Trigger, Effect &amp; Usage</legend>
+        <p class="hint">Daggerheart items usually read as "When [trigger], [effect]" and rarely track numeric charges the way D&amp;D magic items do — most are either always active or limited to once per rest or session.</p>
+        <label>Trigger (optional) <input type="text" data-field="itemTrigger" placeholder="When you would mark your last Stress"></label>
+        <label>Effect <textarea data-field="itemEffect" rows="3" placeholder="roll a d6. On a 5+, don't mark it."></textarea></label>
+        <label>Usage
+          <input type="text" data-field="itemUsage" list="dh-usage-list" placeholder="Always active">
+        </label>
+        <datalist id="dh-usage-list">
+          <option value="Always active"><option value="Once per short rest"><option value="Once per long rest">
+          <option value="Once per session"><option value="Unlimited">
+        </datalist>
+        <label>Granted Feature Name (optional — for items that attach a named feature to a weapon or armor)
+          <input type="text" data-field="itemFeatureName" placeholder="Brutal">
+        </label>
       </fieldset>
 
       <details class="fieldset-details">
         <summary>Custom Variables</summary>
-        <p class="hint">Define a value once, then reference it anywhere below by typing its token in brackets — e.g. a variable named <code>STR</code> can be used as <code>[STR]</code> in the description or effect field.</p>
+        <p class="hint">Define a value once, then reference it anywhere below by typing its token in brackets — e.g. a variable named <code>STR</code> can be used as <code>[STR]</code> in the description or effect field. The built-in <code>[TIER]</code> token is already available and pulls from the Tier field above — many real Daggerheart items scale directly with the bearer's current Tier (e.g. "gain a bonus to the damage roll equal to your current Tier").</p>
         <div id="variables-list"></div>
         <button type="button" id="add-variable">+ Add Variable</button>
       </details>

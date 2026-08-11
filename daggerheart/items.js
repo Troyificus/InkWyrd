@@ -19,9 +19,10 @@ function newCard(overrides = {}) {
     itemBaseStats: '',
     itemRange: '',
     itemRarity: 'Common',
+    itemTrigger: '',
     itemEffect: '',
-    itemCharges: null,
-    itemRecharge: ''
+    itemUsage: 'Always active',
+    itemFeatureName: ''
   }, overrides);
 }
 
@@ -35,7 +36,8 @@ function starterCard() {
     itemRange: 'Range 150/600 ft',
     itemRarity: 'Uncommon',
     description: 'Said to have come from a shrine reclaimed by the tide.',
-    itemEffect: 'Deals an additional 1d6 cold damage on a hit.'
+    itemEffect: 'this weapon deals an additional 1d6 cold damage on a hit.',
+    itemUsage: 'Always active'
   });
 }
 
@@ -65,8 +67,18 @@ function migrateCard(card) {
   if (card.itemRange === undefined) card.itemRange = '';
   if (!card.itemRarity) card.itemRarity = 'Common';
   if (card.itemEffect === undefined) card.itemEffect = '';
-  if (card.itemCharges === undefined) card.itemCharges = null;
-  if (card.itemRecharge === undefined) card.itemRecharge = '';
+  // Older saves used numeric D&D-style charges/recharge; fold those into a
+  // single free-text Usage line, matching how Daggerheart items actually read.
+  if (card.itemCharges !== undefined || card.itemRecharge !== undefined) {
+    if (card.itemUsage === undefined) {
+      card.itemUsage = card.itemRecharge || (card.itemCharges ? `${card.itemCharges} uses` : 'Always active');
+    }
+    delete card.itemCharges;
+    delete card.itemRecharge;
+  }
+  if (card.itemUsage === undefined) card.itemUsage = 'Always active';
+  if (card.itemTrigger === undefined) card.itemTrigger = '';
+  if (card.itemFeatureName === undefined) card.itemFeatureName = '';
   if (!card.tier) card.tier = 1;
   return card;
 }
@@ -129,21 +141,37 @@ document.getElementById('statblock-form').addEventListener('input', (e) => {
 
 const DH_RARITY_TIER = { Common: 1, Uncommon: 2, Rare: 3, Legendary: 4 };
 
+// Daggerheart items rarely track numeric charges — most are either always
+// active or gated by a rest/session, so the randomizer picks from that
+// instead of the D&D-style charge/recharge pool the shared engine uses.
+const DH_USAGE_BY_TIER = {
+  1: ['Always active', 'Unlimited'],
+  2: ['Always active', 'Once per short rest'],
+  3: ['Once per short rest', 'Once per long rest'],
+  4: ['Once per long rest', 'Once per session'],
+  5: ['Once per session', 'Once per long rest']
+};
+
+function pickDHUsage(tier) {
+  const pool = DH_USAGE_BY_TIER[Math.max(1, Math.min(5, tier))] || DH_USAGE_BY_TIER[1];
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
 $('randomize-item').addEventListener('click', () => {
   const card = currentCard();
   const basePower = DH_RARITY_TIER[card.itemRarity] || 1;
   const tierBoost = Math.floor((card.tier - 1) / 1.3);
   const powerTier = Math.max(1, Math.min(5, basePower + tierBoost));
-  const chargesLikely = powerTier >= 3 && Math.random() < 0.6;
-  const concept = generateItemConcept(card.itemCategory, powerTier, chargesLikely);
+  const concept = generateItemConcept(card.itemCategory, powerTier, false);
   card.name = concept.name;
   card.description = concept.description;
   card.itemTypeName = concept.itemType;
   card.itemBaseStats = concept.baseStats;
   card.itemRange = concept.range || '';
   card.itemEffect = concept.effect;
-  card.itemCharges = chargesLikely ? (powerTier + 1) : null;
-  card.itemRecharge = chargesLikely ? concept.charges : '';
+  card.itemUsage = pickDHUsage(powerTier);
+  card.itemTrigger = '';
+  card.itemFeatureName = '';
   renderForm();
   renderCard();
   saveDeck();
@@ -335,10 +363,16 @@ function cardInnerHtml(card) {
   }
 
   html += `<div class="section-divider">Effect</div>`;
-  html += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
+  if (card.itemFeatureName) {
+    html += `<div class="card-feature"><div class="feat-head"><span class="feat-name">${sub(card.itemFeatureName)}</span></div></div>`;
+  }
+  const effectLine = card.itemTrigger
+    ? `<b>When</b> ${sub(card.itemTrigger)}, ${sub(card.itemEffect) || '<i>describe what happens.</i>'}`
+    : (sub(card.itemEffect) || '<i>No effect written yet.</i>');
+  html += `<div class="card-line">${effectLine}</div>`;
 
-  if (card.itemCharges) {
-    html += `<div class="card-line" style="margin-top:10px"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
+  if (card.itemUsage) {
+    html += `<div class="card-line" style="margin-top:10px"><b>Usage:</b> ${sub(card.itemUsage)}</div>`;
   }
 
   html += `<div class="card-footer">Daggerheart Compatible &middot; original item concept</div>`;

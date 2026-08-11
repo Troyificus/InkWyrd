@@ -73,10 +73,11 @@ function newCard(overrides = {}) {
     bulk: 'L',
     price: '35 gp',
     itemDescription: '',
+    itemUsage: 'held in 1 hand',
     itemActivate: '',
+    itemTrigger: '',
     itemEffect: '',
-    itemCharges: null,
-    itemRecharge: ''
+    itemFrequency: ''
   }, overrides);
 }
 
@@ -143,10 +144,20 @@ function migrateCard(card) {
   if (card.bulk === undefined) card.bulk = 'L';
   if (card.price === undefined) card.price = '';
   if (card.itemDescription === undefined) card.itemDescription = '';
+  if (card.itemUsage === undefined) card.itemUsage = 'held in 1 hand';
   if (card.itemActivate === undefined) card.itemActivate = '';
+  if (card.itemTrigger === undefined) card.itemTrigger = '';
   if (card.itemEffect === undefined) card.itemEffect = '';
-  if (card.itemCharges === undefined) card.itemCharges = null;
-  if (card.itemRecharge === undefined) card.itemRecharge = '';
+  // Older saves used numeric D&D-style charges/recharge; fold those into a
+  // single free-text Frequency line, matching PF2E's actual item convention.
+  if (card.itemCharges !== undefined || card.itemRecharge !== undefined) {
+    if (card.itemFrequency === undefined) {
+      card.itemFrequency = card.itemRecharge ? card.itemRecharge.replace(/^Recharges?\s*/i, 'once per ') : (card.itemCharges ? `${card.itemCharges} times per day` : '');
+    }
+    delete card.itemCharges;
+    delete card.itemRecharge;
+  }
+  if (card.itemFrequency === undefined) card.itemFrequency = '';
   return card;
 }
 
@@ -212,20 +223,36 @@ document.querySelectorAll('.type-btn[data-cardtype]').forEach(btn => {
 
 const RARITY_TIER_PF2E = { Common: 1, Uncommon: 2, Rare: 4, Unique: 5 };
 
+// PF2E items don't track numeric charges either — they use a plain-text
+// Frequency entry ("once per day") instead, so the randomizer picks from
+// that rather than the shared engine's D&D-style charge/recharge pool.
+const PF2E_FREQUENCY_BY_TIER = {
+  1: ['', 'once per hour'],
+  2: ['once per hour', 'once per day'],
+  3: ['once per day'],
+  4: ['once per day', 'once per week'],
+  5: ['once per week', 'once per day']
+};
+
+function pickPF2EFrequency(tier) {
+  const pool = PF2E_FREQUENCY_BY_TIER[Math.max(1, Math.min(5, tier))] || PF2E_FREQUENCY_BY_TIER[1];
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
 $('randomize-item').addEventListener('click', () => {
   const card = currentCard();
   const powerTier = RARITY_TIER_PF2E[card.itemRarity] || 1;
-  const chargesLikely = powerTier >= 3 && Math.random() < 0.6;
-  const concept = generateItemConcept(card.itemCategory, powerTier, chargesLikely);
+  const concept = generateItemConcept(card.itemCategory, powerTier, false);
   card.name = concept.name;
   card.itemDescription = concept.description;
   card.itemTypeName = concept.itemType;
   card.itemBaseStats = concept.baseStats;
   card.itemRange = concept.range || '';
   card.itemEffect = concept.effect;
-  card.itemCharges = chargesLikely ? (powerTier + 1) : null;
-  card.itemRecharge = chargesLikely ? concept.charges : '';
-  card.itemActivate = chargesLikely ? '1 Action (command)' : '';
+  card.itemFrequency = pickPF2EFrequency(powerTier);
+  card.itemActivate = card.itemFrequency ? '1 Action (command)' : '';
+  card.itemUsage = card.itemCategory === 'weapon' ? 'held in 1 hand' : card.itemCategory === 'armor' ? 'worn' : 'worn';
+  card.itemTrigger = '';
   renderForm();
   renderCard();
   saveDeck();
@@ -621,14 +648,15 @@ function itemCardInnerHtml(card) {
   if (card.itemRange) {
     html += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
   }
-
+  if (card.itemUsage) html += `<div class="card-line"><b>Usage</b> ${sub(card.itemUsage)}</div>`;
   if (card.itemActivate) html += `<div class="card-line"><b>Activate</b> ${sub(card.itemActivate)}</div>`;
+  if (card.itemTrigger) html += `<div class="card-line"><b>Trigger</b> ${sub(card.itemTrigger)}</div>`;
 
   html += `<div class="section-divider">Effect</div>`;
   html += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
 
-  if (card.itemCharges) {
-    html += `<div class="card-line" style="margin-top:10px"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
+  if (card.itemFrequency) {
+    html += `<div class="card-line" style="margin-top:10px"><b>Frequency:</b> ${sub(card.itemFrequency)}</div>`;
   }
 
   html += `<div class="card-footer">Pathfinder 2E Compatible &middot; original item concept</div>`;

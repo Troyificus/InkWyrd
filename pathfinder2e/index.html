@@ -133,11 +133,19 @@
       </fieldset>
 
       <fieldset class="item-only" hidden>
-        <legend>Activation &amp; Effect</legend>
+        <legend>Usage, Activation &amp; Effect</legend>
+        <p class="hint">PF2E items track how they're carried (Usage), how often they can be triggered (Frequency), and what activating them costs (Activate) — not a numeric charge pool.</p>
+        <label>Usage <input type="text" data-field="itemUsage" list="pf2e-usage-list" placeholder="held in 1 hand"></label>
+        <datalist id="pf2e-usage-list">
+          <option value="held in 1 hand"><option value="worn"><option value="affixed to a weapon"><option value="affixed to armor"><option value="affixed to a shield">
+        </datalist>
         <label>Activate (leave blank if passive) <input type="text" data-field="itemActivate" placeholder="1 Action (command)"></label>
+        <label>Trigger (optional — for reaction-style activations) <input type="text" data-field="itemTrigger" placeholder="You are hit by an attack"></label>
         <label>Effect <textarea data-field="itemEffect" rows="3" placeholder="What the item does mechanically"></textarea></label>
-        <label>Charges (leave blank if not applicable) <input type="number" data-field="itemCharges" min="0"></label>
-        <label>Recharge <input type="text" data-field="itemRecharge" placeholder="Recharges at the next dawn"></label>
+        <label>Frequency (leave blank if unlimited) <input type="text" data-field="itemFrequency" list="pf2e-frequency-list" placeholder="once per day"></label>
+        <datalist id="pf2e-frequency-list">
+          <option value="once per round"><option value="once per hour"><option value="once per day"><option value="once per week">
+        </datalist>
       </fieldset>
 
       <fieldset class="not-item-only">
