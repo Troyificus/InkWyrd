@@ -875,13 +875,13 @@ function showConvertStatus(targetName, targetUrl, flags) {
 }
 
 $('convert-5e').addEventListener('click', () => {
-  const converted = convertCreatureCard('dh', 'dnd5e', currentCard());
+  const converted = convertCreatureCard('dh', 'dnd5e', currentCard(), applySubs);
   pushToTargetDeck('dnd5e.deck.v1', buildTargetCard5E(converted, currentCard()));
   showConvertStatus('D&D 5E', '../dnd5e/statblock.html', converted.flags);
 });
 
 $('convert-pf2e').addEventListener('click', () => {
-  const converted = convertCreatureCard('dh', 'pf2e', currentCard());
+  const converted = convertCreatureCard('dh', 'pf2e', currentCard(), applySubs);
   pushToTargetDeck('pf2e.deck.v1', buildTargetCardPF2E(converted, currentCard()));
   showConvertStatus('Pathfinder 2E', '../pathfinder2e/statblock.html', converted.flags);
 });

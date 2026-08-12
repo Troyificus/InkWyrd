@@ -200,17 +200,33 @@ const CC_REVIEW_NOTE = {
   pf2e: 'review wording for PF2E (action costs, degrees of success)'
 };
 
-function ccConvertFeature(feature, fromSystem, toSystem) {
+function ccConvertFeature(feature, fromSystem, toSystem, card, resolveFn) {
   const neutral = CC_CATEGORY_TO_NEUTRAL[fromSystem][feature.category || feature.type] || 'passive';
   const category = CC_NEUTRAL_TO_CATEGORY[toSystem][neutral];
   const name = feature.name;
-  const text = `${feature.text} [Converted — ${CC_REVIEW_NOTE[toSystem]}.]`;
+  // Resolve [TOKEN] references (e.g. [STRSAVE]) against the SOURCE card
+  // before the text ever leaves that system — a target system has no idea
+  // what a source-only token means, so an unresolved token left in would
+  // just print as literal garbage on the converted card.
+  const resolvedText = resolveFn ? resolveFn(feature.text, card) : feature.text;
+  const text = `${resolvedText} [Converted — ${CC_REVIEW_NOTE[toSystem]}.]`;
   return { category, type: category, name, text };
+}
+
+// 5E-specific structural entries that exist only because of how 5E writes
+// statblocks (Multiattack just narrates "use these other actions together")
+// — they carry no information a target system's card doesn't already show
+// via its own attack lines, so they get dropped rather than copied over as
+// a confusing duplicate feature.
+function ccIsStructuralOnly(fromSystem, feature) {
+  if (fromSystem !== 'dnd5e') return false;
+  const category = feature.category || feature.type;
+  return category === 'Action' && /^multiattack\b/i.test(feature.name || '');
 }
 
 // ===== Neutral intermediate representation =====
 
-function ccToNeutral(fromSystem, card) {
+function ccToNeutral(fromSystem, card, resolveFn) {
   const flags = [];
   let powerLevel, hpValue, defenseValue, attacks;
   const consumedFeatures = [];
@@ -284,7 +300,7 @@ function ccToNeutral(fromSystem, card) {
 
   return {
     name: card.name,
-    description: card.description || '',
+    description: resolveFn ? resolveFn(card.description || '', card) : (card.description || ''),
     powerLevel,
     hpRatio: hpValue,
     defenseRatio: defenseValue,
@@ -326,7 +342,7 @@ function ccFromNeutral(toSystem, neutral, fromSystem) {
     }) : [{ atk: '+' + g.atk, name: 'Strike', range: 'Melee', damage: ccDiceForAvg(g.dmgMid, 8) }];
     card.experience = '';
     card.motives = '';
-    flags.push('Ability scores/skills/senses have no Daggerheart equivalent and were not carried over — this card only has the fields Daggerheart adversaries use.');
+    flags.push('Ability scores/skills/senses have no Daggerheart equivalent and were not carried over — this card only has the fields Daggerheart adversaries use. Experience and Motives & Tactics are left blank rather than invented — the source system has no structured data to draw them from honestly, so write these from the description above.');
   } else if (toSystem === 'dnd5e') {
     const cr = neutral.powerLevel.tier !== undefined ? ccTierToCrOrLevel(neutral.powerLevel.tier) : (neutral.powerLevel.level !== undefined ? neutral.powerLevel.level : ccParseCR(neutral.powerLevel.cr));
     const g = ccCRGuidance(cr);
@@ -381,13 +397,20 @@ function ccFromNeutral(toSystem, neutral, fromSystem) {
 }
 
 // Public API. system keys: 'dh' | 'dnd5e' | 'pf2e'.
-function convertCreatureCard(fromSystem, toSystem, card) {
-  const neutral = ccToNeutral(fromSystem, card);
+// resolveFn: the SOURCE system's own applySubs(text, card) function, passed
+// in by the calling page so token references (e.g. [STRSAVE]) get resolved
+// into real values before the text ever crosses systems.
+function convertCreatureCard(fromSystem, toSystem, card, resolveFn) {
+  const neutral = ccToNeutral(fromSystem, card, resolveFn);
   // Attacks already extracted from 5E Action-text features shouldn't also
-  // appear as duplicate narrative features on the target card.
+  // appear as duplicate narrative features on the target card, and purely
+  // structural entries (Multiattack) carry no information the target card
+  // doesn't already show via its own attack lines.
   const consumed = new Set(neutral.consumedFeatures || []);
-  const remainingFeatures = (card.features || []).filter(f => !consumed.has(f));
-  neutral.features = remainingFeatures.map(f => ccConvertFeature(f, fromSystem, toSystem));
+  const remainingFeatures = (card.features || []).filter(f =>
+    !consumed.has(f) && !ccIsStructuralOnly(fromSystem, f)
+  );
+  neutral.features = remainingFeatures.map(f => ccConvertFeature(f, fromSystem, toSystem, card, resolveFn));
   const result = ccFromNeutral(toSystem, neutral, fromSystem);
   result.features = neutral.features;
   return result;

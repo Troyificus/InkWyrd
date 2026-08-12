@@ -817,13 +817,13 @@ function showConvertStatus(targetName, targetUrl, flags) {
 }
 
 $('convert-dh').addEventListener('click', () => {
-  const converted = convertCreatureCard('dnd5e', 'dh', currentCard());
+  const converted = convertCreatureCard('dnd5e', 'dh', currentCard(), applySubs);
   pushToTargetDeck('dhcard.deck.v1', buildTargetCardDH(converted, currentCard()));
   showConvertStatus('Daggerheart', '../daggerheart/statblock.html', converted.flags);
 });
 
 $('convert-pf2e').addEventListener('click', () => {
-  const converted = convertCreatureCard('dnd5e', 'pf2e', currentCard());
+  const converted = convertCreatureCard('dnd5e', 'pf2e', currentCard(), applySubs);
   pushToTargetDeck('pf2e.deck.v1', buildTargetCardPF2E(converted, currentCard()));
   showConvertStatus('Pathfinder 2E', '../pathfinder2e/statblock.html', converted.flags);
 });
