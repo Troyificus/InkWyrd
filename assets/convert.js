@@ -200,6 +200,27 @@ const CC_REVIEW_NOTE = {
   pf2e: 'review wording for PF2E (action costs, degrees of success)'
 };
 
+// Rewrites 5E/PF2E "DC X [Ability] saving throw" phrasing into Daggerheart's
+// own vocabulary — a Reaction Roll against a stated Difficulty. Same
+// underlying concept (a target number the PC rolls against), so this is a
+// real structural rewrite, not a guess — only the Ability -> Trait mapping
+// is approximate, since Daggerheart's six Traits don't line up 1:1 with
+// six ability scores (e.g. there's no direct Constitution equivalent).
+const CC_ABILITY_TO_DH_TRAIT = {
+  strength: 'Strength', dexterity: 'Agility', constitution: 'Strength',
+  intelligence: 'Knowledge', wisdom: 'Instinct', charisma: 'Presence'
+};
+
+function ccRewriteSavingThrowsForDH(text) {
+  return text.replace(
+    /DC\s*(\d+)\s*(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma)\s*saving throw/gi,
+    (match, dc, ability) => {
+      const trait = CC_ABILITY_TO_DH_TRAIT[ability.toLowerCase()] || ability;
+      return `${trait} Reaction Roll (Difficulty ${dc})`;
+    }
+  );
+}
+
 function ccConvertFeature(feature, fromSystem, toSystem, card, resolveFn) {
   const neutral = CC_CATEGORY_TO_NEUTRAL[fromSystem][feature.category || feature.type] || 'passive';
   const category = CC_NEUTRAL_TO_CATEGORY[toSystem][neutral];
@@ -208,7 +229,8 @@ function ccConvertFeature(feature, fromSystem, toSystem, card, resolveFn) {
   // before the text ever leaves that system — a target system has no idea
   // what a source-only token means, so an unresolved token left in would
   // just print as literal garbage on the converted card.
-  const resolvedText = resolveFn ? resolveFn(feature.text, card) : feature.text;
+  let resolvedText = resolveFn ? resolveFn(feature.text, card) : feature.text;
+  if (toSystem === 'dh') resolvedText = ccRewriteSavingThrowsForDH(resolvedText);
   const text = `${resolvedText} [Converted — ${CC_REVIEW_NOTE[toSystem]}.]`;
   return { category, type: category, name, text };
 }
