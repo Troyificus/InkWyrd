@@ -67,3 +67,4 @@ If monetizing generated content or these tools (e.g. via Ko-fi), stay within eac
 ## License
 
 Code in this repository: MIT (see `LICENSE`). Rules text referenced/used within each system's generator remains under that system's own license (DPCGL / CC-BY-4.0 / ORC as applicable) — not covered by this repo's MIT license.
+
