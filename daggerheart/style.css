@@ -151,12 +151,26 @@ body {
   margin-top: 8px;
 }
 
+.convert-io {
+  border-top: 1px solid var(--panel-border);
+  padding-top: 12px;
+  margin-top: 8px;
+}
+
+.convert-io button {
+  border-color: var(--gold);
+}
+
 #deck-status {
   display: block;
   font-size: 0.78rem;
   color: var(--text-dim);
   min-height: 1.2em;
   font-style: italic;
+}
+
+#deck-status a {
+  color: var(--gold);
 }
 
 .type-toggle {
