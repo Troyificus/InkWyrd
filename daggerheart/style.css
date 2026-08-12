@@ -581,7 +581,7 @@ textarea { resize: vertical; }
 #statblock-card {
   width: 440px;
   padding: 30px 28px 22px;
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: 'Alegreya', Georgia, serif;
   border-radius: 0;
   position: relative;
   box-shadow: 0 4px 18px rgba(0,0,0,0.35);
@@ -646,7 +646,7 @@ textarea { resize: vertical; }
 }
 
 .corner-tier {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Alegreya', Georgia, serif;
   font-weight: 700;
   font-size: 1.05rem;
   letter-spacing: 1px;
@@ -700,7 +700,7 @@ textarea { resize: vertical; }
 .two-col-item.stacked:last-child { margin-bottom: 0; }
 
 .card-name {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Alegreya', Georgia, serif;
   font-weight: 700;
   font-size: 1.9rem;
   letter-spacing: 0.5px;
@@ -763,7 +763,7 @@ textarea { resize: vertical; }
 }
 
 .card-line b {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Alegreya', Georgia, serif;
   font-weight: 700;
   color: var(--card-accent, #8a2727);
 }
@@ -807,7 +807,7 @@ textarea { resize: vertical; }
 }
 
 .card-feature .feat-name {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Alegreya', Georgia, serif;
   font-weight: 700;
   font-size: 0.95rem;
   color: var(--card-accent, #8a2727);
@@ -847,7 +847,7 @@ textarea { resize: vertical; }
 }
 
 .vital-val {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Alegreya', Georgia, serif;
   font-weight: 700;
   font-size: 1.4rem;
   line-height: 1.1;

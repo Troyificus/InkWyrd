@@ -479,7 +479,7 @@ textarea { resize: vertical; }
 #statblock-card {
   width: 700px;
   padding: 28px 34px 22px;
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: 'Alegreya', Georgia, serif;
   position: relative;
   box-shadow: 0 4px 18px rgba(0,0,0,0.35);
 }
@@ -496,7 +496,7 @@ textarea { resize: vertical; }
 .corner-tag.corner-left { left: 0; border: 1px solid var(--card-accent, #8a2727); border-top: none; border-left: none; }
 .theme-dark .corner-tag, .theme-verdant .corner-tag, .theme-arcane .corner-tag { background: rgba(255,255,255,0.04); }
 
-.corner-tier { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: 1.05rem; letter-spacing: 1px; color: var(--card-accent, #8a2727); line-height: 1.1; }
+.corner-tier { font-family: 'Alegreya', Georgia, serif; font-weight: 700; font-size: 1.05rem; letter-spacing: 1px; color: var(--card-accent, #8a2727); line-height: 1.1; }
 .corner-type { display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.85; margin-top: 2px; }
 .corner-icon { width: 11px; height: 11px; flex: 0 0 11px; color: var(--card-accent, #8a2727); }
 .corner-icon svg { width: 100%; height: 100%; display: block; }
@@ -509,7 +509,7 @@ textarea { resize: vertical; }
 .stat-col { flex: 1; min-width: 0; }
 .stat-image-row .card-illustration { flex: 0 0 auto; margin: 0; }
 
-.card-name { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: 1.9rem; letter-spacing: 0.5px; margin: 0 0 6px; line-height: 1.1; }
+.card-name { font-family: 'Alegreya', Georgia, serif; font-weight: 700; font-size: 1.9rem; letter-spacing: 0.5px; margin: 0 0 6px; line-height: 1.1; }
 .card-kind { clear: both; font-size: 0.82rem; font-style: italic; opacity: 0.75; border-bottom: 1.5px solid var(--card-accent, #8a2727); padding-bottom: 8px; margin-bottom: 10px; }
 
 .trait-chip-row { clear: both; display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -536,7 +536,7 @@ textarea { resize: vertical; }
 }
 
 .core-stat { font-size: 0.85rem; }
-.core-stat b { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; color: var(--card-accent, #8a2727); }
+.core-stat b { font-family: 'Alegreya', Georgia, serif; font-weight: 700; color: var(--card-accent, #8a2727); }
 
 .section-divider {
   clear: both;
@@ -554,7 +554,7 @@ textarea { resize: vertical; }
 .section-divider::before, .section-divider::after { content: ""; flex: 1; border-top: 1.5px dotted currentColor; opacity: 0.6; }
 
 .card-line { font-size: 0.85rem; margin: 5px 0; line-height: 1.4; }
-.card-line b { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; color: var(--card-accent, #8a2727); }
+.card-line b { font-family: 'Alegreya', Georgia, serif; font-weight: 700; color: var(--card-accent, #8a2727); }
 
 .ability-row {
   clear: both;
@@ -586,12 +586,12 @@ textarea { resize: vertical; }
 }
 
 .ability-lbl { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.75; }
-.ability-val { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: 1.05rem; margin-top: 1px; }
+.ability-val { font-family: 'Alegreya', Georgia, serif; font-weight: 700; font-size: 1.05rem; margin-top: 1px; }
 .ability-mod { font-size: 0.7rem; opacity: 0.8; }
 
 .card-feature { margin: 10px 0; font-size: 0.83rem; line-height: 1.42; }
 .feat-head { display: flex; align-items: center; gap: 6px; }
-.card-feature .feat-name { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-style: italic; font-size: 0.95rem; color: var(--card-accent, #8a2727); }
+.card-feature .feat-name { font-family: 'Alegreya', Georgia, serif; font-weight: 700; font-style: italic; font-size: 0.95rem; color: var(--card-accent, #8a2727); }
 .feat-icon { width: 10px; height: 10px; flex: 0 0 10px; color: var(--card-accent, #8a2727); opacity: 0.8; }
 .feat-icon svg { width: 100%; height: 100%; display: block; }
 .feat-text { margin-top: 2px; display: inline; }
