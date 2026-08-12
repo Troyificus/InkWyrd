@@ -396,6 +396,7 @@ function applySubs(text, card) {
     builtins[k] = modifier(abilities[k]);
     builtins[k + 'SAVE'] = 8 + pb + mod;
     builtins[k + 'ATK'] = signed(pb + mod);
+    builtins[k + 'HIT'] = signed(pb + mod); // alias of ATK — matches "+X to hit" phrasing directly
   });
   const custom = {};
   (card.variables || []).forEach(v => { if (v.key) custom[v.key.toUpperCase()] = v.value; });
