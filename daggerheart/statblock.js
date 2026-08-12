@@ -808,7 +808,7 @@ $('print-sheet').addEventListener('click', () => {
 });
 
 // ===== Cross-system conversion =====
-function buildTargetCard5E(converted) {
+function buildTargetCard5E(converted, sourceCard) {
   return {
     id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
     format: '2024',
@@ -825,12 +825,12 @@ function buildTargetCard5E(converted) {
     savingThrows: '', skills: '', damageResistances: '', damageImmunities: '', conditionImmunities: '',
     senses: converted.senses, languages: converted.languages,
     cr: converted.cr, xp: converted.xp,
-    theme: 'parchment', accent: '#7a2020', variables: [], image: null, imageAlign: 'right', imageWidth: 170,
+    theme: 'parchment', accent: '#7a2020', variables: [], image: sourceCard.image, imageAlign: sourceCard.imageAlign || 'right', imageWidth: sourceCard.imageWidth || 170,
     features: converted.features.map(f => ({ category: f.category, name: f.name, text: f.text }))
   };
 }
 
-function buildTargetCardPF2E(converted) {
+function buildTargetCardPF2E(converted, sourceCard) {
   return {
     id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
     name: converted.name,
@@ -848,7 +848,7 @@ function buildTargetCardPF2E(converted) {
     immunities: '', resistances: '', weaknesses: '',
     speed: '25 feet',
     attacks: converted.attacks,
-    theme: 'parchment', accent: '#7a2020', variables: [], image: null, imageAlign: 'right', imageWidth: 170,
+    theme: 'parchment', accent: '#7a2020', variables: [], image: sourceCard.image, imageAlign: sourceCard.imageAlign || 'right', imageWidth: sourceCard.imageWidth || 170,
     features: converted.features.map(f => ({ category: f.category, name: f.name, text: f.text }))
   };
 }
@@ -876,13 +876,13 @@ function showConvertStatus(targetName, targetUrl, flags) {
 
 $('convert-5e').addEventListener('click', () => {
   const converted = convertCreatureCard('dh', 'dnd5e', currentCard());
-  pushToTargetDeck('dnd5e.deck.v1', buildTargetCard5E(converted));
+  pushToTargetDeck('dnd5e.deck.v1', buildTargetCard5E(converted, currentCard()));
   showConvertStatus('D&D 5E', '../dnd5e/statblock.html', converted.flags);
 });
 
 $('convert-pf2e').addEventListener('click', () => {
   const converted = convertCreatureCard('dh', 'pf2e', currentCard());
-  pushToTargetDeck('pf2e.deck.v1', buildTargetCardPF2E(converted));
+  pushToTargetDeck('pf2e.deck.v1', buildTargetCardPF2E(converted, currentCard()));
   showConvertStatus('Pathfinder 2E', '../pathfinder2e/statblock.html', converted.flags);
 });
 
