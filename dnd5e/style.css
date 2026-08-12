@@ -1,9 +1,9 @@
 :root {
-  --bg: #1c120f;
-  --panel: #271815;
-  --panel-border: #55352f;
-  --text: #e8ddc7;
-  --text-dim: #a3937a;
+  --bg: #f0ead9;
+  --panel: #e6dfc8;
+  --panel-border: #a8a077;
+  --text: #2e2b1f;
+  --text-dim: #6b6650;
   --accent: #8a2727;
   --gold: #a9843f;
   --mono: 'Courier New', monospace;
@@ -13,9 +13,9 @@
 
 body {
   margin: 0;
-  background: radial-gradient(ellipse at top, #2e1c17 0%, #1c120f 70%);
+  background: radial-gradient(ellipse at top, #f6f1e0 0%, #e9e0c4 70%);
   color: var(--text);
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: 'Work Sans', -apple-system, sans-serif;
 }
 
 .site-header {
@@ -35,9 +35,19 @@ body {
 
 .back-link:hover { color: var(--gold); }
 
+.cross-link {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.82rem;
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.cross-link:hover { text-decoration: underline; }
+
 .site-header h1 {
   margin: 0;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Spectral', Georgia, serif;
   font-weight: 700;
   font-size: 2.1rem;
   letter-spacing: 1.5px;
@@ -64,7 +74,7 @@ body {
 .preview-panel { flex: 1 1 100%; min-width: 320px; }
 
 .deck-panel h2 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Spectral', Georgia, serif;
   font-size: 0.95rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -97,7 +107,7 @@ body {
   transition: border-color 0.15s ease;
 }
 
-.deck-item.active { border-left-color: var(--accent); background: #2c2116; }
+.deck-item.active { border-left-color: var(--accent); background: rgba(169, 132, 63, 0.22); }
 
 .deck-panel button, .file-btn {
   display: block;
@@ -112,7 +122,7 @@ body {
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: 'Work Sans', -apple-system, sans-serif;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
@@ -148,7 +158,7 @@ body {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: 'Work Sans', -apple-system, sans-serif;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
@@ -171,7 +181,7 @@ fieldset {
 legend {
   padding: 0 8px;
   color: var(--gold);
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Spectral', Georgia, serif;
   font-weight: 700;
   font-size: 1rem;
   text-transform: uppercase;
@@ -190,11 +200,11 @@ input, textarea, select {
   width: 100%;
   margin-top: 5px;
   padding: 8px 10px;
-  background: #120e09;
+  background: #f7f2e2;
   border: 1px solid var(--panel-border);
   color: var(--text);
   font-size: 0.95rem;
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: 'Work Sans', -apple-system, sans-serif;
 }
 
 input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
@@ -267,7 +277,7 @@ textarea { resize: vertical; }
   font-size: 0.76rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: 'Work Sans', -apple-system, sans-serif;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
@@ -284,7 +294,7 @@ textarea { resize: vertical; }
   padding: 12px 18px;
   cursor: pointer;
   color: var(--gold);
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Spectral', Georgia, serif;
   font-weight: 700;
   font-size: 1rem;
   text-transform: uppercase;
@@ -320,8 +330,8 @@ textarea { resize: vertical; }
 
 .remove-feature {
   background: transparent;
-  border: 1px solid #5a2f2f;
-  color: #c98;
+  border: 1px solid #a85a4a;
+  color: #8a4a2a;
   padding: 8px 10px;
   cursor: pointer;
   height: 38px;
@@ -338,7 +348,7 @@ textarea { resize: vertical; }
   color: var(--text-dim);
   cursor: pointer;
   margin-top: 6px;
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: 'Work Sans', -apple-system, sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 0.78rem;
@@ -373,7 +383,7 @@ textarea { resize: vertical; }
   min-height: 1.1em;
 }
 
-.field-hint.warn { color: #c98; }
+.field-hint.warn { color: #a85a2a; }
 
 .guidance-box {
   font-size: 0.78rem;
@@ -404,7 +414,7 @@ textarea { resize: vertical; }
   color: var(--text-dim);
   cursor: pointer;
   margin-top: 2px;
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: 'Work Sans', -apple-system, sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 0.78rem;
@@ -422,7 +432,7 @@ textarea { resize: vertical; }
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: 'Work Sans', -apple-system, sans-serif;
   transition: opacity 0.15s ease;
 }
 
@@ -435,7 +445,7 @@ textarea { resize: vertical; }
   margin: -4px 0 12px;
   padding: 8px;
   border: 1px solid var(--panel-border);
-  background: #15110c;
+  background: #e6dfc8;
 }
 
 .image-preview img {
@@ -453,13 +463,13 @@ textarea { resize: vertical; }
 #remove-image {
   padding: 7px 12px;
   background: transparent;
-  border: 1px solid #5a2f2f;
-  color: #c98;
+  border: 1px solid #a85a4a;
+  color: #8a4a2a;
   cursor: pointer;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: 'Work Sans', -apple-system, sans-serif;
 }
 
 #remove-image:hover { border-color: var(--accent); color: var(--text); }
@@ -618,7 +628,7 @@ textarea { resize: vertical; }
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: 'Work Sans', -apple-system, sans-serif;
   transition: background 0.15s ease, color 0.15s ease;
 }
 
