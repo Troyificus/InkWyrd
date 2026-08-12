@@ -246,11 +246,27 @@ function ccIsStructuralOnly(fromSystem, feature) {
   return category === 'Action' && /^multiattack\b/i.test(feature.name || '');
 }
 
+// Ability modifiers, normalized to a common form regardless of how the
+// source system stores them (5E stores a 1-30 score and derives the
+// modifier; PF2E stores the modifier directly). Only meaningful between
+// 5E and PF2E, which share the same six abilities in the same sense —
+// Daggerheart has no equivalent concept at all.
+function ccAbilityModsFromCard(fromSystem, card) {
+  if (fromSystem === 'dnd5e') {
+    const mod = (score) => Math.floor((Number(score) - 10) / 2);
+    return { str: mod(card.str), dex: mod(card.dex), con: mod(card.con), int: mod(card.int), wis: mod(card.wis), cha: mod(card.cha) };
+  }
+  if (fromSystem === 'pf2e') {
+    return { str: Number(card.str) || 0, dex: Number(card.dex) || 0, con: Number(card.con) || 0, int: Number(card.int) || 0, wis: Number(card.wis) || 0, cha: Number(card.cha) || 0 };
+  }
+  return null;
+}
+
 // ===== Neutral intermediate representation =====
 
 function ccToNeutral(fromSystem, card, resolveFn) {
   const flags = [];
-  let powerLevel, hpValue, defenseValue, attacks;
+  let powerLevel, hpValue, defenseValue, attacks, strongSaves;
   const consumedFeatures = [];
 
   if (fromSystem === 'dh') {
@@ -292,6 +308,14 @@ function ccToNeutral(fromSystem, card, resolveFn) {
       consumedFeatures.push(f);
     });
     if (!attacks.length) flags.push('No attacks could be parsed from 5E Action text — a placeholder attack was generated instead.');
+
+    // Extract which abilities 5E lists as proficient saves (e.g. "Dex +6, Con +4")
+    // — real differentiated info worth carrying forward when targeting PF2E.
+    strongSaves = [];
+    (String(card.savingThrows || '').match(/\b(Str|Dex|Con|Int|Wis|Cha)\b/gi) || []).forEach(m => {
+      const key = { str: 'str', dex: 'dex', con: 'con', int: 'int', wis: 'wis', cha: 'cha' }[m.toLowerCase()];
+      if (key) strongSaves.push(key);
+    });
   } else if (fromSystem === 'pf2e') {
     powerLevel = { level: card.level };
     const g = ccLevelGuidance(card.level);
@@ -326,6 +350,8 @@ function ccToNeutral(fromSystem, card, resolveFn) {
     powerLevel,
     hpRatio: hpValue,
     defenseRatio: defenseValue,
+    abilityMods: ccAbilityModsFromCard(fromSystem, card),
+    strongSaves: strongSaves || [],
     attacks,
     features: [],
     consumedFeatures,
@@ -373,7 +399,19 @@ function ccFromNeutral(toSystem, neutral, fromSystem) {
     card.ac = String(ccScaleInt(g.ac, defenseRatio, 10));
     const hp = ccScaleInt(g.hpMid, hpRatio, 1);
     card.hp = `${hp}`;
-    card.str = 10; card.dex = 10; card.con = 10; card.int = 10; card.wis = 10; card.cha = 10;
+    if (neutral.abilityMods) {
+      // Reconstruct a plausible 5E score from a PF2E modifier: 10 + 2*mod is
+      // the canonical midpoint score that produces that exact modifier.
+      const scoreFromMod = (m) => 10 + 2 * m;
+      card.str = scoreFromMod(neutral.abilityMods.str);
+      card.dex = scoreFromMod(neutral.abilityMods.dex);
+      card.con = scoreFromMod(neutral.abilityMods.con);
+      card.int = scoreFromMod(neutral.abilityMods.int);
+      card.wis = scoreFromMod(neutral.abilityMods.wis);
+      card.cha = scoreFromMod(neutral.abilityMods.cha);
+    } else {
+      card.str = 10; card.dex = 10; card.con = 10; card.int = 10; card.wis = 10; card.cha = 10;
+    }
     card.proficiencyBonus = ccPbForCR(cr);
     card.savingThrows = ''; card.skills = ''; card.senses = 'passive Perception 10'; card.languages = '—';
     const pb = card.proficiencyBonus;
@@ -387,7 +425,11 @@ function ccFromNeutral(toSystem, neutral, fromSystem) {
         text: `Melee or Ranged Weapon Attack: +${bonus} to hit. Hit: ${dmgAvg} (${damageText}) damage.`
       };
     });
-    flags.push('Ability scores/skills/saves have no source-system equivalent and were reset to a flat 10 (+0) — review before use.');
+    if (neutral.abilityMods) {
+      flags.push('Ability scores converted directly from the source modifiers. Skills/senses/languages carry over as raw text where the calling page supports it — review wording, since PF2E and 5E phrase some skills differently. Saving throw proficiencies have no PF2E equivalent to draw from and were left blank.');
+    } else {
+      flags.push('Ability scores/skills/saves have no source-system equivalent and were reset to a flat 10 (+0) — review before use.');
+    }
   } else if (toSystem === 'pf2e') {
     const level = neutral.powerLevel.tier !== undefined ? ccTierToCrOrLevel(neutral.powerLevel.tier) : (neutral.powerLevel.cr !== undefined ? Math.round(ccParseCR(neutral.powerLevel.cr)) : neutral.powerLevel.level);
     const g = ccLevelGuidance(level);
@@ -395,9 +437,31 @@ function ccFromNeutral(toSystem, neutral, fromSystem) {
     card.rarity = 'Common';
     card.ac = String(ccScaleInt(g.ac, defenseRatio, 12));
     card.hp = String(ccScaleInt(g.hpMid, hpRatio, 1));
-    card.str = 0; card.dex = 0; card.con = 0; card.int = 0; card.wis = 0; card.cha = 0;
+    if (neutral.abilityMods) {
+      card.str = neutral.abilityMods.str; card.dex = neutral.abilityMods.dex; card.con = neutral.abilityMods.con;
+      card.int = neutral.abilityMods.int; card.wis = neutral.abilityMods.wis; card.cha = neutral.abilityMods.cha;
+    } else {
+      card.str = 0; card.dex = 0; card.con = 0; card.int = 0; card.wis = 0; card.cha = 0;
+    }
     const moderate = level + 8;
     card.fort = '+' + moderate; card.ref = '+' + moderate; card.will = '+' + moderate;
+    // 5E lists specific proficient saves (e.g. "Dex +6, Con +4") — that's
+    // real differentiated information PF2E's own flat-baseline reset was
+    // throwing away. Nudge the matching PF2E save up from the moderate
+    // baseline rather than inventing an exact number (the two scales don't
+    // convert cleanly enough for that to be honest), so a creature that's
+    // notably strong on a given save still reads as such after conversion.
+    if (neutral.strongSaves && neutral.strongSaves.length) {
+      const saveMap = { str: 'fort', con: 'fort', dex: 'ref', int: 'will', wis: 'will', cha: 'will' };
+      const bumped = new Set();
+      neutral.strongSaves.forEach(ability => {
+        const key = saveMap[ability];
+        if (key && !bumped.has(key)) {
+          card[key] = '+' + (moderate + 2);
+          bumped.add(key);
+        }
+      });
+    }
     card.perception = '+' + moderate;
     card.senses = ''; card.languages = '—'; card.skills = ''; card.items = '';
     card.attacks = (neutral.attacks.length ? neutral.attacks : [{ bonusRatio: 1, dmgRatio: 1, rawDamageText: null, name: 'Strike', range: 'Melee' }]).map(a => {
@@ -411,7 +475,11 @@ function ccFromNeutral(toSystem, neutral, fromSystem) {
         damage: a.rawDamageText ? ccRescaleDamage(a.rawDamageText, dmgAvg, 8) : ccDiceForAvg(dmgAvg, 8)
       };
     });
-    flags.push('Ability modifiers/skills/saves have no source-system equivalent and were reset to a flat moderate baseline — review before use.');
+    if (neutral.abilityMods) {
+      flags.push('Ability modifiers converted directly from the source scores. Fort/Ref/Will start at a moderate baseline for this level' + (neutral.strongSaves && neutral.strongSaves.length ? ", with the saves matching the source's proficient ability scores nudged up — exact numbers don't convert cleanly between the two systems' proficiency models, so treat these as a starting point, not a precise conversion." : '.') + ' Skills/senses/languages carry over as raw text where the calling page supports it — review wording.');
+    } else {
+      flags.push('Ability modifiers/skills/saves have no source-system equivalent and were reset to a flat moderate baseline — review before use.');
+    }
   }
 
   card.flags = flags;

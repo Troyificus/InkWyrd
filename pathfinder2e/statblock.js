@@ -752,28 +752,6 @@ $('print-sheet').addEventListener('click', () => {
 });
 
 // ===== Cross-system conversion =====
-function buildTargetCardDH(converted, sourceCard) {
-  return {
-    id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
-    cardType: 'adversary',
-    name: converted.name,
-    tier: converted.tier,
-    type: 'Standard',
-    description: converted.description || '',
-    motives: '',
-    difficultyAdv: converted.difficultyAdv,
-    thresholdMajor: converted.thresholdMajor,
-    thresholdSevere: converted.thresholdSevere,
-    hp: converted.hp,
-    stress: converted.stress,
-    attacks: converted.attacks,
-    experience: '',
-    envType: 'Exploration', impulses: '', difficultyEnv: 11, potential: '',
-    theme: 'parchment', accent: '#7a2020', variables: [], image: sourceCard.image, imageAlign: sourceCard.imageAlign || 'right', imageWidth: sourceCard.imageWidth || 170,
-    features: converted.features.map(f => ({ type: f.category, name: f.name, text: f.text }))
-  };
-}
-
 function buildTargetCard5E(converted, sourceCard) {
   return {
     id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
@@ -788,8 +766,8 @@ function buildTargetCard5E(converted, sourceCard) {
     speed: '30 ft.',
     str: converted.str, dex: converted.dex, con: converted.con, int: converted.int, wis: converted.wis, cha: converted.cha,
     proficiencyBonus: converted.proficiencyBonus,
-    savingThrows: '', skills: '', damageVulnerabilities: '', damageResistances: '', damageImmunities: '', conditionImmunities: '',
-    senses: converted.senses, languages: converted.languages,
+    savingThrows: '', skills: sourceCard.skills || '', damageVulnerabilities: '', damageResistances: '', damageImmunities: '', conditionImmunities: '',
+    senses: sourceCard.senses || converted.senses, languages: converted.languages,
     cr: converted.cr, xp: converted.xp,
     theme: 'parchment', accent: '#7a2020', variables: [], image: sourceCard.image, imageAlign: sourceCard.imageAlign || 'right', imageWidth: sourceCard.imageWidth || 170,
     features: converted.features.map(f => ({ category: f.category, name: f.name, text: f.text }))
@@ -816,12 +794,6 @@ function showConvertStatus(targetName, targetUrl, flags) {
   if (flags && flags.length) msg += ' Review: ' + flags.join(' ');
   status.innerHTML = `${msg} <a href="${targetUrl}" target="_blank">Open ${targetName} &rarr;</a>`;
 }
-
-$('convert-dh').addEventListener('click', () => {
-  const converted = convertCreatureCard('pf2e', 'dh', currentCard(), applySubs);
-  pushToTargetDeck('dhcard.deck.v1', buildTargetCardDH(converted, currentCard()));
-  showConvertStatus('Daggerheart', '../daggerheart/statblock.html', converted.flags);
-});
 
 $('convert-5e').addEventListener('click', () => {
   const converted = convertCreatureCard('pf2e', 'dnd5e', currentCard(), applySubs);
