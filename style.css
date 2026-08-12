@@ -131,6 +131,25 @@ body {
   line-height: 1.5;
 }
 
+.kofi-link {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 8px 18px;
+  border: 1px solid var(--gold);
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-style: normal;
+  font-weight: 500;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.kofi-link:hover {
+  background: var(--gold);
+  color: var(--bone);
+}
+
 @media (max-width: 760px) {
   .hub-columns { flex-direction: column; min-height: auto; }
   .hub-col { border-left: none; border-right: none; border-top: 3px solid var(--gold); padding: 40px 24px; }

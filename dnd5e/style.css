@@ -646,6 +646,10 @@ textarea { resize: vertical; }
   font-style: italic;
 }
 
+.kofi-footer-link { margin-top: 10px; font-style: normal; }
+.kofi-footer-link a { color: var(--gold); text-decoration: none; font-size: 0.78rem; }
+.kofi-footer-link a:hover { text-decoration: underline; }
+
 .print-cell { break-inside: avoid; }
 
 @media (max-width: 760px) {
