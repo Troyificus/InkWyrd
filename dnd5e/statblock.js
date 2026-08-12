@@ -6,7 +6,6 @@ const FEATURE_CATEGORIES = ['Trait', 'Action', 'Bonus Action', 'Reaction', 'Lege
 function newCard(overrides = {}) {
   return Object.assign({
     id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
-    cardType: 'creature',
     format: '2024',
     name: 'New Creature',
     size: 'Medium',
@@ -35,18 +34,7 @@ function newCard(overrides = {}) {
     imageWidth: 170,
     features: [
       { category: 'Action', name: 'Slam', text: 'Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6+2) bludgeoning damage.' }
-    ],
-    itemCategory: 'weapon',
-    itemTypeName: '',
-    itemBaseStats: '',
-    itemRange: '',
-    itemRarity: 'Common',
-    requiresAttunement: false,
-    attunementRequirement: '',
-    itemDescription: '',
-    itemEffect: '',
-    itemCharges: null,
-    itemRecharge: ''
+    ]
   }, overrides);
 }
 
@@ -87,7 +75,10 @@ function loadDeck() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length) return parsed.map(migrateCard);
+      if (Array.isArray(parsed) && parsed.length) {
+        const statblocksOnly = parsed.filter(c => c.cardType !== 'item').map(migrateCard);
+        if (statblocksOnly.length) return statblocksOnly;
+      }
     }
   } catch (e) { /* fall through */ }
   return [starterCard()];
@@ -101,18 +92,6 @@ function migrateCard(card) {
   if (!card.imageWidth) card.imageWidth = 170;
   if (card.proficiencyBonus === undefined) card.proficiencyBonus = 2;
   if (!card.format) card.format = '2024';
-  if (!card.cardType) card.cardType = 'creature';
-  if (!card.itemCategory) card.itemCategory = 'weapon';
-  if (card.itemTypeName === undefined) card.itemTypeName = '';
-  if (card.itemBaseStats === undefined) card.itemBaseStats = '';
-  if (card.itemRange === undefined) card.itemRange = '';
-  if (!card.itemRarity) card.itemRarity = 'Common';
-  if (card.requiresAttunement === undefined) card.requiresAttunement = false;
-  if (card.attunementRequirement === undefined) card.attunementRequirement = '';
-  if (card.itemDescription === undefined) card.itemDescription = '';
-  if (card.itemEffect === undefined) card.itemEffect = '';
-  if (card.itemCharges === undefined) card.itemCharges = null;
-  if (card.itemRecharge === undefined) card.itemRecharge = '';
   return card;
 }
 
@@ -155,104 +134,13 @@ function renderForm() {
   const card = currentCard();
   document.querySelectorAll('[data-field]').forEach(el => {
     const field = el.dataset.field;
-    if (field in card) {
-      if (el.type === 'checkbox') el.checked = !!card[field];
-      else el.value = card[field];
-    }
+    if (field in card) el.value = card[field];
   });
   document.querySelectorAll('.type-btn[data-format]').forEach(b => b.classList.toggle('active', b.dataset.format === card.format));
-  document.querySelectorAll('.type-btn[data-cardtype]').forEach(b => b.classList.toggle('active', b.dataset.cardtype === card.cardType));
-  document.querySelectorAll('.item-only').forEach(el => el.hidden = card.cardType !== 'item');
-  document.querySelectorAll('.not-item-only').forEach(el => el.hidden = card.cardType === 'item');
   renderFeatureInputs();
   renderVariableInputs();
   renderImagePreview();
   updateHints();
-}
-
-document.querySelectorAll('.type-btn[data-cardtype]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    currentCard().cardType = btn.dataset.cardtype;
-    renderForm();
-    renderCard();
-    saveDeck();
-  });
-});
-
-const RARITY_TIER_5E = { Common: 1, Uncommon: 2, Rare: 3, 'Very Rare': 4, Legendary: 5, Artifact: 5 };
-
-$('randomize-item').addEventListener('click', () => {
-  const card = currentCard();
-  const powerTier = RARITY_TIER_5E[card.itemRarity] || 1;
-  // Weapon/armor effects from the shared engine are always passive (bonus
-  // damage on hit, AC bonus, resistance while worn) — they should never
-  // carry a charge/recharge restriction, only active-use items do.
-  const isPassiveCategory = card.itemCategory === 'weapon' || card.itemCategory === 'armor';
-  const chargesLikely = !isPassiveCategory && powerTier >= 3 && Math.random() < 0.6;
-  const concept = generateItemConcept(card.itemCategory, powerTier, chargesLikely);
-  card.name = concept.name;
-  card.itemDescription = concept.description;
-  card.itemTypeName = concept.itemType;
-  card.itemBaseStats = concept.baseStats;
-  card.itemRange = concept.range || '';
-  card.itemEffect = concept.effect;
-  card.itemCharges = chargesLikely ? (powerTier + 1) : null;
-  card.itemRecharge = chargesLikely ? concept.charges : '';
-  renderForm();
-  renderCard();
-  saveDeck();
-});
-
-document.querySelector('[data-field="itemTypeName"]').addEventListener('input', (e) => {
-  const card = currentCard();
-  const lookup = card.itemCategory === 'armor' ? lookupArmorStats(e.target.value) : lookupWeaponStats(e.target.value);
-  if (lookup) {
-    card.itemBaseStats = lookup;
-    const baseStatsInput = document.querySelector('[data-field="itemBaseStats"]');
-    if (baseStatsInput) baseStatsInput.value = lookup;
-  }
-  if (card.itemCategory === 'weapon') {
-    const rangeLookup = lookupWeaponRange(e.target.value);
-    if (rangeLookup) {
-      card.itemRange = rangeLookup;
-      const rangeInput = document.querySelector('[data-field="itemRange"]');
-      if (rangeInput) rangeInput.value = rangeLookup;
-    }
-  }
-  if (lookup) {
-    renderCard();
-    saveDeck();
-  }
-});
-
-function updateHints() {
-  const card = currentCard();
-  const g = crGuidance(card.cr);
-
-  const acHint = $('hint-ac');
-  if (acHint) {
-    const acNum = parseInt(card.ac, 10);
-    acHint.textContent = `Typical for CR ${escapeHtml(card.cr)}: around AC ${g.ac}`;
-    acHint.className = hintClass(acNum, g.ac - 1, g.ac + 1);
-  }
-
-  const hpHint = $('hint-hp');
-  if (hpHint) {
-    const hpNum = parseInt(card.hp, 10);
-    hpHint.textContent = `Typical for CR ${escapeHtml(card.cr)}: roughly ${g.hpLow}–${g.hpHigh} HP`;
-    hpHint.className = hintClass(hpNum, g.hpLow, g.hpHigh);
-  }
-
-  const pbHint = $('hint-pb');
-  if (pbHint) {
-    pbHint.textContent = `Standard proficiency bonus for CR ${escapeHtml(card.cr)}: +${g.pb}`;
-    pbHint.className = hintClass(card.proficiencyBonus, g.pb, g.pb);
-  }
-
-  const guidanceBox = $('cr-guidance-box');
-  if (guidanceBox) {
-    guidanceBox.textContent = `Ballpark guidance for CR ${escapeHtml(card.cr)} — attack bonus around +${g.atk}, save DC around ${g.dc}, ~${g.dmgLow}–${g.dmgHigh} damage per hit. ${g.legendary}`;
-  }
 }
 
 document.querySelectorAll('.type-btn[data-format]').forEach(btn => {
@@ -269,8 +157,7 @@ document.getElementById('statblock-form').addEventListener('input', (e) => {
   const field = el.dataset.field;
   if (!field) return;
   const card = currentCard();
-  if (el.type === 'checkbox') card[field] = el.checked;
-  else card[field] = el.type === 'number' ? Number(el.value) : el.value;
+  card[field] = el.type === 'number' ? Number(el.value) : el.value;
   if (field === 'name') renderDeckList();
   renderCard();
   updateHints();
@@ -281,11 +168,6 @@ function escapeHtml(str) {
   return (str || '').toString().replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
-}
-
-function capitalize(str) {
-  const s = (str || '').toString();
-  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 // ===== Ability modifiers =====
@@ -344,6 +226,36 @@ function hintClass(value, low, high) {
   if (!Number.isFinite(v)) return '';
   if (v < low || v > high) return 'field-hint warn';
   return 'field-hint';
+}
+
+function updateHints() {
+  const card = currentCard();
+  const g = crGuidance(card.cr);
+
+  const acHint = $('hint-ac');
+  if (acHint) {
+    const acNum = parseInt(card.ac, 10);
+    acHint.textContent = `Typical for CR ${escapeHtml(card.cr)}: around AC ${g.ac}`;
+    acHint.className = hintClass(acNum, g.ac - 1, g.ac + 1);
+  }
+
+  const hpHint = $('hint-hp');
+  if (hpHint) {
+    const hpNum = parseInt(card.hp, 10);
+    hpHint.textContent = `Typical for CR ${escapeHtml(card.cr)}: roughly ${g.hpLow}–${g.hpHigh} HP`;
+    hpHint.className = hintClass(hpNum, g.hpLow, g.hpHigh);
+  }
+
+  const pbHint = $('hint-pb');
+  if (pbHint) {
+    pbHint.textContent = `Standard proficiency bonus for CR ${escapeHtml(card.cr)}: +${g.pb}`;
+    pbHint.className = hintClass(card.proficiencyBonus, g.pb, g.pb);
+  }
+
+  const guidanceBox = $('cr-guidance-box');
+  if (guidanceBox) {
+    guidanceBox.textContent = `Ballpark guidance for CR ${escapeHtml(card.cr)} — attack bonus around +${g.atk}, save DC around ${g.dc}, ~${g.dmgLow}–${g.dmgHigh} damage per hit. ${g.legendary}`;
+  }
 }
 
 // ===== Features (Traits/Actions/Bonus Actions/Reactions/Legendary Actions) UI =====
@@ -479,9 +391,9 @@ function applySubs(text, card) {
   const builtins = { AC: card.ac, HP: card.hp, CR: card.cr, PB: signed(pb) };
   Object.keys(abilities).forEach(k => {
     const mod = Math.floor((Number(abilities[k]) - 10) / 2);
-    builtins[k] = modifier(abilities[k]);           // e.g. [STR] -> +3
-    builtins[k + 'SAVE'] = 8 + pb + mod;             // e.g. [STRSAVE] -> 15 (the DC)
-    builtins[k + 'ATK'] = signed(pb + mod);          // e.g. [STRATK] -> +6 (attack/check bonus)
+    builtins[k] = modifier(abilities[k]);
+    builtins[k + 'SAVE'] = 8 + pb + mod;
+    builtins[k + 'ATK'] = signed(pb + mod);
   });
   const custom = {};
   (card.variables || []).forEach(v => { if (v.key) custom[v.key.toUpperCase()] = v.value; });
@@ -557,58 +469,7 @@ function renderImagePreview() {
 }
 
 // ===== Card rendering =====
-function itemCardInnerHtml(card) {
-  let html = '';
-  const sub = (text) => escapeHtml(applySubs(text, card));
-  const hasImage = !!card.image && card.imageAlign !== 'none';
-  const iconSvg = getTypeIcon(card.itemCategory);
-
-  html += `<div class="corner-tag corner-right">
-      <div class="corner-tier">${escapeHtml(card.itemRarity)}</div>
-      <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${capitalize(card.itemCategory)}</div>
-    </div>`;
-
-  html += `<div class="card-name" style="padding-right:70px">${escapeHtml(card.name)}</div>`;
-  html += `<div class="trait-chip-row">
-      <span class="trait-chip">${capitalize(card.itemCategory)}</span>
-      <span class="trait-chip">${escapeHtml(card.itemRarity)}</span>
-      ${card.requiresAttunement ? `<span class="trait-chip">Requires Attunement${card.attunementRequirement ? ' ' + escapeHtml(card.attunementRequirement) : ''}</span>` : ''}
-    </div>`;
-  if (card.itemDescription) html += `<div class="card-desc">${sub(card.itemDescription)}</div>`;
-
-  let statHtml = '';
-  if (card.itemTypeName || card.itemBaseStats) {
-    statHtml += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
-  }
-  if (card.itemRange) {
-    statHtml += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
-  }
-
-  if (hasImage) {
-    statHtml += `<div class="section-divider">Effect</div>`;
-    statHtml += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
-    if (card.itemCharges) {
-      statHtml += `<div class="card-line" style="margin-top:10px"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
-    }
-    const w = card.imageWidth || 170;
-    const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
-    const statCol = `<div class="stat-col">${statHtml}</div>`;
-    html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
-  } else {
-    html += statHtml;
-    html += `<div class="section-divider">Effect</div>`;
-    html += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
-    if (card.itemCharges) {
-      html += `<div class="card-line" style="margin-top:10px"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
-    }
-  }
-
-  html += `<div class="card-footer">D&amp;D 5E Compatible &middot; original item concept</div>`;
-  return html;
-}
-
 function cardInnerHtml(card) {
-  if (card.cardType === 'item') return itemCardInnerHtml(card);
   let html = '';
   const sub = (text) => escapeHtml(applySubs(text, card));
   const hasImage = !!card.image && card.imageAlign !== 'none';
@@ -635,9 +496,6 @@ function cardInnerHtml(card) {
 
   if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
 
-  // Core stats + ability scores are the "short" content that pairs with the
-  // image; everything else (saves/skills/senses, features) always renders
-  // full width after this section closes, so dividers can never cross the image.
   let coreHtml = '';
   if (is2024) {
     coreHtml += `<div class="core-stat-row">
@@ -693,12 +551,6 @@ function cardInnerHtml(card) {
   };
 
   if (hasImage) {
-    // Fold saves/skills/senses and the Traits/Actions/etc. sections into the
-    // same column as the core stats, so they fill the space beside the image
-    // instead of waiting until below it — each divider is then a child of
-    // the narrower column and can never cross the image. This replaces the
-    // two-column stat/feature split (there's no room for two more columns
-    // once the image has one), so it applies for both card formats.
     coreHtml += statLines();
     coreHtml += featureBlocks().replace(/col-divider/g, '');
     const w = card.imageWidth || 170;
@@ -778,12 +630,13 @@ $('import-json').addEventListener('change', (e) => {
     try {
       const parsed = JSON.parse(reader.result);
       if (!Array.isArray(parsed) || !parsed.length) throw new Error('Invalid deck file');
-      deck = parsed.map(migrateCard);
+      deck = parsed.filter(c => c.cardType !== 'item').map(migrateCard);
+      if (!deck.length) throw new Error('No statblock cards in that file');
       currentId = deck[0].id;
       renderDeckList(); renderForm(); renderCard(); saveDeck();
       $('deck-status').textContent = `Imported ${deck.length} card(s).`;
     } catch (err) {
-      $('deck-status').textContent = 'Import failed — invalid JSON.';
+      $('deck-status').textContent = 'Import failed — invalid JSON or no statblock cards.';
     }
     setTimeout(() => $('deck-status').textContent = '', 3000);
   };

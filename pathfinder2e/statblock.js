@@ -34,7 +34,6 @@ function hintClass(value, low, high) {
 function newCard(overrides = {}) {
   return Object.assign({
     id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
-    cardType: 'creature',
     name: 'New Creature',
     level: 1,
     rarity: 'Common',
@@ -63,21 +62,7 @@ function newCard(overrides = {}) {
     imageWidth: 170,
     features: [
       { category: 'Ability', name: 'Attack of Opportunity', text: 'Reaction triggered by an adjacent enemy using a manipulate action, moving out of a reach, or making a ranged attack.' }
-    ],
-    itemCategory: 'weapon',
-    itemTypeName: '',
-    itemBaseStats: '',
-    itemRange: '',
-    itemRarity: 'Common',
-    itemLevel: 1,
-    bulk: 'L',
-    price: '35 gp',
-    itemDescription: '',
-    itemUsage: 'held in 1 hand',
-    itemActivate: '',
-    itemTrigger: '',
-    itemEffect: '',
-    itemFrequency: ''
+    ]
   }, overrides);
 }
 
@@ -121,7 +106,10 @@ function loadDeck() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length) return parsed.map(migrateCard);
+      if (Array.isArray(parsed) && parsed.length) {
+        const statblocksOnly = parsed.filter(c => c.cardType !== 'item').map(migrateCard);
+        if (statblocksOnly.length) return statblocksOnly;
+      }
     }
   } catch (e) { /* fall through */ }
   return [starterCard()];
@@ -134,30 +122,6 @@ function migrateCard(card) {
   if (card.image === undefined) card.image = null;
   if (!card.imageAlign) card.imageAlign = 'right';
   if (!card.imageWidth) card.imageWidth = 170;
-  if (!card.cardType) card.cardType = 'creature';
-  if (!card.itemCategory) card.itemCategory = 'weapon';
-  if (card.itemTypeName === undefined) card.itemTypeName = '';
-  if (card.itemBaseStats === undefined) card.itemBaseStats = '';
-  if (card.itemRange === undefined) card.itemRange = '';
-  if (!card.itemRarity) card.itemRarity = 'Common';
-  if (card.itemLevel === undefined) card.itemLevel = 1;
-  if (card.bulk === undefined) card.bulk = 'L';
-  if (card.price === undefined) card.price = '';
-  if (card.itemDescription === undefined) card.itemDescription = '';
-  if (card.itemUsage === undefined) card.itemUsage = 'held in 1 hand';
-  if (card.itemActivate === undefined) card.itemActivate = '';
-  if (card.itemTrigger === undefined) card.itemTrigger = '';
-  if (card.itemEffect === undefined) card.itemEffect = '';
-  // Older saves used numeric D&D-style charges/recharge; fold those into a
-  // single free-text Frequency line, matching PF2E's actual item convention.
-  if (card.itemCharges !== undefined || card.itemRecharge !== undefined) {
-    if (card.itemFrequency === undefined) {
-      card.itemFrequency = card.itemRecharge ? card.itemRecharge.replace(/^Recharges?\s*/i, 'once per ') : (card.itemCharges ? `${card.itemCharges} times per day` : '');
-    }
-    delete card.itemCharges;
-    delete card.itemRecharge;
-  }
-  if (card.itemFrequency === undefined) card.itemFrequency = '';
   return card;
 }
 
@@ -202,87 +166,12 @@ function renderForm() {
     const field = el.dataset.field;
     if (field in card) el.value = card[field];
   });
-  document.querySelectorAll('.type-btn[data-cardtype]').forEach(b => b.classList.toggle('active', b.dataset.cardtype === card.cardType));
-  document.querySelectorAll('.item-only').forEach(el => el.hidden = card.cardType !== 'item');
-  document.querySelectorAll('.not-item-only').forEach(el => el.hidden = card.cardType === 'item');
   renderFeatureInputs();
   renderAttackInputs();
   renderVariableInputs();
   renderImagePreview();
   updateHints();
 }
-
-document.querySelectorAll('.type-btn[data-cardtype]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    currentCard().cardType = btn.dataset.cardtype;
-    renderForm();
-    renderCard();
-    saveDeck();
-  });
-});
-
-const RARITY_TIER_PF2E = { Common: 1, Uncommon: 2, Rare: 4, Unique: 5 };
-
-// PF2E items don't track numeric charges either — they use a plain-text
-// Frequency entry ("once per day") instead, so the randomizer picks from
-// that rather than the shared engine's D&D-style charge/recharge pool.
-const PF2E_FREQUENCY_BY_TIER = {
-  1: ['', 'once per hour'],
-  2: ['once per hour', 'once per day'],
-  3: ['once per day'],
-  4: ['once per day', 'once per week'],
-  5: ['once per week', 'once per day']
-};
-
-function pickPF2EFrequency(tier) {
-  const pool = PF2E_FREQUENCY_BY_TIER[Math.max(1, Math.min(5, tier))] || PF2E_FREQUENCY_BY_TIER[1];
-  return pool[Math.floor(Math.random() * pool.length)];
-}
-
-$('randomize-item').addEventListener('click', () => {
-  const card = currentCard();
-  const powerTier = RARITY_TIER_PF2E[card.itemRarity] || 1;
-  const concept = generateItemConcept(card.itemCategory, powerTier, false);
-  card.name = concept.name;
-  card.itemDescription = concept.description;
-  card.itemTypeName = concept.itemType;
-  card.itemBaseStats = concept.baseStats;
-  card.itemRange = concept.range || '';
-  card.itemEffect = concept.effect;
-  // A weapon's bonus damage or an armor's resistance is a passive property
-  // (rune-like), always active — only active-use items (wearable/consumable/
-  // wondrous) get a Frequency/Activate entry.
-  const isPassiveCategory = card.itemCategory === 'weapon' || card.itemCategory === 'armor';
-  card.itemFrequency = isPassiveCategory ? '' : pickPF2EFrequency(powerTier);
-  card.itemActivate = card.itemFrequency ? '1 Action (command)' : '';
-  card.itemUsage = card.itemCategory === 'weapon' ? 'held in 1 hand' : card.itemCategory === 'armor' ? 'worn' : 'worn';
-  card.itemTrigger = '';
-  renderForm();
-  renderCard();
-  saveDeck();
-});
-
-document.querySelector('[data-field="itemTypeName"]').addEventListener('input', (e) => {
-  const card = currentCard();
-  const lookup = card.itemCategory === 'armor' ? lookupArmorStats(e.target.value) : lookupWeaponStats(e.target.value);
-  if (lookup) {
-    card.itemBaseStats = lookup;
-    const baseStatsInput = document.querySelector('[data-field="itemBaseStats"]');
-    if (baseStatsInput) baseStatsInput.value = lookup;
-  }
-  if (card.itemCategory === 'weapon') {
-    const rangeLookup = lookupWeaponRange(e.target.value);
-    if (rangeLookup) {
-      card.itemRange = rangeLookup;
-      const rangeInput = document.querySelector('[data-field="itemRange"]');
-      if (rangeInput) rangeInput.value = rangeLookup;
-    }
-  }
-  if (lookup) {
-    renderCard();
-    saveDeck();
-  }
-});
 
 function updateHints() {
   const card = currentCard();
@@ -332,11 +221,6 @@ function escapeHtml(str) {
   return (str || '').toString().replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
-}
-
-function capitalize(str) {
-  const s = (str || '').toString();
-  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 // ===== Strikes (attacks) UI =====
@@ -624,62 +508,7 @@ function renderImagePreview() {
 }
 
 // ===== Card rendering =====
-function itemCardInnerHtml(card) {
-  let html = '';
-  const sub = (text) => escapeHtml(applySubs(text, card));
-  const hasImage = !!card.image && card.imageAlign !== 'none';
-  const iconSvg = getTypeIcon(card.itemCategory);
-
-  html += `<div class="corner-tag corner-right">
-      <div class="corner-tier">LVL ${escapeHtml(card.itemLevel)}</div>
-      <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(card.itemRarity)}</div>
-    </div>`;
-
-  html += `<div class="card-name" style="padding-right:70px">${escapeHtml(card.name)}</div>`;
-  html += `<div class="trait-chip-row">
-      <span class="trait-chip">${capitalize(card.itemCategory)}</span>
-      <span class="trait-chip">${escapeHtml(card.itemRarity)}</span>
-      ${card.bulk ? `<span class="trait-chip">Bulk ${escapeHtml(card.bulk)}</span>` : ''}
-      ${card.price ? `<span class="trait-chip">${escapeHtml(card.price)}</span>` : ''}
-    </div>`;
-  if (card.itemDescription) html += `<div class="card-desc">${sub(card.itemDescription)}</div>`;
-
-  let statHtml = '';
-  if (card.itemTypeName || card.itemBaseStats) {
-    statHtml += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
-  }
-  if (card.itemRange) {
-    statHtml += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
-  }
-  if (card.itemUsage) statHtml += `<div class="card-line"><b>Usage</b> ${sub(card.itemUsage)}</div>`;
-  if (card.itemActivate) statHtml += `<div class="card-line"><b>Activate</b> ${sub(card.itemActivate)}</div>`;
-  if (card.itemTrigger) statHtml += `<div class="card-line"><b>Trigger</b> ${sub(card.itemTrigger)}</div>`;
-
-  if (hasImage) {
-    statHtml += `<div class="section-divider">Effect</div>`;
-    statHtml += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
-    if (card.itemFrequency) {
-      statHtml += `<div class="card-line" style="margin-top:10px"><b>Frequency:</b> ${sub(card.itemFrequency)}</div>`;
-    }
-    const w = card.imageWidth || 170;
-    const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
-    const statCol = `<div class="stat-col">${statHtml}</div>`;
-    html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
-  } else {
-    html += statHtml;
-    html += `<div class="section-divider">Effect</div>`;
-    html += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
-    if (card.itemFrequency) {
-      html += `<div class="card-line" style="margin-top:10px"><b>Frequency:</b> ${sub(card.itemFrequency)}</div>`;
-    }
-  }
-
-  html += `<div class="card-footer">Pathfinder 2E Compatible &middot; original item concept</div>`;
-  return html;
-}
-
 function cardInnerHtml(card) {
-  if (card.cardType === 'item') return itemCardInnerHtml(card);
   let html = '';
   const sub = (text) => escapeHtml(applySubs(text, card));
   const hasImage = !!card.image && card.imageAlign !== 'none';
@@ -698,9 +527,6 @@ function cardInnerHtml(card) {
     </div>`;
   if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
 
-  // Perception/Languages/Skills/ability scores/Items are the "short" content
-  // that pairs with the image; Defense/Offense/Abilities (with their own
-  // dividers) always render full width after this section closes.
   let coreHtml = '';
   coreHtml += `<div class="card-line"><b>Perception</b> ${sub(card.perception)}${card.senses ? '; ' + sub(card.senses) : ''}</div>`;
   if (card.languages) coreHtml += `<div class="card-line"><b>Languages</b> ${sub(card.languages)}</div>`;
@@ -714,10 +540,6 @@ function cardInnerHtml(card) {
 
   if (card.items) coreHtml += `<div class="card-line"><b>Items</b> ${sub(card.items)}</div>`;
 
-  // Defense/Offense/Abilities, folded into the same column when an image is
-  // present so they fill the space beside it instead of waiting below —
-  // each divider becomes a child of the narrower column and can never cross
-  // the image.
   let restHtml = '';
   restHtml += `<div class="section-divider">Defense</div>`;
   restHtml += `<div class="card-line"><b>AC</b> ${sub(card.ac)}; <b>Fort</b> ${sub(card.fort)}, <b>Ref</b> ${sub(card.ref)}, <b>Will</b> ${sub(card.will)}</div>`;
@@ -815,12 +637,13 @@ $('import-json').addEventListener('change', (e) => {
     try {
       const parsed = JSON.parse(reader.result);
       if (!Array.isArray(parsed) || !parsed.length) throw new Error('Invalid deck file');
-      deck = parsed.map(migrateCard);
+      deck = parsed.filter(c => c.cardType !== 'item').map(migrateCard);
+      if (!deck.length) throw new Error('No statblock cards in that file');
       currentId = deck[0].id;
       renderDeckList(); renderForm(); renderCard(); saveDeck();
       $('deck-status').textContent = `Imported ${deck.length} card(s).`;
     } catch (err) {
-      $('deck-status').textContent = 'Import failed — invalid JSON.';
+      $('deck-status').textContent = 'Import failed — invalid JSON or no statblock cards.';
     }
     setTimeout(() => $('deck-status').textContent = '', 3000);
   };

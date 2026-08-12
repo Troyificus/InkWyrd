@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pathfinder 2E Statblock Cards — Statblock Forge</title>
+<title>Pathfinder 2E Statblock Generator — Statblock Forge</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -13,8 +13,9 @@
 
 <header class="site-header">
   <a class="back-link" href="../">&larr; Statblock Forge</a>
-  <h1>Pathfinder 2E Creature Cards</h1>
+  <h1>Pathfinder 2E Statblock Generator</h1>
   <p class="tagline">Built from Pathfinder Second Edition rules text, released under the ORC License — export a print-ready PNG statblock card.</p>
+  <a class="cross-link" href="items.html">Looking for the Magic Item Generator? &rarr;</a>
 </header>
 
 <main class="layout">
@@ -38,10 +39,6 @@
   </section>
 
   <section class="form-panel" aria-label="Statblock editor">
-    <div class="type-toggle">
-      <button type="button" class="type-btn active" data-cardtype="creature">Creature</button>
-      <button type="button" class="type-btn" data-cardtype="item">Magic Item</button>
-    </div>
     <form id="statblock-form">
 
       <fieldset>
@@ -59,7 +56,7 @@
         <label>Image width (px) <input type="range" data-field="imageWidth" min="100" max="260" step="10"></label>
       </fieldset>
 
-      <fieldset class="not-item-only">
+      <fieldset>
         <legend>Basics</legend>
         <label>Name <input type="text" data-field="name"></label>
         <label>Level <input type="number" data-field="level" min="-1" max="25"></label>
@@ -81,74 +78,7 @@
         <label>Description <textarea data-field="description" rows="2" placeholder="Optional flavor text"></textarea></label>
       </fieldset>
 
-      <fieldset class="item-only" hidden>
-        <legend>Item Basics</legend>
-        <label>Name <input type="text" data-field="name"></label>
-        <label>Item Category
-          <select data-field="itemCategory">
-            <option value="weapon">Weapon</option>
-            <option value="armor">Armor</option>
-            <option value="wearable">Wearable</option>
-            <option value="consumable">Consumable</option>
-            <option value="wondrous">Wondrous Item</option>
-          </select>
-        </label>
-        <label>Weapon/Armor Type (if applicable)
-          <input type="text" data-field="itemTypeName" list="weapon-armor-type-list" placeholder="Longsword, Studded Leather, etc.">
-        </label>
-        <datalist id="weapon-armor-type-list">
-          <option value="Dagger"><option value="Shortsword"><option value="Longsword"><option value="Greatsword">
-          <option value="Rapier"><option value="Scimitar"><option value="Mace"><option value="Warhammer">
-          <option value="Battleaxe"><option value="Greataxe"><option value="Spear"><option value="Halberd">
-          <option value="Quarterstaff"><option value="Flail"><option value="Whip"><option value="Shortbow">
-          <option value="Longbow"><option value="Light Crossbow"><option value="Heavy Crossbow"><option value="Sling">
-          <option value="Padded"><option value="Leather"><option value="Studded Leather"><option value="Hide">
-          <option value="Chain Shirt"><option value="Scale Mail"><option value="Breastplate"><option value="Half Plate">
-          <option value="Ring Mail"><option value="Chain Mail"><option value="Splint"><option value="Plate"><option value="Shield">
-        </datalist>
-        <label>Base Stats
-          <input type="text" data-field="itemBaseStats" placeholder="e.g. 1d8 slashing, or AC 12 + Dex modifier">
-        </label>
-        <label>Range (if a ranged weapon or ranged effect)
-          <input type="text" data-field="itemRange" placeholder="e.g. Range 150/600 ft, or Melee">
-        </label>
-        <label>Rarity
-          <select data-field="itemRarity">
-            <option value="Common">Common</option>
-            <option value="Uncommon">Uncommon</option>
-            <option value="Rare">Rare</option>
-            <option value="Unique">Unique</option>
-          </select>
-        </label>
-        <label>Item Level <input type="number" data-field="itemLevel" min="0" max="25"></label>
-        <label>Bulk <input type="text" data-field="bulk" placeholder="L, 1, or —"></label>
-        <label>Price <input type="text" data-field="price" placeholder="35 gp"></label>
-        <label>Description <textarea data-field="itemDescription" rows="2" placeholder="Optional flavor text"></textarea></label>
-      </fieldset>
-
-      <fieldset class="item-only" hidden>
-        <legend>Random Item Generator</legend>
-        <p class="hint">Roll a full original item concept — name, description, and effect — based on the Category and Rarity above. You can edit anything afterward.</p>
-        <button type="button" id="randomize-item">🎲 Randomize Item</button>
-      </fieldset>
-
-      <fieldset class="item-only" hidden>
-        <legend>Usage, Activation &amp; Effect</legend>
-        <p class="hint">PF2E items track how they're carried (Usage), how often they can be triggered (Frequency), and what activating them costs (Activate) — not a numeric charge pool.</p>
-        <label>Usage <input type="text" data-field="itemUsage" list="pf2e-usage-list" placeholder="held in 1 hand"></label>
-        <datalist id="pf2e-usage-list">
-          <option value="held in 1 hand"><option value="worn"><option value="affixed to a weapon"><option value="affixed to armor"><option value="affixed to a shield">
-        </datalist>
-        <label>Activate (leave blank if passive) <input type="text" data-field="itemActivate" placeholder="1 Action (command)"></label>
-        <label>Trigger (optional — for reaction-style activations) <input type="text" data-field="itemTrigger" placeholder="You are hit by an attack"></label>
-        <label>Effect <textarea data-field="itemEffect" rows="3" placeholder="What the item does mechanically"></textarea></label>
-        <label>Frequency (leave blank if unlimited) <input type="text" data-field="itemFrequency" list="pf2e-frequency-list" placeholder="once per day"></label>
-        <datalist id="pf2e-frequency-list">
-          <option value="once per round"><option value="once per hour"><option value="once per day"><option value="once per week">
-        </datalist>
-      </fieldset>
-
-      <fieldset class="not-item-only">
+      <fieldset>
         <legend>Senses &amp; Skills</legend>
         <label>Perception <input type="text" data-field="perception" placeholder="+14"><span class="field-hint" id="hint-perception"></span></label>
         <label>Senses <input type="text" data-field="senses" placeholder="darkvision, scent (imprecise) 30 feet"></label>
@@ -157,7 +87,7 @@
         <label>Items <input type="text" data-field="items" placeholder="+1 greataxe, hide armor"></label>
       </fieldset>
 
-      <fieldset class="not-item-only">
+      <fieldset>
         <legend>Ability Modifiers</legend>
         <div class="ability-grid">
           <label>STR <input type="number" data-field="str"></label>
@@ -169,7 +99,7 @@
         </div>
       </fieldset>
 
-      <fieldset class="not-item-only">
+      <fieldset>
         <legend>Defense</legend>
         <label>AC <input type="text" data-field="ac" placeholder="24"><span class="field-hint" id="hint-ac"></span></label>
         <label>Fortitude <input type="text" data-field="fort" placeholder="+16"><span class="field-hint" id="hint-fort"></span></label>
@@ -181,12 +111,12 @@
         <label>Weaknesses <input type="text" data-field="weaknesses"></label>
       </fieldset>
 
-      <fieldset class="not-item-only">
+      <fieldset>
         <legend>Speed</legend>
         <label>Speed <input type="text" data-field="speed" placeholder="25 feet, climb 25 feet"></label>
       </fieldset>
 
-      <fieldset class="not-item-only">
+      <fieldset>
         <legend>Strikes</legend>
         <p class="hint">Click its header to expand and edit.</p>
         <div class="quick-add-row">
@@ -203,7 +133,7 @@
         <button type="button" id="add-variable">+ Add Variable</button>
       </details>
 
-      <fieldset class="not-item-only">
+      <fieldset>
         <legend>Abilities, Reactions &amp; Free Actions</legend>
         <p class="hint">Pick a category to add an ability — click its header to expand and edit.</p>
         <div class="quick-add-row">
@@ -233,7 +163,7 @@
   <section class="preview-panel" aria-label="Card preview">
     <div id="card-wrapper">
       <div id="statblock-card" class="theme-parchment">
-        <!-- Rendered by script.js -->
+        <!-- Rendered by statblock.js -->
       </div>
     </div>
     <div class="export-controls">
@@ -255,7 +185,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="icons.js"></script>
-<script src="../assets/item-words.js"></script>
-<script src="script.js"></script>
+<script src="statblock.js"></script>
 </body>
 </html>

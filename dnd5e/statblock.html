@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>D&amp;D 5E Statblock Cards — Statblock Forge</title>
+<title>D&amp;D 5E Statblock Generator — Statblock Forge</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -13,8 +13,9 @@
 
 <header class="site-header">
   <a class="back-link" href="../">&larr; Statblock Forge</a>
-  <h1>D&amp;D 5E Creature Cards</h1>
+  <h1>D&amp;D 5E Statblock Generator</h1>
   <p class="tagline">Built from the 5E SRD (5.1 / 5.2) — export a print-ready PNG statblock card.</p>
+  <a class="cross-link" href="items.html">Looking for the Magic Item Generator? &rarr;</a>
 </header>
 
 <main class="layout">
@@ -39,10 +40,6 @@
 
   <section class="form-panel" aria-label="Statblock editor">
     <div class="type-toggle">
-      <button type="button" class="type-btn active" data-cardtype="creature">Creature</button>
-      <button type="button" class="type-btn" data-cardtype="item">Magic Item</button>
-    </div>
-    <div class="type-toggle not-item-only">
       <button type="button" class="type-btn" data-format="2014">2014 Style</button>
       <button type="button" class="type-btn active" data-format="2024">2024 Style</button>
     </div>
@@ -63,7 +60,7 @@
         <label>Image width (px) <input type="range" data-field="imageWidth" min="100" max="260" step="10"></label>
       </fieldset>
 
-      <fieldset class="not-item-only">
+      <fieldset>
         <legend>Basics</legend>
         <label>Name <input type="text" data-field="name"></label>
         <label>Size <input type="text" data-field="size" list="size-list" placeholder="Medium"></label>
@@ -85,73 +82,14 @@
         <label>Description <textarea data-field="description" rows="2" placeholder="Optional flavor text"></textarea></label>
       </fieldset>
 
-      <fieldset class="item-only" hidden>
-        <legend>Item Basics</legend>
-        <label>Name <input type="text" data-field="name"></label>
-        <label>Item Category
-          <select data-field="itemCategory">
-            <option value="weapon">Weapon</option>
-            <option value="armor">Armor</option>
-            <option value="wearable">Wearable</option>
-            <option value="consumable">Consumable</option>
-            <option value="wondrous">Wondrous Item</option>
-          </select>
-        </label>
-        <label>Weapon/Armor Type (if applicable)
-          <input type="text" data-field="itemTypeName" list="weapon-armor-type-list" placeholder="Longsword, Studded Leather, etc.">
-        </label>
-        <datalist id="weapon-armor-type-list">
-          <option value="Dagger"><option value="Shortsword"><option value="Longsword"><option value="Greatsword">
-          <option value="Rapier"><option value="Scimitar"><option value="Mace"><option value="Warhammer">
-          <option value="Battleaxe"><option value="Greataxe"><option value="Spear"><option value="Halberd">
-          <option value="Quarterstaff"><option value="Flail"><option value="Whip"><option value="Shortbow">
-          <option value="Longbow"><option value="Light Crossbow"><option value="Heavy Crossbow"><option value="Sling">
-          <option value="Padded"><option value="Leather"><option value="Studded Leather"><option value="Hide">
-          <option value="Chain Shirt"><option value="Scale Mail"><option value="Breastplate"><option value="Half Plate">
-          <option value="Ring Mail"><option value="Chain Mail"><option value="Splint"><option value="Plate"><option value="Shield">
-        </datalist>
-        <label>Base Stats
-          <input type="text" data-field="itemBaseStats" placeholder="e.g. 1d8 slashing, or AC 12 + Dex modifier">
-        </label>
-        <label>Range (if a ranged weapon or ranged effect)
-          <input type="text" data-field="itemRange" placeholder="e.g. Range 150/600 ft, or Melee">
-        </label>
-        <label>Rarity
-          <select data-field="itemRarity">
-            <option value="Common">Common</option>
-            <option value="Uncommon">Uncommon</option>
-            <option value="Rare">Rare</option>
-            <option value="Very Rare">Very Rare</option>
-            <option value="Legendary">Legendary</option>
-            <option value="Artifact">Artifact</option>
-          </select>
-        </label>
-        <label><input type="checkbox" data-field="requiresAttunement" style="width:auto; display:inline-block; margin-right:6px;"> Requires Attunement</label>
-        <label>Attunement Requirement (optional) <input type="text" data-field="attunementRequirement" placeholder="by a spellcaster"></label>
-        <label>Description <textarea data-field="itemDescription" rows="2" placeholder="Optional flavor text"></textarea></label>
-      </fieldset>
-
-      <fieldset class="item-only" hidden>
-        <legend>Random Item Generator</legend>
-        <p class="hint">Roll a full original item concept — name, description, and effect — based on the Category and Rarity above. You can edit anything afterward.</p>
-        <button type="button" id="randomize-item">🎲 Randomize Item</button>
-      </fieldset>
-
-      <fieldset class="item-only" hidden>
-        <legend>Effect &amp; Charges</legend>
-        <label>Effect <textarea data-field="itemEffect" rows="3" placeholder="What the item does mechanically"></textarea></label>
-        <label>Charges (leave blank if not applicable) <input type="number" data-field="itemCharges" min="0"></label>
-        <label>Recharge <input type="text" data-field="itemRecharge" placeholder="Regains 1d4 charges daily at dawn"></label>
-      </fieldset>
-
-      <fieldset class="not-item-only">
+      <fieldset>
         <legend>Core Stats</legend>
         <label>Armor Class <input type="text" data-field="ac" placeholder="15 (natural armor)"><span class="field-hint" id="hint-ac"></span></label>
         <label>Hit Points <input type="text" data-field="hp" placeholder="45 (6d10+12)"><span class="field-hint" id="hint-hp"></span></label>
         <label>Speed <input type="text" data-field="speed" placeholder="30 ft., fly 60 ft."></label>
       </fieldset>
 
-      <fieldset class="not-item-only">
+      <fieldset>
         <legend>Ability Scores</legend>
         <div class="ability-grid">
           <label>STR <input type="number" data-field="str" min="1" max="30"></label>
@@ -164,7 +102,7 @@
         <label>Proficiency Bonus <input type="number" data-field="proficiencyBonus" min="0" max="9"><span class="field-hint" id="hint-pb"></span></label>
       </fieldset>
 
-      <fieldset class="not-item-only">
+      <fieldset>
         <legend>Traits &amp; Proficiencies</legend>
         <label>Saving Throws <input type="text" data-field="savingThrows" placeholder="Dex +6, Wis +4"></label>
         <label>Skills <input type="text" data-field="skills" placeholder="Perception +6, Stealth +7"></label>
@@ -184,7 +122,7 @@
         <button type="button" id="add-variable">+ Add Variable</button>
       </details>
 
-      <fieldset class="not-item-only">
+      <fieldset>
         <legend>Traits, Actions &amp; Reactions</legend>
         <p class="hint">Pick a category to add an ability — click its header to expand and edit.</p>
         <div class="guidance-box" id="cr-guidance-box"></div>
@@ -217,7 +155,7 @@
   <section class="preview-panel" aria-label="Card preview">
     <div id="card-wrapper">
       <div id="statblock-card" class="theme-parchment">
-        <!-- Rendered by script.js -->
+        <!-- Rendered by statblock.js -->
       </div>
     </div>
     <div class="export-controls">
@@ -239,7 +177,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="icons.js"></script>
-<script src="../assets/item-words.js"></script>
-<script src="script.js"></script>
+<script src="statblock.js"></script>
 </body>
 </html>
