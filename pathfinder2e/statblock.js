@@ -788,7 +788,7 @@ function buildTargetCard5E(converted, sourceCard) {
     speed: '30 ft.',
     str: converted.str, dex: converted.dex, con: converted.con, int: converted.int, wis: converted.wis, cha: converted.cha,
     proficiencyBonus: converted.proficiencyBonus,
-    savingThrows: '', skills: '', damageResistances: '', damageImmunities: '', conditionImmunities: '',
+    savingThrows: '', skills: '', damageVulnerabilities: '', damageResistances: '', damageImmunities: '', conditionImmunities: '',
     senses: converted.senses, languages: converted.languages,
     cr: converted.cr, xp: converted.xp,
     theme: 'parchment', accent: '#7a2020', variables: [], image: sourceCard.image, imageAlign: sourceCard.imageAlign || 'right', imageWidth: sourceCard.imageWidth || 170,

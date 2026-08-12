@@ -19,6 +19,7 @@ function newCard(overrides = {}) {
     proficiencyBonus: 2,
     savingThrows: '',
     skills: '',
+    damageVulnerabilities: '',
     damageResistances: '',
     damageImmunities: '',
     conditionImmunities: '',
@@ -92,6 +93,7 @@ function migrateCard(card) {
   if (!card.imageWidth) card.imageWidth = 170;
   if (card.proficiencyBonus === undefined) card.proficiencyBonus = 2;
   if (!card.format) card.format = '2024';
+  if (card.damageVulnerabilities === undefined) card.damageVulnerabilities = '';
   return card;
 }
 
@@ -521,10 +523,12 @@ function cardInnerHtml(card) {
     if (card.savingThrows) s += `<div class="card-line"><b>Saving Throws</b> ${sub(card.savingThrows)}</div>`;
     if (card.skills) s += `<div class="card-line"><b>Skills</b> ${sub(card.skills)}</div>`;
     if (is2024) {
+      if (card.damageVulnerabilities) s += `<div class="card-line"><b>Vulnerabilities</b> ${sub(card.damageVulnerabilities)}</div>`;
       if (card.damageResistances) s += `<div class="card-line"><b>Resistances</b> ${sub(card.damageResistances)}</div>`;
       const combinedImmunities = [card.damageImmunities, card.conditionImmunities].filter(Boolean).map(t => applySubs(t, card)).join(', ');
       if (combinedImmunities) s += `<div class="card-line"><b>Immunities</b> ${escapeHtml(combinedImmunities)}</div>`;
     } else {
+      if (card.damageVulnerabilities) s += `<div class="card-line"><b>Damage Vulnerabilities</b> ${sub(card.damageVulnerabilities)}</div>`;
       if (card.damageResistances) s += `<div class="card-line"><b>Damage Resistances</b> ${sub(card.damageResistances)}</div>`;
       if (card.damageImmunities) s += `<div class="card-line"><b>Damage Immunities</b> ${sub(card.damageImmunities)}</div>`;
       if (card.conditionImmunities) s += `<div class="card-line"><b>Condition Immunities</b> ${sub(card.conditionImmunities)}</div>`;
