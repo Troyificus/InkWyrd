@@ -752,13 +752,27 @@ $('print-sheet').addEventListener('click', () => {
 });
 
 // ===== Cross-system conversion =====
+
+// PF2E's sizeType is one combined text field (e.g. "Large Beast"); 5E needs
+// size and creature type as two separate fields. Splits on the first word
+// if it matches a known size, so "Large Beast" -> size "Large", type "Beast".
+const CC_KNOWN_SIZES = ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan'];
+function ccSplitPF2ESizeType(sizeType) {
+  const parts = (sizeType || '').trim().split(/\s+/);
+  if (parts.length && CC_KNOWN_SIZES.includes(parts[0])) {
+    return { size: parts[0], creatureType: parts.slice(1).join(' ') || 'Creature' };
+  }
+  return { size: 'Medium', creatureType: sizeType || 'Creature' };
+}
+
 function buildTargetCard5E(converted, sourceCard) {
+  const split = ccSplitPF2ESizeType(sourceCard.sizeType);
   return {
     id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
     format: '2024',
     name: converted.name,
-    size: 'Medium',
-    creatureType: 'Humanoid',
+    size: split.size,
+    creatureType: split.creatureType,
     alignment: 'unaligned',
     description: converted.description || '',
     ac: converted.ac,
@@ -766,13 +780,15 @@ function buildTargetCard5E(converted, sourceCard) {
     speed: '30 ft.',
     str: converted.str, dex: converted.dex, con: converted.con, int: converted.int, wis: converted.wis, cha: converted.cha,
     proficiencyBonus: converted.proficiencyBonus,
-    savingThrows: '', skills: sourceCard.skills || '', damageVulnerabilities: '', damageResistances: '', damageImmunities: '', conditionImmunities: '',
+    savingThrows: '', skills: sourceCard.skills || '',
+    damageVulnerabilities: sourceCard.weaknesses || '', damageResistances: sourceCard.resistances || '', damageImmunities: sourceCard.immunities || '', conditionImmunities: '',
     senses: sourceCard.senses || converted.senses, languages: converted.languages,
     cr: converted.cr, xp: converted.xp,
     theme: 'parchment', accent: '#7a2020', variables: [], image: sourceCard.image, imageAlign: sourceCard.imageAlign || 'right', imageWidth: sourceCard.imageWidth || 170,
     features: converted.features.map(f => ({ category: f.category, name: f.name, text: f.text }))
   };
 }
+
 
 function pushToTargetDeck(storageKey, card) {
   let targetDeck = [];

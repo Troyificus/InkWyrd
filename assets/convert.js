@@ -221,6 +221,40 @@ function ccRewriteSavingThrowsForDH(text) {
   );
 }
 
+// 5E ties a saving throw to one specific ability score; PF2E ties it to one
+// of three named saves (Fortitude/Reflex/Will). This mapping is the same one
+// used for the strong-save nudge in ccFromNeutral, kept consistent.
+const CC_ABILITY_TO_PF2E_SAVE = {
+  strength: 'Fortitude', constitution: 'Fortitude', dexterity: 'Reflex',
+  intelligence: 'Will', wisdom: 'Will', charisma: 'Will'
+};
+
+function ccRewriteSavingThrowsForPF2E(text) {
+  return text.replace(
+    /DC\s*(\d+)\s*(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma)\s*saving throw/gi,
+    (match, dc, ability) => {
+      const save = CC_ABILITY_TO_PF2E_SAVE[ability.toLowerCase()] || ability;
+      return `DC ${dc} ${save} save`;
+    }
+  );
+}
+
+// Reverse direction: PF2E's three named saves don't map back to one specific
+// ability score the way 5E requires — this uses the single most common
+// association for each (Fortitude->Constitution, Reflex->Dexterity,
+// Will->Wisdom), which is the same approximation any GM would reach for.
+const CC_PF2E_SAVE_TO_ABILITY = { fortitude: 'Constitution', reflex: 'Dexterity', will: 'Wisdom' };
+
+function ccRewriteSavingThrowsFor5E(text) {
+  return text.replace(
+    /DC\s*(\d+)\s*(Fortitude|Reflex|Will)\s*(?:save|saving throw)/gi,
+    (match, dc, save) => {
+      const ability = CC_PF2E_SAVE_TO_ABILITY[save.toLowerCase()] || save;
+      return `DC ${dc} ${ability} saving throw`;
+    }
+  );
+}
+
 function ccConvertFeature(feature, fromSystem, toSystem, card, resolveFn) {
   const neutral = CC_CATEGORY_TO_NEUTRAL[fromSystem][feature.category || feature.type] || 'passive';
   const category = CC_NEUTRAL_TO_CATEGORY[toSystem][neutral];
@@ -231,7 +265,14 @@ function ccConvertFeature(feature, fromSystem, toSystem, card, resolveFn) {
   // just print as literal garbage on the converted card.
   let resolvedText = resolveFn ? resolveFn(feature.text, card) : feature.text;
   if (toSystem === 'dh') resolvedText = ccRewriteSavingThrowsForDH(resolvedText);
-  const text = `${resolvedText} [Converted — ${CC_REVIEW_NOTE[toSystem]}.]`;
+  else if (toSystem === 'pf2e') resolvedText = ccRewriteSavingThrowsForPF2E(resolvedText);
+  else if (toSystem === 'dnd5e') resolvedText = ccRewriteSavingThrowsFor5E(resolvedText);
+  // PF2E's own DCs run on a different curve than 5E's (roughly 10 + level +
+  // a proficiency-rank bonus, vs 5E's 8 + proficiency bonus + ability mod) —
+  // the DC number itself is carried across as-is, only the vocabulary
+  // changes, so it's flagged rather than silently treated as exact.
+  const dcNoteNeeded = /DC\s*\d+/i.test(resolvedText) && (toSystem === 'pf2e' || toSystem === 'dnd5e') && fromSystem !== toSystem && (fromSystem === 'dnd5e' || fromSystem === 'pf2e');
+  const text = `${resolvedText} [Converted — ${CC_REVIEW_NOTE[toSystem]}${dcNoteNeeded ? '; DC number carried across as-is, but the two systems scale DCs differently — sanity-check it against a typical DC for this level' : ''}.]`;
   return { category, type: category, name, text };
 }
 

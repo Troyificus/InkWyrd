@@ -750,22 +750,36 @@ $('print-sheet').addEventListener('click', () => {
 });
 
 // ===== Cross-system conversion =====
+
+// PF2E lists Perception as its own dedicated top-line stat, never inside
+// Skills — carrying 5E's Skills text straight across would print Perception
+// twice with two different (and contradictory) numbers on the same card.
+function ccStripPerceptionFromSkills(skillsText) {
+  return (skillsText || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(s => s && !/^Perception\b/i.test(s))
+    .join(', ');
+}
+
 function buildTargetCardPF2E(converted, sourceCard) {
   return {
     id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
     name: converted.name,
     level: converted.level,
     rarity: converted.rarity,
-    sizeType: 'Medium Creature',
+    sizeType: `${sourceCard.size || 'Medium'} ${sourceCard.creatureType || 'Creature'}`,
     traits: '',
     description: converted.description || '',
     perception: converted.perception,
-    senses: sourceCard.senses || '', languages: converted.languages, skills: sourceCard.skills || '', items: '',
+    senses: sourceCard.senses || '', languages: converted.languages, skills: ccStripPerceptionFromSkills(sourceCard.skills), items: '',
     str: converted.str, dex: converted.dex, con: converted.con, int: converted.int, wis: converted.wis, cha: converted.cha,
     ac: converted.ac,
     fort: converted.fort, ref: converted.ref, will: converted.will,
     hp: converted.hp,
-    immunities: '', resistances: '', weaknesses: '',
+    immunities: [sourceCard.damageImmunities, sourceCard.conditionImmunities].filter(Boolean).join(', '),
+    resistances: sourceCard.damageResistances || '',
+    weaknesses: sourceCard.damageVulnerabilities || '',
     speed: '25 feet',
     attacks: converted.attacks,
     theme: 'parchment', accent: '#7a2020', variables: [], image: sourceCard.image, imageAlign: sourceCard.imageAlign || 'right', imageWidth: sourceCard.imageWidth || 170,
