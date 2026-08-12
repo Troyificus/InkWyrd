@@ -862,6 +862,9 @@ function pushToTargetDeck(storageKey, card) {
   } catch (e) { targetDeck = []; }
   targetDeck.push(card);
   localStorage.setItem(storageKey, JSON.stringify(targetDeck));
+  // Marks this card so the target page selects it on load instead of
+  // defaulting to the first (often oldest) card in its deck.
+  localStorage.setItem(storageKey + '.pendingSelect', card.id);
 }
 
 function showConvertStatus(targetName, targetUrl, flags) {
@@ -886,6 +889,13 @@ $('convert-pf2e').addEventListener('click', () => {
 // ===== Init =====
 deck = loadDeck();
 currentId = deck[0].id;
+try {
+  const pendingId = localStorage.getItem(STORAGE_KEY + '.pendingSelect');
+  if (pendingId && deck.some(c => c.id === pendingId)) {
+    currentId = pendingId;
+  }
+  localStorage.removeItem(STORAGE_KEY + '.pendingSelect');
+} catch (e) { /* ignore */ }
 renderDeckList();
 renderForm();
 renderCard();
