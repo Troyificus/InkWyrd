@@ -70,8 +70,7 @@ body {
 }
 
 .deck-panel { flex: 0 1 220px; min-width: 200px; }
-.form-panel { flex: 1 1 420px; min-width: 320px; }
-.preview-panel { flex: 1 1 100%; min-width: 320px; }
+.form-panel, .preview-panel { flex: 1 1 420px; min-width: 320px; }
 
 .deck-panel h2 {
   font-family: 'Spectral', Georgia, serif;
@@ -518,6 +517,12 @@ textarea { resize: vertical; }
 .stat-image-row { clear: both; display: flex; align-items: flex-start; gap: 18px; margin: 8px 0 4px; }
 .stat-col { flex: 1; min-width: 0; }
 .stat-image-row .card-illustration { flex: 0 0 auto; margin: 0; }
+
+.card-illustration-bottom {
+  width: 100%;
+  height: auto;
+  margin: 14px 0 10px;
+}
 
 .card-name { font-family: 'Alegreya', Georgia, serif; font-weight: 700; font-size: 1.9rem; letter-spacing: 0.5px; margin: 0 0 6px; line-height: 1.1; }
 .card-kind { clear: both; font-size: 0.82rem; font-style: italic; opacity: 0.75; border-bottom: 1.5px solid var(--card-accent, #8a2727); padding-bottom: 8px; margin-bottom: 10px; }

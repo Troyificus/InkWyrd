@@ -569,6 +569,12 @@ textarea { resize: vertical; }
 .stat-col { flex: 1; min-width: 0; }
 .stat-image-row .card-illustration { flex: 0 0 auto; margin: 0; }
 
+.card-illustration-bottom {
+  width: 100%;
+  height: auto;
+  margin: 14px 0 10px;
+}
+
 .card-name { font-family: 'Alegreya', Georgia, serif; font-weight: 700; font-size: 1.9rem; letter-spacing: 0.5px; margin: 0 0 6px; line-height: 1.1; }
 
 .trait-chip-row { clear: both; display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }

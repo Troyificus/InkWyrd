@@ -476,6 +476,8 @@ function cardInnerHtml(card) {
   let html = '';
   const sub = (text) => escapeHtml(applySubs(text, card));
   const hasImage = !!card.image && card.imageAlign !== 'none';
+  const rowImage = hasImage && card.imageAlign !== 'bottom';
+  const bottomImage = hasImage && card.imageAlign === 'bottom';
   const iconSvg = getTypeIcon(card.creatureType);
   const dexMod = Math.floor((Number(card.dex) - 10) / 2);
   const is2024 = card.format !== '2014';
@@ -555,7 +557,7 @@ function cardInnerHtml(card) {
     return f;
   };
 
-  if (hasImage) {
+  if (rowImage) {
     coreHtml += statLines();
     coreHtml += featureBlocks().replace(/col-divider/g, '');
     const w = card.imageWidth || 170;
@@ -573,6 +575,10 @@ function cardInnerHtml(card) {
       html += statLines();
       html += featureBlocks().replace(/col-divider/g, '');
     }
+  }
+
+  if (bottomImage) {
+    html += `<img class="card-illustration card-illustration-bottom" src="${card.image}" alt="">`;
   }
 
   html += `<div class="card-footer">D&amp;D 5E Compatible &middot; built from the SRD under CC-BY-4.0</div>`;

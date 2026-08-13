@@ -512,6 +512,8 @@ function cardInnerHtml(card) {
   let html = '';
   const sub = (text) => escapeHtml(applySubs(text, card));
   const hasImage = !!card.image && card.imageAlign !== 'none';
+  const rowImage = hasImage && card.imageAlign !== 'bottom';
+  const bottomImage = hasImage && card.imageAlign === 'bottom';
   const iconSvg = getTypeIcon(card.sizeType);
 
   html += `<div class="corner-tag corner-right">
@@ -566,7 +568,7 @@ function cardInnerHtml(card) {
     });
   });
 
-  if (hasImage) {
+  if (rowImage) {
     coreHtml += restHtml;
     const w = card.imageWidth || 170;
     const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
@@ -575,6 +577,10 @@ function cardInnerHtml(card) {
   } else {
     html += coreHtml;
     html += restHtml;
+  }
+
+  if (bottomImage) {
+    html += `<img class="card-illustration card-illustration-bottom" src="${card.image}" alt="">`;
   }
 
   html += `<div class="card-footer">Pathfinder 2E Compatible &middot; built from rules text under the ORC License</div>`;

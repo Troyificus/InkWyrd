@@ -522,6 +522,8 @@ function cardInnerHtml(card) {
   const sub = (text) => escapeHtml(applySubs(text, card));
 
   const hasImage = !!card.image && card.imageAlign !== 'none';
+  const rowImage = hasImage && card.imageAlign !== 'bottom';
+  const bottomImage = hasImage && card.imageAlign === 'bottom';
 
   html += `<div class="corner-tag corner-right">
       <div class="corner-tier">T${escapeHtml(card.tier)}</div>
@@ -543,7 +545,7 @@ function cardInnerHtml(card) {
       statHtml += `<div class="card-line"><b>Attack (${sub(a.atk)}):</b> ${sub(a.name)} — ${sub(a.range)}, ${sub(a.damage)}</div>`;
     });
 
-    if (hasImage) {
+    if (rowImage) {
       // Stacked, not side-by-side, so both stay readable in the narrower column.
       statHtml += `<div class="two-col-item stacked">
         <div class="two-col-head">Experience</div>
@@ -567,7 +569,7 @@ function cardInnerHtml(card) {
     }
   } else {
     statHtml += `<div class="card-line"><b>Difficulty:</b> ${escapeHtml(card.difficultyEnv)}</div>`;
-    if (hasImage) {
+    if (rowImage) {
       statHtml += `<div class="two-col-item stacked">
         <div class="two-col-head">Impulses</div>
         <div class="two-col-body italic">${card.impulses ? sub(card.impulses) : '—'}</div>
@@ -585,7 +587,7 @@ function cardInnerHtml(card) {
     }
   }
 
-  if (hasImage) {
+  if (rowImage) {
     // Fold Features into the same column as the stats, so it fills the
     // space beside the image instead of waiting until below it — the
     // divider is then a child of the narrower column, so its rule line
@@ -626,6 +628,10 @@ function cardInnerHtml(card) {
         <div class="vital-thresh-val">Major ${escapeHtml(card.thresholdMajor)} &middot; Severe ${escapeHtml(card.thresholdSevere)}</div>
       </div>
     </div>`;
+  }
+
+  if (bottomImage) {
+    html += `<img class="card-illustration card-illustration-bottom" src="${card.image}" alt="">`;
   }
 
   html += `<div class="card-footer">Daggerheart Compatible &middot; built from the SRD under the DPCGL</div>`;

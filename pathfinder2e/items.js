@@ -341,6 +341,8 @@ function cardInnerHtml(card) {
   let html = '';
   const sub = (text) => escapeHtml(applySubs(text, card));
   const hasImage = !!card.image && card.imageAlign !== 'none';
+  const rowImage = hasImage && card.imageAlign !== 'bottom';
+  const bottomImage = hasImage && card.imageAlign === 'bottom';
   const iconSvg = getTypeIcon(card.itemCategory);
 
   html += `<div class="corner-tag corner-right">
@@ -368,7 +370,7 @@ function cardInnerHtml(card) {
   if (card.itemActivate) statHtml += `<div class="card-line"><b>Activate</b> ${sub(card.itemActivate)}</div>`;
   if (card.itemTrigger) statHtml += `<div class="card-line"><b>Trigger</b> ${sub(card.itemTrigger)}</div>`;
 
-  if (hasImage) {
+  if (rowImage) {
     statHtml += `<div class="section-divider">Effect</div>`;
     statHtml += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
     if (card.itemFrequency) {
@@ -385,6 +387,10 @@ function cardInnerHtml(card) {
     if (card.itemFrequency) {
       html += `<div class="card-line" style="margin-top:10px"><b>Frequency:</b> ${sub(card.itemFrequency)}</div>`;
     }
+  }
+
+  if (bottomImage) {
+    html += `<img class="card-illustration card-illustration-bottom" src="${card.image}" alt="">`;
   }
 
   html += `<div class="card-footer">Pathfinder 2E Compatible &middot; original item concept</div>`;

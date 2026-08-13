@@ -696,6 +696,12 @@ textarea { resize: vertical; }
   margin: 0;
 }
 
+.card-illustration-bottom {
+  width: 100%;
+  height: auto;
+  margin: 14px 0 10px;
+}
+
 .two-col-item.stacked { margin-bottom: 10px; }
 .two-col-item.stacked:last-child { margin-bottom: 0; }
 

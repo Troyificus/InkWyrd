@@ -343,6 +343,8 @@ function cardInnerHtml(card) {
   let html = '';
   const sub = (text) => escapeHtml(applySubs(text, card));
   const hasImage = !!card.image && card.imageAlign !== 'none';
+  const rowImage = hasImage && card.imageAlign !== 'bottom';
+  const bottomImage = hasImage && card.imageAlign === 'bottom';
   const iconSvg = getTypeIcon(card.itemCategory);
 
   html += `<div class="corner-tag corner-right">
@@ -369,7 +371,7 @@ function cardInnerHtml(card) {
     ? `<b>When</b> ${sub(card.itemTrigger)}, ${sub(card.itemEffect) || '<i>describe what happens.</i>'}`
     : (sub(card.itemEffect) || '<i>No effect written yet.</i>');
 
-  if (hasImage) {
+  if (rowImage) {
     // Fold Effect into the same column as the stats, so it fills the space
     // beside the image instead of waiting until below it — the divider is
     // then a child of the narrower column and can never cross the image.
@@ -395,6 +397,10 @@ function cardInnerHtml(card) {
     if (card.itemUsage) {
       html += `<div class="card-line" style="margin-top:10px"><b>Usage:</b> ${sub(card.itemUsage)}</div>`;
     }
+  }
+
+  if (bottomImage) {
+    html += `<img class="card-illustration card-illustration-bottom" src="${card.image}" alt="">`;
   }
 
   html += `<div class="card-footer">Daggerheart Compatible &middot; original item concept</div>`;

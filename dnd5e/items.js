@@ -310,6 +310,8 @@ function cardInnerHtml(card) {
   let html = '';
   const sub = (text) => escapeHtml(applySubs(text, card));
   const hasImage = !!card.image && card.imageAlign !== 'none';
+  const rowImage = hasImage && card.imageAlign !== 'bottom';
+  const bottomImage = hasImage && card.imageAlign === 'bottom';
   const iconSvg = getTypeIcon(card.itemCategory);
 
   html += `<div class="corner-tag corner-right">
@@ -333,7 +335,7 @@ function cardInnerHtml(card) {
     statHtml += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
   }
 
-  if (hasImage) {
+  if (rowImage) {
     statHtml += `<div class="section-divider">Effect</div>`;
     statHtml += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
     if (card.itemCharges) {
@@ -350,6 +352,10 @@ function cardInnerHtml(card) {
     if (card.itemCharges) {
       html += `<div class="card-line" style="margin-top:10px"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
     }
+  }
+
+  if (bottomImage) {
+    html += `<img class="card-illustration card-illustration-bottom" src="${card.image}" alt="">`;
   }
 
   html += `<div class="card-footer">D&amp;D 5E Compatible &middot; original item concept</div>`;
