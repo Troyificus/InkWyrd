@@ -495,7 +495,7 @@ function renderImagePreview() {
   if (!card.image) { wrap.innerHTML = ''; return; }
   wrap.innerHTML = `
     <div class="image-preview">
-      <img src="${card.image}" alt="Illustration preview">
+      <img src="${escapeHtml(card.image)}" alt="Illustration preview">
       <button type="button" id="remove-image">Remove image</button>
     </div>
   `;
@@ -571,7 +571,7 @@ function cardInnerHtml(card) {
   if (rowImage) {
     coreHtml += restHtml;
     const w = card.imageWidth || 170;
-    const img = `<img class="card-illustration" src="${card.image}" style="width:${w}px;" alt="">`;
+    const img = `<img class="card-illustration" src="${escapeHtml(card.image)}" style="width:${w}px;" alt="">`;
     const statCol = `<div class="stat-col">${coreHtml}</div>`;
     html += `<div class="stat-image-row">${card.imageAlign === 'left' ? img + statCol : statCol + img}</div>`;
   } else {
@@ -580,7 +580,7 @@ function cardInnerHtml(card) {
   }
 
   if (bottomImage) {
-    html += `<img class="card-illustration card-illustration-bottom" src="${card.image}" alt="">`;
+    html += `<img class="card-illustration card-illustration-bottom" src="${escapeHtml(card.image)}" alt="">`;
   }
 
   html += `<div class="card-footer">Pathfinder 2E Compatible &middot; built from rules text under the ORC License</div>`;
