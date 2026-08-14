@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NPC Name Generator — Statblock Forge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0ead9;
+    --panel: #e6dfc8;
+    --panel-border: #a8a077;
+    --text: #2e2b1f;
+    --text-dim: #6b6650;
+    --accent: #6b5a3f;
+    --gold: #a9843f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: radial-gradient(ellipse at top, #f6f1e0 0%, #e9e0c4 70%);
+    color: var(--text);
+    font-family: 'Work Sans', -apple-system, sans-serif;
+    min-height: 100vh;
+  }
+  .site-header {
+    text-align: center;
+    padding: 40px 20px 24px;
+    border-bottom: 1px solid var(--panel-border);
+  }
+  .back-link {
+    display: inline-block;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+  .back-link:hover { color: var(--gold); }
+  .site-header h1 {
+    font-family: 'Spectral', Georgia, serif;
+    font-weight: 700;
+    font-size: 2.3rem;
+    margin: 0 0 6px;
+  }
+  .site-header p {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    font-style: italic;
+    margin: 0;
+  }
+  main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+  .controls {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 4px;
+    padding: 22px 24px;
+    margin-bottom: 26px;
+  }
+  .control-row {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .control-row:last-child { margin-bottom: 0; }
+  label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-bottom: 5px;
+    letter-spacing: 0.3px;
+  }
+  select, button {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+  }
+  select {
+    padding: 8px 10px;
+    background: #f7f2e2;
+    border: 1px solid var(--panel-border);
+    color: var(--text);
+    border-radius: 3px;
+    min-width: 180px;
+  }
+  .field { flex: 1; min-width: 160px; }
+  #generate {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 4px;
+    background: var(--accent);
+    color: #f3ead8;
+    border: none;
+    border-radius: 3px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+  }
+  #generate:hover { background: #574a30; }
+  .results {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 4px;
+    min-height: 120px;
+  }
+  .results-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-dim);
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+  .name-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--panel-border);
+    font-family: 'Spectral', Georgia, serif;
+    font-size: 1.15rem;
+  }
+  .name-row:last-child { border-bottom: none; }
+  .name-row .copy-btn {
+    background: transparent;
+    border: 1px solid var(--panel-border);
+    color: var(--text-dim);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.72rem;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+  }
+  .name-row .copy-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .name-row .copy-btn.copied { border-color: var(--gold); color: var(--gold); }
+  .hint {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 14px;
+    font-style: italic;
+  }
+  .site-footer {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    padding: 20px;
+    border-top: 1px solid var(--panel-border);
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="../index.html">&larr; Statblock Forge</a>
+  <h1>NPC Name Generator</h1>
+  <p>Original names across seven fantasy cultures — system-agnostic, works with any table.</p>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="control-row">
+      <div class="field">
+        <label for="culture">Culture / Style</label>
+        <select id="culture">
+          <option value="human">Human</option>
+          <option value="elvish">Elvish</option>
+          <option value="dwarvish">Dwarvish</option>
+          <option value="orcish">Orcish / Goblinoid</option>
+          <option value="halfling">Halfling</option>
+          <option value="draconic">Draconic / Exotic</option>
+          <option value="eldritch">Eldritch / Cosmic</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="gender">Leaning</label>
+        <select id="gender">
+          <option value="any">Any</option>
+          <option value="masc">Masculine</option>
+          <option value="fem">Feminine</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="count">How many</label>
+        <select id="count">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+        </select>
+      </div>
+    </div>
+    <button type="button" id="generate">Generate Names</button>
+  </div>
+
+  <div class="results" id="results">
+    <div class="results-empty">Pick a culture and hit Generate.</div>
+  </div>
+  <p class="hint">Every name here is original — not drawn from any published setting's named characters.</p>
+</main>
+
+<footer class="site-footer">
+  <p>Fan-made tool. Names generated here are original content, free to use in your own games.</p>
+</footer>
+
+<script>
+const POOLS = {
+  human: {
+    masc: ['Bram','Corwin','Dashiell','Edrick','Fenwick','Garrick','Hollis','Ivor','Jasper','Lucan','Merrick','Osric','Percival','Roderick','Silas','Tobin','Wystan'],
+    fem: ['Adaline','Briar','Cassandra','Delphine','Elowen','Fiora','Genevieve','Helia','Isolde','Josselyn','Marguerite','Odile','Rosalind','Seraphine','Tamsin','Wren'],
+    surnames: ['Ashworth','Blackwood','Colby','Draven','Everhart','Farrow','Graves','Hawthorne','Kestrel','Larkspur','Meadowlark','Norwood','Pemberton','Quill','Redmond','Sable','Thackeray','Vance','Wintermere'],
+    pattern: (first, sur) => `${first} ${sur}`
+  },
+  elvish: {
+    masc: ['Aerendyl','Caelthorn','Elarion','Faelan','Isendor','Lorithal','Nyssarion','Ravendor','Sylvaen','Thelorin'],
+    fem: ['Aelwen','Caeliris','Elowyn','Faelith','Isarel','Lyriana','Nyvaella','Silvaris','Thessaly','Wysteria'],
+    surnames: ['Dawnwhisper','Duskwalker','Evensong','Frostleaf','Moonbrook','Nightfall','Silverbough','Starweave','Sunveil','Windshadow'],
+    pattern: (first, sur) => Math.random() < 0.65 ? `${first} ${sur}` : first
+  },
+  dwarvish: {
+    masc: ['Borin','Dain','Gromlok','Harnok','Kildrek','Norbin','Orrin','Thurgrim','Ulfrek','Vondrik'],
+    fem: ['Brenna','Disa','Grunhild','Hilda','Katrin','Nordis','Runa','Sigrid','Thyra','Vessa'],
+    surnames: ['Anvilheart','Boulderfist','Coalbeard','Deepdelve','Emberforge','Granitehand','Ironfist','Stonebeard','Thundercask','Warhammer'],
+    pattern: (first, sur) => `${first} ${sur}`
+  },
+  orcish: {
+    masc: ['Drozgar','Grukk','Karrash','Morgul','Nagrok','Skarr','Thokk','Uruzz','Vranok','Zurgak'],
+    fem: ['Griska','Karguk','Morza','Nagra','Skavva','Thokka','Uzza','Vragga','Zulka','Zurga'],
+    surnames: ['Bloodfang','Bonecrusher','Doomclaw','Gutrender','Ironjaw','Redtusk','Scarhide','Skullsplitter','Steeljaw','Warscar'],
+    pattern: (first, sur) => `${first} ${sur}`
+  },
+  halfling: {
+    masc: ['Dobber','Fennick','Garby','Hollo','Milo','Nobb','Pipkin','Rollo','Tobble','Wilfred'],
+    fem: ['Ada','Bramble','Daisy','Fennel','Ginny','Marigold','Nettie','Poppy','Rosie','Tilly'],
+    surnames: ['Appleseed','Brambleburr','Cloverfield','Fiddlefoot','Greenbottle','Honeywell','Meadowbrook','Puddlefoot','Thistlefoot','Underhill'],
+    pattern: (first, sur) => `${first} ${sur}`
+  },
+  draconic: {
+    masc: ['Aurethys','Bhaalzor','Cindralux','Drakaris','Emberoth','Golgrathis','Ithzaerys','Nyxvaraan','Pyrrhandor','Vaelithra','Zephyranth','Korrvathis','Malacrix','Sethyrion','Vorthanax'],
+    fem: ['Aurethys','Bhaalzor','Cindralux','Drakaris','Emberoth','Golgrathis','Ithzaerys','Nyxvaraan','Pyrrhandor','Vaelithra','Zephyranth','Korrvathis','Malacrix','Sethyrion','Vorthanax'],
+    surnames: ['Emberscale','Frostwing','Goldclaw','Ironhide','Nightshard','Skysunder','Stormcoil','Sunfang','Voidwing','Wyrmbane'],
+    pattern: (first, sur) => Math.random() < 0.5 ? first : `${first} ${sur}`
+  },
+  eldritch: {
+    masc: ['Ashkarel',"Nythul'gor",'Quoreth',"Sszaveth","Thal'morrath",'Ulvareth','Voskhar','Xaethys','Yshkaal','Zhurenthil',"Kal'vraxis",'Ombrathess',"Vhen'zaruul",'Yggrothul','Zaphkiel-Nur'],
+    fem: ['Ashkarel',"Nythul'gor",'Quoreth',"Sszaveth","Thal'morrath",'Ulvareth','Voskhar','Xaethys','Yshkaal','Zhurenthil',"Kal'vraxis",'Ombrathess',"Vhen'zaruul",'Yggrothul','Zaphkiel-Nur'],
+    surnames: ['the Hollow-Eyed','the Star-Touched','the Unmade','the Void-Marked','the Whisper-Bound','the Wormwood-Born','the Yawning','that Which Waits','the Ash-Tongued','the Dreaming'],
+    pattern: (first, sur) => `${first}, ${sur}`
+  }
+};
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function generateOne(cultureKey, genderKey, usedFirsts) {
+  const pool = POOLS[cultureKey];
+  let firstPool;
+  if (genderKey === 'masc') firstPool = pool.masc;
+  else if (genderKey === 'fem') firstPool = pool.fem;
+  else firstPool = pool.masc.concat(pool.fem);
+  // Prefer a first name not already used in this batch, so a small pool
+  // (e.g. 10-15 eldritch names) doesn't read as repetitive just because
+  // the epithet/surname differs — fall back to allowing a repeat only
+  // once every first name in the pool has already been used once.
+  const unused = firstPool.filter(n => !usedFirsts.has(n));
+  const first = unused.length ? pick(unused) : pick(firstPool);
+  const sur = pick(pool.surnames);
+  return { name: pool.pattern(first, sur), first };
+}
+
+document.getElementById('generate').addEventListener('click', () => {
+  const culture = document.getElementById('culture').value;
+  const gender = document.getElementById('gender').value;
+  const count = parseInt(document.getElementById('count').value, 10);
+  const seenNames = new Set();
+  const usedFirsts = new Set();
+  const names = [];
+  let attempts = 0;
+  while (names.length < count && attempts < count * 20) {
+    const { name, first } = generateOne(culture, gender, usedFirsts);
+    attempts++;
+    if (!seenNames.has(name)) {
+      seenNames.add(name);
+      usedFirsts.add(first);
+      names.push(name);
+    }
+  }
+  const resultsEl = document.getElementById('results');
+  resultsEl.innerHTML = names.map(n =>
+    `<div class="name-row"><span>${n}</span><button type="button" class="copy-btn" data-name="${n.replace(/"/g, '&quot;')}">Copy</button></div>`
+  ).join('');
+});
+
+document.getElementById('results').addEventListener('click', (e) => {
+  const btn = e.target.closest('.copy-btn');
+  if (!btn) return;
+  navigator.clipboard.writeText(btn.dataset.name).then(() => {
+    btn.textContent = 'Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1200);
+  });
+});
+</script>
+
+</body>
+</html>

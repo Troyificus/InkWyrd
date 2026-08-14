@@ -120,6 +120,44 @@ body {
 .hub-col-dnd5e .hub-link:hover { color: var(--dnd-color-dark); }
 .hub-col-pathfinder .hub-link:hover { color: var(--pf-color-dark); }
 
+.hub-tools {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 8px 20px 0;
+  text-align: center;
+  border-top: 1px solid var(--bone-dim);
+  padding-top: 24px;
+}
+
+.hub-tools h2 {
+  font-family: 'Spectral', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.hub-tools p {
+  color: var(--ink-dim);
+  font-size: 0.85rem;
+  margin: 0 0 14px;
+}
+
+.hub-tools-links { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+
+.hub-tool-link {
+  display: inline-block;
+  padding: 9px 18px;
+  border: 1px solid var(--gold);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.85rem;
+  border-radius: 3px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.hub-tool-link:hover { background: var(--gold); color: var(--bone); }
+
 .hub-footer {
   text-align: center;
   color: var(--ink-dim);
