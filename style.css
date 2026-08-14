@@ -121,42 +121,47 @@ body {
 .hub-col-pathfinder .hub-link:hover { color: var(--pf-color-dark); }
 
 .hub-tools {
-  max-width: 680px;
-  margin: 0 auto;
-  padding: 8px 20px 0;
+  max-width: 780px;
+  margin: 36px auto 0;
+  padding: 30px 28px;
   text-align: center;
-  border-top: 1px solid var(--bone-dim);
-  padding-top: 24px;
+  background: var(--bone-dim);
+  border: 1.5px solid var(--gold);
+  border-radius: 6px;
 }
 
 .hub-tools h2 {
   font-family: 'Spectral', Georgia, serif;
   font-weight: 700;
-  font-size: 1.3rem;
-  margin: 0 0 4px;
+  font-size: 1.6rem;
+  margin: 0 0 6px;
   color: var(--ink);
 }
 
 .hub-tools p {
   color: var(--ink-dim);
-  font-size: 0.85rem;
-  margin: 0 0 14px;
+  font-size: 0.88rem;
+  margin: 0 0 18px;
 }
 
-.hub-tools-links { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.hub-tools-links { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
 
 .hub-tool-link {
   display: inline-block;
-  padding: 9px 18px;
-  border: 1px solid var(--gold);
-  color: var(--ink);
+  padding: 12px 26px;
+  background: var(--gold);
+  border: 1.5px solid var(--gold);
+  color: var(--bone);
   text-decoration: none;
   font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   border-radius: 3px;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.15s ease, transform 0.1s ease;
 }
 
-.hub-tool-link:hover { background: var(--gold); color: var(--bone); }
+.hub-tool-link:hover { background: #8a6a30; transform: translateY(-1px); }
 
 .hub-footer {
   text-align: center;
