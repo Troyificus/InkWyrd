@@ -33,7 +33,7 @@ function starterCard() {
     itemCategory: 'weapon',
     itemTypeName: 'Longbow',
     itemBaseStats: '1d8 piercing',
-    itemRange: 'Range 150/600 ft',
+    itemRange: '150/600 ft',
     itemRarity: 'Uncommon',
     description: 'Said to have come from a shrine reclaimed by the tide.',
     itemEffect: 'this weapon deals an additional 1d6 cold damage on a hit.',

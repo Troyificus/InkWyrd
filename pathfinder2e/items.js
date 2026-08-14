@@ -40,7 +40,7 @@ function starterCard() {
     itemCategory: 'weapon',
     itemTypeName: 'Longbow',
     itemBaseStats: '1d8 piercing',
-    itemRange: 'Range 150/600 ft',
+    itemRange: '150/600 ft',
     itemRarity: 'Uncommon',
     itemLevel: 4,
     bulk: '2',
