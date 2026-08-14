@@ -205,6 +205,34 @@ input, textarea, select {
   font-size: 0.95rem;
   font-family: 'Work Sans', -apple-system, sans-serif;
 }
+.combobox-wrapper { position: relative; }
+
+.combobox-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  margin: 2px 0 0;
+  padding: 4px 0;
+  list-style: none;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 3px;
+  max-height: 220px;
+  overflow-y: auto;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.combobox-dropdown li {
+  padding: 7px 12px;
+  font-size: 0.88rem;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.combobox-dropdown li:hover { background: var(--gold); color: var(--panel); }
+
 
 input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
 input[type="color"] { padding: 2px; height: 38px; }
