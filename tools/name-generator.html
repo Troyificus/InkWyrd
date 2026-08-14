@@ -270,7 +270,7 @@ const RACES = {
     pattern: (first, sur) => `${first} ${sur}`,
     descriptors: {
       build: [
-        'lean and rangy','stocky and broad-shouldered','tall and gangly, all elbows and knees','short and wiry','softly rounded, comfortable in their own skin','weathered and sinewy, built by hard work rather than training','unusually tall, ducking through most doorways out of habit','notably short, and quick to prove it doesn\u2019t slow them down','broad through the chest, built like a door','narrow-shouldered and quick on their feet'
+        'lean and rangy','stocky and broad-shouldered','tall and gangly, all elbows and knees','short and wiry','softly rounded','weathered and sinewy, built by hard work rather than training','unusually tall, ducking through most doorways out of habit','notably short','broad through the chest, built like a door','narrow-shouldered and quick on their feet'
       ],
       feature: [
         'a jagged scar running through one eyebrow','missing the tip of the left index finger','a notably crooked nose, broken more than once','a gap-toothed grin, hard to forget','a faded burn scar along one forearm','a streak of grey through otherwise dark hair, far too young for it','calloused hands and permanently dirt-stained nails','a milky, sightless left eye','a small string of old tattoos climbing one wrist','a slight limp from an old injury that never fully healed','a birthmark shaped uncannily like a familiar constellation','weathered, sun-creased skin from a life spent outdoors'
@@ -279,7 +279,10 @@ const RACES = {
         'a battered wide-brimmed hat, never taken off outdoors','a threadbare travelling cloak, patched many times over','a string of small trinkets tied to their belt','a single fine ring, oddly out of place on a working hand','a weathered leather satchel, never set down','a chipped wooden holy symbol on a cord','fingerless gloves, stained dark with years of use','a faded regimental pin on a well-worn collar','a small dagger worn openly at the hip','mismatched, well-worn boots that have seen better decades'
       ],
       mannerism: [
-        'speaks a little too quietly, forcing others to lean in','has a habit of cracking their knuckles when thinking','laughs just a beat too long at their own jokes','constantly glances toward the nearest exit','chews the inside of their cheek when nervous','hums old work-songs under their breath, unaware they\u2019re doing it','taps out a rhythm with their fingers, entirely unconsciously','squints even in dim light, an old habit from somewhere else','speaks with unusual formality, even with close friends','has a slow, deliberate way of choosing every word'
+        'speaks a little too quietly, forcing others to lean in','cracks their knuckles when thinking','laughs just a beat too long at their own jokes','constantly glances toward the nearest exit','chews the inside of their cheek when nervous','hums old work-songs under their breath, unaware they\u2019re doing it','taps out a rhythm with their fingers, entirely unconsciously','squints even in dim light, for reasons no one\u2019s ever explained','speaks with unusual formality, even with close friends','has a slow, deliberate way of choosing every word'
+      ],
+      trait: [
+        'entirely comfortable in their own skin, and it shows','quick to prove their size doesn\u2019t slow them down','stubborn to a fault, especially when they know they\u2019re wrong','fiercely loyal to the few people they actually trust','can\u2019t resist a wager, even a bad one','keeps every promise, no matter how small','terrible at hiding what they\u2019re really thinking','has an opinion on absolutely everything, invited or not','surprisingly superstitious for someone so practical','generous almost to a fault with people they\u2019ve just met'
       ]
     },
     subtypes: {
@@ -336,6 +339,9 @@ const RACES = {
       ],
       mannerism: [
         'rarely blinks in conversation','answers questions with questions of their own','goes utterly still when listening, unnervingly so','speaks slowly, as though translating from another tongue','seems mildly, privately amused by almost everything','touches objects only with their fingertips','hums a tuneless melody absently','maintains unbroken eye contact just a little too long','pauses before every sentence, as if weighing it first','has an unsettling habit of finishing others\u2019 sentences'
+      ],
+      trait: [
+        'carries old grudges the way others carry keepsakes','finds most urgency faintly embarrassing','collects small, specific things with quiet obsession','treats every promise as unbreakable, and expects the same in return','genuinely can\u2019t remember most humans\u2019 names, and doesn\u2019t pretend otherwise','finds real delight in things far too small for anyone else to notice','unshakeably calm in a crisis, to the point of unnerving others','quietly convinced they\u2019re the most reasonable person in any room','surprisingly sentimental about very old, very ordinary objects','treats silence as a perfectly acceptable half of any conversation'
       ]
     },
     subtypes: {
@@ -364,7 +370,7 @@ const RACES = {
     pattern: (first, sur) => `${first} ${sur}`,
     descriptors: {
       build: [
-        'barrel-chested and immovable','short even for a dwarf, and fiercely proud of it','broad-shouldered with forearms like tree trunks','stocky and low to the ground','surprisingly light on their feet despite their bulk','thickly muscled from decades at the forge or in the mines','built like they were carved from the mountain itself','wider than they are tall, and unbothered by the fact','solidly, dependably built, like good stonework','compact but dense — heavier than they look'
+        'barrel-chested and immovable','short even for a dwarf','broad-shouldered with forearms like tree trunks','stocky and low to the ground','surprisingly light on their feet despite their bulk','thickly muscled from decades at the forge or in the mines','built like they were carved from the mountain itself','wider than they are tall','solidly, dependably built, like good stonework','compact but dense — heavier than they look'
       ],
       feature: [
         'a beautifully worked beard-clasp, missing one bead they refuse to talk about','a singed, patchy beard-line from a forge accident','missing the last two fingers on the off hand','one cloudy eye, the legacy of an old cave-in','soot worked so deep into the skin creases it never quite washes out','a voice made permanently gravelly by years of mine dust','a crude but sturdy prosthetic hand of hammered metal','forearms latticed with old forge-burn scars','notably tall for a dwarf, and self-conscious about it','a limp from a mining accident, offset by an iron-shod cane'
@@ -373,7 +379,10 @@ const RACES = {
         'a heavy iron ring bearing a clan sigil','a beard threaded with small metal ornaments','a well-worn leather tool-belt, never removed','a battered flask, always within easy reach','a small carved stone charm on a chain','thick, calloused hands wrapped in worn leather straps','a single ornate button salvaged from somewhere far grander','boots reinforced with iron at heel and toe','a soot-stained apron worn like a badge of honor','a heavy chain of office, slightly too large for them'
       ],
       mannerism: [
-        'speaks in short, clipped sentences','has a booming laugh that draws every eye in the room','taps a rhythm on any nearby surface, an old forge-habit','narrows their eyes when weighing up a stranger','spits before making an important point','counts things under their breath, compulsively','grips tools or weapons with white-knuckled familiarity','distrusts anything that isn\u2019t made of good solid stone or steel','recites old sayings for every possible occasion','goes quiet and watchful in unfamiliar rooms'
+        'speaks in short, clipped sentences','has a booming laugh that draws every eye in the room','taps a rhythm on any nearby surface, a leftover from the forge','narrows their eyes when weighing up a stranger','spits before making an important point','counts things under their breath, compulsively','grips tools or weapons with white-knuckled familiarity','distrusts anything that isn\u2019t made of good solid stone or steel','recites old sayings for every possible occasion','goes quiet and watchful in unfamiliar rooms'
+      ],
+      trait: [
+        'fiercely proud of their stature, and quick to say so','entirely unbothered by their own size or shape','holds a grudge the way others hold a hammer, firmly and for a very long time','measures nearly everyone by their handshake','deeply, genuinely proud of even minor craftsmanship','suspicious of anything built to look prettier than it needs to','will not back down from an argument, even a pointless one','treats hospitality as a matter of personal honor','keeps meticulous, slightly obsessive track of debts owed either way','surprisingly sentimental about family, however distant'
       ]
     },
     subtypes: {
@@ -411,7 +420,10 @@ const RACES = {
         'a necklace of small bones or teeth','a crudely painted tribal marking, faded with age','a trophy weapon clearly taken from a defeated foe','a strip of cloth tied around one bicep','a heavy iron ring worn through a pierced ear','a battle-worn banner fragment tied at the waist','a collection of small scars deliberately arranged like tally marks','a crude but well-maintained weapon, clearly a point of pride','rough hide armor, patched many times over','a necklace strung with claws or fangs'
       ],
       mannerism: [
-        'speaks bluntly, with little patience for pleasantries','grins with too many teeth showing','cracks knuckles audibly before any confrontation','sniffs the air when sizing up strangers','has a booming, aggressive laugh','stands unnervingly close in conversation','grows very quiet before violence, rather than loud','chews on something constantly, even when there\u2019s nothing to chew','watches hands, not faces, when talking to strangers','has a habit of grunting rather than speaking when possible'
+        'speaks bluntly, with little patience for pleasantries','grins with too many teeth showing','cracks knuckles audibly before any confrontation','sniffs the air when sizing up strangers','has a booming, aggressive laugh','stands unnervingly close in conversation','grows very quiet before violence, rather than loud','chews on something constantly, even when there\u2019s nothing to chew','watches hands, not faces, when talking to strangers','grunts rather than speaking when possible'
+      ],
+      trait: [
+        'respects strength above nearly everything else, including good sense','surprisingly gentle with children and animals, despite everything else','takes insults to their honor far more seriously than insults to anything else','values a blunt truth over a comfortable lie, always','fiercely protective of anyone they\u2019ve decided is \u201ctheirs\u201d','has an unexpectedly soft spot for music','never forgets a face, especially an enemy\u2019s','treats a shared meal as a genuine truce, however brief','quietly proud of scars others might try to hide','surprisingly patient with anyone willing to actually listen'
       ]
     },
     subtypes: {
@@ -428,7 +440,7 @@ const RACES = {
     pattern: (first, sur) => `${first} ${sur}`,
     descriptors: {
       build: [
-        'round and comfortable','small even for a halfling, and quick with it','surprisingly sturdy and solid','soft-featured and unassuming','notably tall for a halfling','nimble-fingered and light on their feet','pleasantly plump, and not remotely bothered by it','wiry and quick despite a homely appearance','built for comfort rather than speed','small-boned but surprisingly strong-armed'
+        'round','small even for a halfling, and quick with it','surprisingly sturdy and solid','soft-featured','notably tall for a halfling','nimble-fingered and light on their feet','pleasantly plump','wiry and quick despite a homely appearance','built for comfort rather than speed','small-boned but surprisingly strong-armed'
       ],
       feature: [
         'a cheerful round scar from a childhood mishap with a hay rake','missing the top joint of a finger, lost to an overenthusiastic cheese knife','unusually tall for a halfling, and rather proud of it','fingers permanently stained from years of dye-work or baking','a small burn scar on one hand from a stove mishap','freckled from head to toe','deep, well-earned laugh-lines','a favorite hat, scarf, or trinket never taken off','unusually curly hair that defies every attempt to tame it','a slight paunch, worn like a badge of honor'
@@ -438,6 +450,9 @@ const RACES = {
       ],
       mannerism: [
         'hums cheerfully while working','offers food to total strangers within minutes of meeting','has a laugh that\u2019s almost impossible not to join in on','talks with their hands constantly','never seems to stop eating small snacks','tells long, meandering stories with great enthusiasm','pats people on the arm for emphasis','whistles old tunes absentmindedly','gets distracted mid-sentence by anything shiny or edible','greets everyone like an old friend, whether they are or not'
+      ],
+      trait: [
+        'utterly comfortable in their own skin','unassuming, easy to overlook in a crowd until they want to be noticed','entirely unbothered by anyone\u2019s opinion of their waistline','treats second breakfast as a matter of principle, not preference','fiercely loyal once you\u2019ve earned it, and slow to forget if you haven\u2019t','incurably curious about absolutely everything','surprisingly brave when it actually counts, despite constant complaining beforehand','collects recipes the way others collect coin','genuinely believes most problems can be solved with a good meal','keeps a mental list of everyone who\u2019s ever wronged a friend'
       ]
     },
     subtypes: {
@@ -464,6 +479,9 @@ const RACES = {
       ],
       mannerism: [
         'speaks with a faint, resonant undertone impossible to ignore','has an unmistakable, predatory stillness before speaking','counts and recounts small valuables absentmindedly','dislikes being touched without warning','holds eye contact like a challenge','breathes with a faint rasp, almost a growl','hoards small trinkets with quiet embarrassment','tilts their head sharply at sudden sounds','speaks of possessions with peculiar intensity','rarely sits with their back to a door'
+      ],
+      trait: [
+        'quietly, constantly aware of their own worth','treats flattery as their due, not a kindness','possessive of anything they\u2019ve decided belongs to them','genuinely offended by shoddy craftsmanship','patient on a scale that unnerves shorter-lived company','treats debts, owed either way, as sacred','can\u2019t resist the opportunity to show off, even when it\u2019s unwise','unexpectedly gentle with anything smaller and more fragile than themselves','proud almost to the point of recklessness','remembers every slight in exact, unflattering detail'
       ]
     },
     subtypes: {
@@ -490,6 +508,9 @@ const RACES = {
       ],
       mannerism: [
         'repeats a stranger\u2019s last few words back to them, seemingly without meaning to','speaks perfectly grammatically in a way that feels subtly wrong','never seems to breathe when at rest','answers questions before they\u2019re finished being asked','refers to time in strange, non-linear ways','goes utterly silent for long stretches, then resumes mid-thought','seems to know things they have no way of knowing','never quite makes the expected amount of noise moving','maintains an expression that never fully changes','speaks of ordinary things as though they were momentous, and vice versa'
+      ],
+      trait: [
+        'finds human urgency almost incomprehensible','speaks of centuries the way others speak of afternoons','collects secrets the way others collect coin, and spends them just as carefully','shows genuine, unsettling patience with mortal error','finds a strange, quiet fondness for one specific, ordinary thing','answers cruelty with something closer to curiosity than anger','keeps promises with unsettling, literal precision','seems entirely uninterested in things that don\u2019t interest it, and nothing else','treats mortal grief with a peculiar, distant gentleness','finds real amusement in things no one else finds funny'
       ]
     },
     subtypes: {
@@ -508,40 +529,40 @@ const ELEMENTAL = {
     label: 'Fire',
     names: ['Ignara','Cinderoth','Blazveth','Emberil'],
     descriptors: [
-      { build: 'wreathed in a faint, ever-present heat-shimmer', feature: 'ember-glow scarring across the knuckles', accessory: 'a cloak of fire-hardened, cracked leather', mannerism: 'a curl of smoke rises from their hair when angered' },
-      { build: 'lean, with skin like cooling volcanic glass', feature: 'eyes that flicker and dim like dying coals', accessory: 'jewelry of blackened, heat-warped metal', mannerism: 'speaks in short bursts, like crackling kindling' },
-      { build: 'radiates a heat that keeps others at a polite distance', feature: 'skin like sunbaked, cracked earth, glowing faintly at the seams', accessory: 'a weapon that seems to smoke faintly even at rest', mannerism: 'grows visibly brighter, almost glowing, when excited' },
-      { build: 'compact and dense, like a banked coal', feature: 'hair that moves faintly as though caught in rising heat', accessory: 'a small brazier or ember-box carried everywhere', mannerism: 'taps out impatient, sparking rhythms with their fingers' }
+      { build: 'wreathed in a faint, ever-present heat-shimmer', feature: 'ember-glow scarring across the knuckles', accessory: 'a cloak of fire-hardened, cracked leather', mannerism: 'a curl of smoke rises from their hair when angered', trait: 'quick to anger, slower to forgive' },
+      { build: 'lean, with skin like cooling volcanic glass', feature: 'eyes that flicker and dim like dying coals', accessory: 'jewelry of blackened, heat-warped metal', mannerism: 'speaks in short bursts, like crackling kindling', trait: 'restless, always moving even at rest' },
+      { build: 'radiates a heat that keeps others at a polite distance', feature: 'skin like sunbaked, cracked earth, glowing faintly at the seams', accessory: 'a weapon that seems to smoke faintly even at rest', mannerism: 'grows visibly brighter, almost glowing, when excited', trait: 'burns with quiet, constant intensity' },
+      { build: 'compact and dense, like a banked coal', feature: 'hair that moves faintly as though caught in rising heat', accessory: 'a small brazier or ember-box carried everywhere', mannerism: 'taps out impatient, sparking rhythms with their fingers', trait: 'impossible to placate once truly upset' }
     ]
   },
   water: {
     label: 'Water',
     names: ['Mirelle','Thalassin','Ondraeth','Coralys'],
     descriptors: [
-      { build: 'fluid in every motion, as though walking underwater', feature: 'skin with a faint, permanent damp sheen', accessory: 'jewelry of sea-glass and polished shell', mannerism: 'speaks in a slow, tidal rhythm, rising and falling' },
-      { build: 'tall and rippling, never quite in sharp focus', feature: 'hair that drifts gently, as if underwater even in still air', accessory: 'robes that cling and move like a slow current', mannerism: 'leaves faint damp footprints on dry stone' },
-      { build: 'smooth-featured, softened at every edge', feature: 'eyes the deep, unreadable color of open ocean', accessory: 'a small vial of water that never seems to empty', mannerism: 'has a faint, constant scent of rain and brine' },
-      { build: 'moves in slow, deliberate, wave-like motions', feature: 'skin faintly translucent at the fingertips', accessory: 'a cloak that darkens like wet cloth without ever drying', mannerism: 'pauses mid-sentence as though caught in an undertow' }
+      { build: 'fluid in every motion, as though walking underwater', feature: 'skin with a faint, permanent damp sheen', accessory: 'jewelry of sea-glass and polished shell', mannerism: 'speaks in a slow, tidal rhythm, rising and falling', trait: 'patient beyond reason' },
+      { build: 'tall and rippling, never quite in sharp focus', feature: 'hair that drifts gently, as if underwater even in still air', accessory: 'robes that cling and move like a slow current', mannerism: 'leaves faint damp footprints on dry stone', trait: 'adapts to anything, resents being contained' },
+      { build: 'smooth-featured, softened at every edge', feature: 'eyes the deep, unreadable color of open ocean', accessory: 'a small vial of water that never seems to empty', mannerism: 'has a faint, constant scent of rain and brine', trait: 'holds grudges the way deep water holds cold' },
+      { build: 'moves in slow, deliberate, wave-like motions', feature: 'skin faintly translucent at the fingertips', accessory: 'a cloak that darkens like wet cloth without ever drying', mannerism: 'pauses mid-sentence as though caught in an undertow', trait: 'calm on the surface, turbulent underneath' }
     ]
   },
   earth: {
     label: 'Earth',
     names: ['Grantor','Bouldrik','Terrowyn','Kragmoss'],
     descriptors: [
-      { build: 'massive and immovable, like a standing stone', feature: 'skin with a rough, stone-like texture in patches', accessory: 'jewelry of raw, uncut mineral and crystal', mannerism: 'speaks slowly, each word set down like a placed stone' },
-      { build: 'squat and dense, difficult to knock off balance', feature: 'small crystalline growths at the knuckles and jaw', accessory: 'a cloak seemingly woven from moss and root', mannerism: 'footsteps unnervingly heavy and deliberate' },
-      { build: 'broad and craggy, weathered like an old cliff face', feature: 'hair like fine, dry root-tendrils', accessory: 'a satchel of collected stones, each one significant to them', mannerism: 'a voice like slow-grinding stone' },
-      { build: 'surprisingly still, as though rooted in place', feature: 'faint mineral veining visible beneath the skin', accessory: 'boots that leave cracked, dry footprints even on soft ground', mannerism: 'answers slowly, as if consulting something deep underground' }
+      { build: 'massive and immovable, like a standing stone', feature: 'skin with a rough, stone-like texture in patches', accessory: 'jewelry of raw, uncut mineral and crystal', mannerism: 'speaks slowly, each word set down like a placed stone', trait: 'immovable once a decision is made' },
+      { build: 'squat and dense, difficult to knock off balance', feature: 'small crystalline growths at the knuckles and jaw', accessory: 'a cloak seemingly woven from moss and root', mannerism: 'footsteps unnervingly heavy and deliberate', trait: 'measures time differently than most' },
+      { build: 'broad and craggy, weathered like an old cliff face', feature: 'hair like fine, dry root-tendrils', accessory: 'a satchel of collected stones, each one significant to them', mannerism: 'a voice like slow-grinding stone', trait: 'quietly, unshakeably stubborn' },
+      { build: 'surprisingly still, as though rooted in place', feature: 'faint mineral veining visible beneath the skin', accessory: 'boots that leave cracked, dry footprints even on soft ground', mannerism: 'answers slowly, as if consulting something deep underground', trait: 'values permanence above nearly everything' }
     ]
   },
   air: {
     label: 'Air',
     names: ['Zephyrin','Aurelight','Windra','Skyvane'],
     descriptors: [
-      { build: 'impossibly light on their feet, barely seeming to touch the ground', feature: 'hair in constant, faint motion even indoors', accessory: 'robes that stir gently with no wind to explain it', mannerism: 'a barely-audible whistle in every breath' },
-      { build: 'tall and thin, as though built to be blown about', feature: 'eyes pale as an open sky', accessory: 'a scarf or ribbon that never settles', mannerism: 'footsteps almost entirely silent' },
-      { build: 'seems lighter than they should be, unsettlingly so', feature: 'a faint, cool breeze noticeable near them even indoors', accessory: 'small chimes or bells that ring without being touched', mannerism: 'trails off mid-sentence, as if the words simply blew away' },
-      { build: 'quick and darting in every small movement', feature: 'a voice that seems to arrive from slightly the wrong direction', accessory: 'a cloak or cape that never quite lies flat', mannerism: 'fidgets constantly, unable to stay fully still' }
+      { build: 'impossibly light on their feet, barely seeming to touch the ground', feature: 'hair in constant, faint motion even indoors', accessory: 'robes that stir gently with no wind to explain it', mannerism: 'a barely-audible whistle in every breath', trait: 'impossible to pin down, literally and otherwise' },
+      { build: 'tall and thin, as though built to be blown about', feature: 'eyes pale as an open sky', accessory: 'a scarf or ribbon that never settles', mannerism: 'footsteps almost entirely silent', trait: 'restless, easily bored' },
+      { build: 'seems lighter than they should be, unsettlingly so', feature: 'a faint, cool breeze noticeable near them even indoors', accessory: 'small chimes or bells that ring without being touched', mannerism: 'trails off mid-sentence, as if the words simply blew away', trait: 'speaks in circles, rarely getting to the point directly' },
+      { build: 'quick and darting in every small movement', feature: 'a voice that seems to arrive from slightly the wrong direction', accessory: 'a cloak or cape that never quite lies flat', mannerism: 'fidgets constantly, unable to stay fully still', trait: 'entirely uninterested in staying anywhere for long' }
     ]
   }
 };
@@ -599,9 +620,9 @@ function generateOne(raceKey, subtypeKey, genderKey, usedFirsts) {
   return { name: race.pattern(first, sur), first };
 }
 
-// Picks one entry from a category pool, preferring one not already used
-// in this batch — so a small pool doesn't produce two NPCs sharing the
-// exact same build/feature/accessory/mannerism just by chance.
+// Picks ONE entry from a category pool, preferring one not already used in
+// this batch — used for build/accessory/mannerism, which every character
+// has exactly one of.
 function pickUnique(pool, usedSet) {
   const unused = pool.filter(x => !usedSet.has(x));
   const choice = unused.length ? pick(unused) : pick(pool);
@@ -609,11 +630,39 @@ function pickUnique(pool, usedSet) {
   return choice;
 }
 
+// Picks a VARIABLE number of entries (0-3, weighted toward 1) for
+// categories where real people vary — some have no standout feature,
+// most have one, a few have several. Never repeats a value within the
+// same character, and still prefers values unused elsewhere in the batch.
+function pickVariableUnique(pool, usedSet) {
+  const r = Math.random();
+  let count;
+  if (r < 0.15) count = 0;
+  else if (r < 0.65) count = 1;
+  else if (r < 0.90) count = 2;
+  else count = 3;
+  count = Math.min(count, pool.length);
+  const picked = [];
+  for (let i = 0; i < count; i++) {
+    const unused = pool.filter(x => !usedSet.has(x) && !picked.includes(x));
+    const remaining = pool.filter(x => !picked.includes(x));
+    const choice = unused.length ? pick(unused) : pick(remaining);
+    usedSet.add(choice);
+    picked.push(choice);
+  }
+  return picked;
+}
+
 function renderDescriptorLines(parts) {
-  const labels = { build: 'Build', feature: 'Notable', accessory: 'Wears/carries', mannerism: 'Habit' };
-  return Object.keys(parts).map(key =>
-    `<div class="desc-line"><span class="desc-label">${labels[key]}:</span> ${parts[key]}</div>`
-  ).join('');
+  const labels = { build: 'Build', feature: 'Notable', accessory: 'Wears/carries', mannerism: 'Habit', trait: 'Trait' };
+  const order = ['build', 'feature', 'accessory', 'mannerism', 'trait'];
+  return order
+    .filter(key => key in parts && parts[key] !== null && !(Array.isArray(parts[key]) && parts[key].length === 0))
+    .map(key => {
+      const value = Array.isArray(parts[key]) ? parts[key].join('; ') : parts[key];
+      return `<div class="desc-line"><span class="desc-label">${labels[key]}:</span> ${value}</div>`;
+    })
+    .join('');
 }
 
 function renderNameRow(name, descriptorHtml) {
@@ -660,13 +709,14 @@ document.getElementById('generate').addEventListener('click', () => {
   }
 
   const descriptors = RACES[race].descriptors;
-  const usedBuild = new Set(), usedFeature = new Set(), usedAccessory = new Set(), usedMannerism = new Set();
+  const usedBuild = new Set(), usedFeature = new Set(), usedAccessory = new Set(), usedMannerism = new Set(), usedTrait = new Set();
   function nextDescriptorParts() {
     return {
       build: pickUnique(descriptors.build, usedBuild),
-      feature: pickUnique(descriptors.feature, usedFeature),
+      feature: pickVariableUnique(descriptors.feature, usedFeature),
       accessory: pickUnique(descriptors.accessory, usedAccessory),
-      mannerism: pickUnique(descriptors.mannerism, usedMannerism)
+      mannerism: pickUnique(descriptors.mannerism, usedMannerism),
+      trait: pickVariableUnique(descriptors.trait, usedTrait)
     };
   }
 
