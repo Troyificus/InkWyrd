@@ -517,15 +517,15 @@ function cardInnerHtml(card) {
   const iconSvg = getTypeIcon(card.sizeType);
 
   html += `<div class="corner-tag corner-right">
-      <div class="corner-tier">LVL ${escapeHtml(card.level)}</div>
-      <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(card.rarity)}</div>
+      <div class="corner-tier" data-source-field="level">LVL ${escapeHtml(card.level)}</div>
+      <div class="corner-type" data-source-field="rarity"><span class="corner-icon">${iconSvg}</span>${escapeHtml(card.rarity)}</div>
     </div>`;
 
   html += `<div class="card-name" style="padding-right:70px" data-source-field="name">${escapeHtml(card.name)}</div>`;
   html += `<div class="trait-chip-row">
-      <span class="trait-chip">${escapeHtml(card.rarity)}</span>
-      <span class="trait-chip">${escapeHtml(card.sizeType)}</span>
-      ${(card.traits || '').split(',').map(t => t.trim()).filter(Boolean).map(t => `<span class="trait-chip">${escapeHtml(t)}</span>`).join('')}
+      <span class="trait-chip" data-source-field="rarity">${escapeHtml(card.rarity)}</span>
+      <span class="trait-chip" data-source-field="sizeType">${escapeHtml(card.sizeType)}</span>
+      ${(card.traits || '').split(',').map(t => t.trim()).filter(Boolean).map(t => `<span class="trait-chip" data-source-field="traits">${escapeHtml(t)}</span>`).join('')}
     </div>`;
   if (card.description) html += `<div class="card-desc" data-source-field="description">${sub(card.description)}</div>`;
 
@@ -544,7 +544,7 @@ function cardInnerHtml(card) {
 
   let restHtml = '';
   restHtml += `<div class="section-divider">Defense</div>`;
-  restHtml += `<div class="card-line" data-source-field="ac"><b>AC</b> ${sub(card.ac)}; <b>Fort</b> ${sub(card.fort)}, <b>Ref</b> ${sub(card.ref)}, <b>Will</b> ${sub(card.will)}</div>`;
+  restHtml += `<div class="card-line" data-source-field="ac fort ref will"><b>AC</b> ${sub(card.ac)}; <b>Fort</b> ${sub(card.fort)}, <b>Ref</b> ${sub(card.ref)}, <b>Will</b> ${sub(card.will)}</div>`;
   restHtml += `<div class="card-line" data-source-field="hp"><b>HP</b> ${sub(card.hp)}</div>`;
   if (card.immunities) restHtml += `<div class="card-line" data-source-field="immunities"><b>Immunities</b> ${sub(card.immunities)}</div>`;
   if (card.resistances) restHtml += `<div class="card-line" data-source-field="resistances"><b>Resistances</b> ${sub(card.resistances)}</div>`;

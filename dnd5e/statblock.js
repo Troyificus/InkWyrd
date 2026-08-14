@@ -483,20 +483,20 @@ function cardInnerHtml(card) {
   const is2024 = card.format !== '2014';
 
   html += `<div class="corner-tag corner-right">
-      <div class="corner-tier">CR ${escapeHtml(card.cr)}</div>
-      <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(card.xp)} XP</div>
+      <div class="corner-tier" data-source-field="cr">CR ${escapeHtml(card.cr)}</div>
+      <div class="corner-type" data-source-field="xp"><span class="corner-icon">${iconSvg}</span>${escapeHtml(card.xp)} XP</div>
     </div>`;
 
   html += `<div class="card-name" style="padding-right:70px" data-source-field="name">${escapeHtml(card.name)}</div>`;
 
   if (is2024) {
     html += `<div class="trait-chip-row">
-        <span class="trait-chip">${escapeHtml(card.size)}</span>
-        <span class="trait-chip">${escapeHtml(card.creatureType)}</span>
-        <span class="trait-chip">${escapeHtml(card.alignment)}</span>
+        <span class="trait-chip" data-source-field="size">${escapeHtml(card.size)}</span>
+        <span class="trait-chip" data-source-field="creatureType">${escapeHtml(card.creatureType)}</span>
+        <span class="trait-chip" data-source-field="alignment">${escapeHtml(card.alignment)}</span>
       </div>`;
   } else {
-    html += `<div class="card-kind">${escapeHtml(card.size)} ${escapeHtml(card.creatureType)}, ${escapeHtml(card.alignment)}</div>`;
+    html += `<div class="card-kind"><span data-source-field="size">${escapeHtml(card.size)}</span> <span data-source-field="creatureType">${escapeHtml(card.creatureType)}</span>, <span data-source-field="alignment">${escapeHtml(card.alignment)}</span></div>`;
   }
 
   if (card.description) html += `<div class="card-desc" data-source-field="description">${sub(card.description)}</div>`;

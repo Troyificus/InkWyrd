@@ -348,14 +348,14 @@ function cardInnerHtml(card) {
   const iconSvg = getTypeIcon(card.itemCategory);
 
   html += `<div class="corner-tag corner-right">
-      <div class="corner-tier">T${escapeHtml(card.tier)}</div>
-      <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(card.itemRarity)}</div>
+      <div class="corner-tier" data-source-field="tier">T${escapeHtml(card.tier)}</div>
+      <div class="corner-type" data-source-field="itemRarity"><span class="corner-icon">${iconSvg}</span>${escapeHtml(card.itemRarity)}</div>
     </div>`;
 
   html += `<div class="card-name" style="padding-right:70px" data-source-field="name">${escapeHtml(card.name)}</div>`;
   html += `<div class="trait-chip-row">
-      <span class="trait-chip">${capitalize(card.itemCategory)}</span>
-      <span class="trait-chip">${escapeHtml(card.itemRarity)}</span>
+      <span class="trait-chip" data-source-field="itemCategory">${capitalize(card.itemCategory)}</span>
+      <span class="trait-chip" data-source-field="itemRarity">${escapeHtml(card.itemRarity)}</span>
     </div>`;
   if (card.description) html += `<div class="card-desc" data-source-field="description">${sub(card.description)}</div>`;
 

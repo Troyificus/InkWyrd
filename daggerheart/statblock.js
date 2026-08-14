@@ -526,8 +526,8 @@ function cardInnerHtml(card) {
   const bottomImage = hasImage && card.imageAlign === 'bottom';
 
   html += `<div class="corner-tag corner-right">
-      <div class="corner-tier">T${escapeHtml(card.tier)}</div>
-      <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(typeLabel)}</div>
+      <div class="corner-tier" data-source-field="tier">T${escapeHtml(card.tier)}</div>
+      <div class="corner-type" data-source-field="${isAdv ? 'type' : 'envType'}"><span class="corner-icon">${iconSvg}</span>${escapeHtml(typeLabel)}</div>
     </div>`;
 
   html += `<div class="card-name" style="padding-right:70px" data-source-field="name">${escapeHtml(card.name)}</div>`;

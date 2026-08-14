@@ -315,15 +315,15 @@ function cardInnerHtml(card) {
   const iconSvg = getTypeIcon(card.itemCategory);
 
   html += `<div class="corner-tag corner-right">
-      <div class="corner-tier">${escapeHtml(card.itemRarity)}</div>
-      <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${capitalize(card.itemCategory)}</div>
+      <div class="corner-tier" data-source-field="itemRarity">${escapeHtml(card.itemRarity)}</div>
+      <div class="corner-type" data-source-field="itemCategory"><span class="corner-icon">${iconSvg}</span>${capitalize(card.itemCategory)}</div>
     </div>`;
 
   html += `<div class="card-name" style="padding-right:70px" data-source-field="name">${escapeHtml(card.name)}</div>`;
   html += `<div class="trait-chip-row">
-      <span class="trait-chip">${capitalize(card.itemCategory)}</span>
-      <span class="trait-chip">${escapeHtml(card.itemRarity)}</span>
-      ${card.requiresAttunement ? `<span class="trait-chip">Requires Attunement${card.attunementRequirement ? ' ' + escapeHtml(card.attunementRequirement) : ''}</span>` : ''}
+      <span class="trait-chip" data-source-field="itemCategory">${capitalize(card.itemCategory)}</span>
+      <span class="trait-chip" data-source-field="itemRarity">${escapeHtml(card.itemRarity)}</span>
+      ${card.requiresAttunement ? `<span class="trait-chip" data-source-field="requiresAttunement attunementRequirement">Requires Attunement${card.attunementRequirement ? ' ' + escapeHtml(card.attunementRequirement) : ''}</span>` : ''}
     </div>`;
   if (card.itemDescription) html += `<div class="card-desc" data-source-field="itemDescription">${sub(card.itemDescription)}</div>`;
 
