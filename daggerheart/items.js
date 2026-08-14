@@ -352,19 +352,19 @@ function cardInnerHtml(card) {
       <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(card.itemRarity)}</div>
     </div>`;
 
-  html += `<div class="card-name" style="padding-right:70px">${escapeHtml(card.name)}</div>`;
+  html += `<div class="card-name" style="padding-right:70px" data-source-field="name">${escapeHtml(card.name)}</div>`;
   html += `<div class="trait-chip-row">
       <span class="trait-chip">${capitalize(card.itemCategory)}</span>
       <span class="trait-chip">${escapeHtml(card.itemRarity)}</span>
     </div>`;
-  if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
+  if (card.description) html += `<div class="card-desc" data-source-field="description">${sub(card.description)}</div>`;
 
   let statHtml = '';
   if (card.itemTypeName || card.itemBaseStats) {
-    statHtml += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
+    statHtml += `<div class="card-line" data-source-field="itemBaseStats"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
   }
   if (card.itemRange) {
-    statHtml += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
+    statHtml += `<div class="card-line" data-source-field="itemRange"><b>Range:</b> ${sub(card.itemRange)}</div>`;
   }
 
   const effectLine = card.itemTrigger
@@ -377,11 +377,11 @@ function cardInnerHtml(card) {
     // then a child of the narrower column and can never cross the image.
     statHtml += `<div class="section-divider">Effect</div>`;
     if (card.itemFeatureName) {
-      statHtml += `<div class="card-feature"><div class="feat-head"><span class="feat-name">${sub(card.itemFeatureName)}</span></div></div>`;
+      statHtml += `<div class="card-feature" data-source-field="itemFeatureName"><div class="feat-head"><span class="feat-name">${sub(card.itemFeatureName)}</span></div></div>`;
     }
-    statHtml += `<div class="card-line">${effectLine}</div>`;
+    statHtml += `<div class="card-line" data-source-field="itemEffect">${effectLine}</div>`;
     if (card.itemUsage) {
-      statHtml += `<div class="card-line" style="margin-top:10px"><b>Usage:</b> ${sub(card.itemUsage)}</div>`;
+      statHtml += `<div class="card-line" style="margin-top:10px" data-source-field="itemUsage"><b>Usage:</b> ${sub(card.itemUsage)}</div>`;
     }
     const w = card.imageWidth || 170;
     const img = `<img class="card-illustration" src="${escapeHtml(card.image)}" style="width:${w}px;" alt="">`;
@@ -391,11 +391,11 @@ function cardInnerHtml(card) {
     html += statHtml;
     html += `<div class="section-divider">Effect</div>`;
     if (card.itemFeatureName) {
-      html += `<div class="card-feature"><div class="feat-head"><span class="feat-name">${sub(card.itemFeatureName)}</span></div></div>`;
+      html += `<div class="card-feature" data-source-field="itemFeatureName"><div class="feat-head"><span class="feat-name">${sub(card.itemFeatureName)}</span></div></div>`;
     }
-    html += `<div class="card-line">${effectLine}</div>`;
+    html += `<div class="card-line" data-source-field="itemEffect">${effectLine}</div>`;
     if (card.itemUsage) {
-      html += `<div class="card-line" style="margin-top:10px"><b>Usage:</b> ${sub(card.itemUsage)}</div>`;
+      html += `<div class="card-line" style="margin-top:10px" data-source-field="itemUsage"><b>Usage:</b> ${sub(card.itemUsage)}</div>`;
     }
   }
 

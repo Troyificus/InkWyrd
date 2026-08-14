@@ -319,27 +319,27 @@ function cardInnerHtml(card) {
       <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${capitalize(card.itemCategory)}</div>
     </div>`;
 
-  html += `<div class="card-name" style="padding-right:70px">${escapeHtml(card.name)}</div>`;
+  html += `<div class="card-name" style="padding-right:70px" data-source-field="name">${escapeHtml(card.name)}</div>`;
   html += `<div class="trait-chip-row">
       <span class="trait-chip">${capitalize(card.itemCategory)}</span>
       <span class="trait-chip">${escapeHtml(card.itemRarity)}</span>
       ${card.requiresAttunement ? `<span class="trait-chip">Requires Attunement${card.attunementRequirement ? ' ' + escapeHtml(card.attunementRequirement) : ''}</span>` : ''}
     </div>`;
-  if (card.itemDescription) html += `<div class="card-desc">${sub(card.itemDescription)}</div>`;
+  if (card.itemDescription) html += `<div class="card-desc" data-source-field="itemDescription">${sub(card.itemDescription)}</div>`;
 
   let statHtml = '';
   if (card.itemTypeName || card.itemBaseStats) {
-    statHtml += `<div class="card-line"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
+    statHtml += `<div class="card-line" data-source-field="itemBaseStats"><b>${escapeHtml(card.itemTypeName) || capitalize(card.itemCategory)}:</b> ${sub(card.itemBaseStats)}</div>`;
   }
   if (card.itemRange) {
-    statHtml += `<div class="card-line"><b>Range:</b> ${sub(card.itemRange)}</div>`;
+    statHtml += `<div class="card-line" data-source-field="itemRange"><b>Range:</b> ${sub(card.itemRange)}</div>`;
   }
 
   if (rowImage) {
     statHtml += `<div class="section-divider">Effect</div>`;
-    statHtml += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
+    statHtml += `<div class="card-line" data-source-field="itemEffect">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
     if (card.itemCharges) {
-      statHtml += `<div class="card-line" style="margin-top:10px"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
+      statHtml += `<div class="card-line" style="margin-top:10px" data-source-field="itemCharges"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
     }
     const w = card.imageWidth || 170;
     const img = `<img class="card-illustration" src="${escapeHtml(card.image)}" style="width:${w}px;" alt="">`;
@@ -348,9 +348,9 @@ function cardInnerHtml(card) {
   } else {
     html += statHtml;
     html += `<div class="section-divider">Effect</div>`;
-    html += `<div class="card-line">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
+    html += `<div class="card-line" data-source-field="itemEffect">${sub(card.itemEffect) || '<i>No effect written yet.</i>'}</div>`;
     if (card.itemCharges) {
-      html += `<div class="card-line" style="margin-top:10px"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
+      html += `<div class="card-line" style="margin-top:10px" data-source-field="itemCharges"><b>Charges:</b> ${escapeHtml(card.itemCharges)}${card.itemRecharge ? ' — ' + sub(card.itemRecharge) : ''}</div>`;
     }
   }
 

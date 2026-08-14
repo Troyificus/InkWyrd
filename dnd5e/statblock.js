@@ -487,7 +487,7 @@ function cardInnerHtml(card) {
       <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(card.xp)} XP</div>
     </div>`;
 
-  html += `<div class="card-name" style="padding-right:70px">${escapeHtml(card.name)}</div>`;
+  html += `<div class="card-name" style="padding-right:70px" data-source-field="name">${escapeHtml(card.name)}</div>`;
 
   if (is2024) {
     html += `<div class="trait-chip-row">
@@ -499,45 +499,45 @@ function cardInnerHtml(card) {
     html += `<div class="card-kind">${escapeHtml(card.size)} ${escapeHtml(card.creatureType)}, ${escapeHtml(card.alignment)}</div>`;
   }
 
-  if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
+  if (card.description) html += `<div class="card-desc" data-source-field="description">${sub(card.description)}</div>`;
 
   let coreHtml = '';
   if (is2024) {
     coreHtml += `<div class="core-stat-row">
-        <div class="core-stat"><b>AC</b> ${sub(card.ac)}</div>
+        <div class="core-stat" data-source-field="ac"><b>AC</b> ${sub(card.ac)}</div>
         <div class="core-stat"><b>Initiative</b> ${modifier(card.dex)} (${10 + dexMod})</div>
-        <div class="core-stat"><b>HP</b> ${sub(card.hp)}</div>
-        <div class="core-stat"><b>Speed</b> ${sub(card.speed)}</div>
+        <div class="core-stat" data-source-field="hp"><b>HP</b> ${sub(card.hp)}</div>
+        <div class="core-stat" data-source-field="speed"><b>Speed</b> ${sub(card.speed)}</div>
       </div>`;
   } else {
-    coreHtml += `<div class="card-line"><b>Armor Class</b> ${sub(card.ac)}</div>`;
-    coreHtml += `<div class="card-line"><b>Hit Points</b> ${sub(card.hp)}</div>`;
-    coreHtml += `<div class="card-line"><b>Speed</b> ${sub(card.speed)}</div>`;
+    coreHtml += `<div class="card-line" data-source-field="ac"><b>Armor Class</b> ${sub(card.ac)}</div>`;
+    coreHtml += `<div class="card-line" data-source-field="hp"><b>Hit Points</b> ${sub(card.hp)}</div>`;
+    coreHtml += `<div class="card-line" data-source-field="speed"><b>Speed</b> ${sub(card.speed)}</div>`;
   }
 
   coreHtml += `<div class="ability-row">`;
-  [['STR', card.str], ['DEX', card.dex], ['CON', card.con], ['INT', card.int], ['WIS', card.wis], ['CHA', card.cha]].forEach(([label, score]) => {
-    coreHtml += `<div class="ability-box"><div class="ability-lbl">${label}</div><div class="ability-val">${escapeHtml(score)}</div><div class="ability-mod">${modifier(score)}</div></div>`;
+  [['STR', card.str, 'str'], ['DEX', card.dex, 'dex'], ['CON', card.con, 'con'], ['INT', card.int, 'int'], ['WIS', card.wis, 'wis'], ['CHA', card.cha, 'cha']].forEach(([label, score, key]) => {
+    coreHtml += `<div class="ability-box" data-source-field="${key}"><div class="ability-lbl">${label}</div><div class="ability-val">${escapeHtml(score)}</div><div class="ability-mod">${modifier(score)}</div></div>`;
   });
   coreHtml += `</div>`;
 
   const statLines = () => {
     let s = '';
-    if (card.savingThrows) s += `<div class="card-line"><b>Saving Throws</b> ${sub(card.savingThrows)}</div>`;
-    if (card.skills) s += `<div class="card-line"><b>Skills</b> ${sub(card.skills)}</div>`;
+    if (card.savingThrows) s += `<div class="card-line" data-source-field="savingThrows"><b>Saving Throws</b> ${sub(card.savingThrows)}</div>`;
+    if (card.skills) s += `<div class="card-line" data-source-field="skills"><b>Skills</b> ${sub(card.skills)}</div>`;
     if (is2024) {
-      if (card.damageVulnerabilities) s += `<div class="card-line"><b>Vulnerabilities</b> ${sub(card.damageVulnerabilities)}</div>`;
-      if (card.damageResistances) s += `<div class="card-line"><b>Resistances</b> ${sub(card.damageResistances)}</div>`;
+      if (card.damageVulnerabilities) s += `<div class="card-line" data-source-field="damageVulnerabilities"><b>Vulnerabilities</b> ${sub(card.damageVulnerabilities)}</div>`;
+      if (card.damageResistances) s += `<div class="card-line" data-source-field="damageResistances"><b>Resistances</b> ${sub(card.damageResistances)}</div>`;
       const combinedImmunities = [card.damageImmunities, card.conditionImmunities].filter(Boolean).map(t => applySubs(t, card)).join(', ');
-      if (combinedImmunities) s += `<div class="card-line"><b>Immunities</b> ${escapeHtml(combinedImmunities)}</div>`;
+      if (combinedImmunities) s += `<div class="card-line" data-source-field="damageImmunities"><b>Immunities</b> ${escapeHtml(combinedImmunities)}</div>`;
     } else {
-      if (card.damageVulnerabilities) s += `<div class="card-line"><b>Damage Vulnerabilities</b> ${sub(card.damageVulnerabilities)}</div>`;
-      if (card.damageResistances) s += `<div class="card-line"><b>Damage Resistances</b> ${sub(card.damageResistances)}</div>`;
-      if (card.damageImmunities) s += `<div class="card-line"><b>Damage Immunities</b> ${sub(card.damageImmunities)}</div>`;
-      if (card.conditionImmunities) s += `<div class="card-line"><b>Condition Immunities</b> ${sub(card.conditionImmunities)}</div>`;
+      if (card.damageVulnerabilities) s += `<div class="card-line" data-source-field="damageVulnerabilities"><b>Damage Vulnerabilities</b> ${sub(card.damageVulnerabilities)}</div>`;
+      if (card.damageResistances) s += `<div class="card-line" data-source-field="damageResistances"><b>Damage Resistances</b> ${sub(card.damageResistances)}</div>`;
+      if (card.damageImmunities) s += `<div class="card-line" data-source-field="damageImmunities"><b>Damage Immunities</b> ${sub(card.damageImmunities)}</div>`;
+      if (card.conditionImmunities) s += `<div class="card-line" data-source-field="conditionImmunities"><b>Condition Immunities</b> ${sub(card.conditionImmunities)}</div>`;
     }
-    if (card.senses) s += `<div class="card-line"><b>Senses</b> ${sub(card.senses)}</div>`;
-    if (card.languages) s += `<div class="card-line"><b>Languages</b> ${sub(card.languages)}</div>`;
+    if (card.senses) s += `<div class="card-line" data-source-field="senses"><b>Senses</b> ${sub(card.senses)}</div>`;
+    if (card.languages) s += `<div class="card-line" data-source-field="languages"><b>Languages</b> ${sub(card.languages)}</div>`;
     return s;
   };
 
@@ -548,7 +548,8 @@ function cardInnerHtml(card) {
       if (!items.length) return;
       f += `<div class="section-divider col-divider">${cat}s</div>`;
       items.forEach(x => {
-        f += `<div class="card-feature">
+        const idx = card.features.indexOf(x);
+        f += `<div class="card-feature" data-source-field="feature-${idx}">
           <div class="feat-head"><span class="feat-name">${sub(x.name)}.</span><span class="feat-icon">${getFeatureIcon(cat)}</span></div>
           <div class="feat-text">${sub(x.text)}</div>
         </div>`;

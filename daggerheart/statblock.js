@@ -530,9 +530,9 @@ function cardInnerHtml(card) {
       <div class="corner-type"><span class="corner-icon">${iconSvg}</span>${escapeHtml(typeLabel)}</div>
     </div>`;
 
-  html += `<div class="card-name" style="padding-right:70px">${escapeHtml(card.name)}</div>`;
+  html += `<div class="card-name" style="padding-right:70px" data-source-field="name">${escapeHtml(card.name)}</div>`;
   html += `<div class="card-kind">${isAdv ? 'Adversary' : 'Environment'}</div>`;
-  if (card.description) html += `<div class="card-desc">${sub(card.description)}</div>`;
+  if (card.description) html += `<div class="card-desc" data-source-field="description">${sub(card.description)}</div>`;
 
   // Build the stat lines separately so they can either sit full-width (no
   // image) or share a row with the illustration (image present) — the
@@ -540,50 +540,50 @@ function cardInnerHtml(card) {
   // run through the image regardless of how tall either side is.
   let statHtml = '';
   if (isAdv) {
-    statHtml += `<div class="card-line"><b>Difficulty:</b> ${escapeHtml(card.difficultyAdv)}</div>`;
-    (card.attacks || []).forEach(a => {
-      statHtml += `<div class="card-line"><b>Attack (${sub(a.atk)}):</b> ${sub(a.name)} — ${sub(a.range)}, ${sub(a.damage)}</div>`;
+    statHtml += `<div class="card-line" data-source-field="difficultyAdv"><b>Difficulty:</b> ${escapeHtml(card.difficultyAdv)}</div>`;
+    (card.attacks || []).forEach((a, i) => {
+      statHtml += `<div class="card-line" data-source-field="attack-${i}"><b>Attack (${sub(a.atk)}):</b> ${sub(a.name)} — ${sub(a.range)}, ${sub(a.damage)}</div>`;
     });
 
     if (rowImage) {
       // Stacked, not side-by-side, so both stay readable in the narrower column.
-      statHtml += `<div class="two-col-item stacked">
+      statHtml += `<div class="two-col-item stacked" data-source-field="experience">
         <div class="two-col-head">Experience</div>
         <div class="two-col-body">${card.experience ? sub(card.experience) : '—'}</div>
       </div>`;
-      statHtml += `<div class="two-col-item stacked">
+      statHtml += `<div class="two-col-item stacked" data-source-field="motives">
         <div class="two-col-head">Motives &amp; Tactics</div>
         <div class="two-col-body italic">${card.motives ? sub(card.motives) : '—'}</div>
       </div>`;
     } else {
       statHtml += `<div class="two-col">
-        <div class="two-col-item">
+        <div class="two-col-item" data-source-field="experience">
           <div class="two-col-head">Experience</div>
           <div class="two-col-body">${card.experience ? sub(card.experience) : '—'}</div>
         </div>
-        <div class="two-col-item">
+        <div class="two-col-item" data-source-field="motives">
           <div class="two-col-head">Motives &amp; Tactics</div>
           <div class="two-col-body italic">${card.motives ? sub(card.motives) : '—'}</div>
         </div>
       </div>`;
     }
   } else {
-    statHtml += `<div class="card-line"><b>Difficulty:</b> ${escapeHtml(card.difficultyEnv)}</div>`;
+    statHtml += `<div class="card-line" data-source-field="difficultyEnv"><b>Difficulty:</b> ${escapeHtml(card.difficultyEnv)}</div>`;
     if (rowImage) {
-      statHtml += `<div class="two-col-item stacked">
+      statHtml += `<div class="two-col-item stacked" data-source-field="impulses">
         <div class="two-col-head">Impulses</div>
         <div class="two-col-body italic">${card.impulses ? sub(card.impulses) : '—'}</div>
       </div>`;
     } else {
       statHtml += `<div class="two-col two-col-single">
-        <div class="two-col-item">
+        <div class="two-col-item" data-source-field="impulses">
           <div class="two-col-head">Impulses</div>
           <div class="two-col-body italic">${card.impulses ? sub(card.impulses) : '—'}</div>
         </div>
       </div>`;
     }
     if (card.potential) {
-      statHtml += `<div class="card-line"><b>Potential Adversaries:</b> ${sub(card.potential)}</div>`;
+      statHtml += `<div class="card-line" data-source-field="potential"><b>Potential Adversaries:</b> ${sub(card.potential)}</div>`;
     }
   }
 
@@ -594,8 +594,8 @@ function cardInnerHtml(card) {
     // is physically bounded by that column and can never cross the image.
     if (card.features.length) {
       statHtml += `<div class="section-divider">Features</div>`;
-      card.features.forEach(f => {
-        statHtml += `<div class="card-feature">
+      card.features.forEach((f, i) => {
+        statHtml += `<div class="card-feature" data-source-field="feature-${i}">
           <div class="feat-head"><span class="feat-name">${sub(f.name)}</span><span class="feat-type-tag">— ${escapeHtml(f.type)}</span><span class="feat-icon">${featureIconFor(f.type)}</span></div>
           <div class="feat-text">${sub(f.text)}</div>
         </div>`;
@@ -609,8 +609,8 @@ function cardInnerHtml(card) {
     html += statHtml;
     if (card.features.length) {
       html += `<div class="section-divider">Features</div>`;
-      card.features.forEach(f => {
-        html += `<div class="card-feature">
+      card.features.forEach((f, i) => {
+        html += `<div class="card-feature" data-source-field="feature-${i}">
           <div class="feat-head"><span class="feat-name">${sub(f.name)}</span><span class="feat-type-tag">— ${escapeHtml(f.type)}</span><span class="feat-icon">${featureIconFor(f.type)}</span></div>
           <div class="feat-text">${sub(f.text)}</div>
         </div>`;
@@ -621,9 +621,9 @@ function cardInnerHtml(card) {
   if (isAdv) {
     html += `<div class="section-divider">Vitals</div>`;
     html += `<div class="vitals-row">
-      <div class="vital-box"><div class="vital-val">${escapeHtml(card.hp)}</div><div class="vital-lbl">HP</div></div>
-      <div class="vital-box"><div class="vital-val">${escapeHtml(card.stress)}</div><div class="vital-lbl">Stress</div></div>
-      <div class="vital-thresholds">
+      <div class="vital-box" data-source-field="hp"><div class="vital-val">${escapeHtml(card.hp)}</div><div class="vital-lbl">HP</div></div>
+      <div class="vital-box" data-source-field="stress"><div class="vital-val">${escapeHtml(card.stress)}</div><div class="vital-lbl">Stress</div></div>
+      <div class="vital-thresholds" data-source-field="thresholdMajor">
         <div class="vital-lbl">Thresholds</div>
         <div class="vital-thresh-val">Major ${escapeHtml(card.thresholdMajor)} &middot; Severe ${escapeHtml(card.thresholdSevere)}</div>
       </div>

@@ -69,7 +69,7 @@ body {
   margin: 0 auto;
 }
 
-.deck-panel { flex: 0 1 220px; min-width: 200px; }
+.deck-panel { flex: 0 1 220px; min-width: 200px; position: sticky; top: 16px; align-self: flex-start; max-height: calc(100vh - 32px); overflow-y: auto; }
 .form-panel, .preview-panel { flex: 1 1 420px; min-width: 320px; }
 
 .deck-panel h2 {
@@ -232,6 +232,64 @@ input, textarea, select {
 }
 
 .combobox-dropdown li:hover { background: var(--gold); color: var(--panel); }
+
+#back-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  padding: 10px 18px;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  border-radius: 4px;
+  font-family: 'Work Sans', -apple-system, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+#back-to-top:hover { background: var(--accent); color: #f3ead8; transform: translateY(-1px); }
+
+.randomize-bar {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.randomize-bar button {
+  width: 100%;
+  padding: 10px;
+  background: var(--accent);
+  color: #f3ead8;
+  border: none;
+  border-radius: 3px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.randomize-bar button:hover { opacity: 0.9; }
+
+.randomize-bar .hint { margin: 8px 0 0; text-align: left; }
+
+.field-highlighted {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  background: rgba(169, 132, 63, 0.12);
+  border-radius: 2px;
+  transition: background 0.15s ease, outline-color 0.15s ease;
+}
+
+@media (max-width: 760px) {
+  #back-to-top { bottom: 16px; right: 16px; padding: 9px 14px; font-size: 0.78rem; }
+}
 
 
 input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
@@ -711,7 +769,7 @@ textarea { resize: vertical; }
 @media (max-width: 760px) {
   .preview-panel { position: static; }
   #statblock-card { width: 100%; }
-  .deck-panel { flex: 1 1 100%; order: -1; }
+  .deck-panel { flex: 1 1 100%; order: -1; position: static; max-height: none; }
   #deck-list { max-height: 160px; }
   .ability-grid { grid-template-columns: repeat(2, 1fr); }
 }

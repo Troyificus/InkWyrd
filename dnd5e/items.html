@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260812s">
+<link rel="stylesheet" href="style.css?v=20260812t">
 </head>
 <body>
 
@@ -104,12 +104,6 @@
       </fieldset>
 
       <fieldset>
-        <legend>Random Item Generator</legend>
-        <p class="hint">Roll a full original item concept — name, description, and effect — based on the Category and Rarity above. You can edit anything afterward.</p>
-        <button type="button" id="randomize-item">🎲 Randomize Item</button>
-      </fieldset>
-
-      <fieldset>
         <legend>Effect &amp; Charges</legend>
         <label>Effect <textarea data-field="itemEffect" rows="3" placeholder="What the item does mechanically"></textarea></label>
         <label>Charges (leave blank if not applicable) <input type="number" data-field="itemCharges" min="0"></label>
@@ -140,6 +134,10 @@
   </section>
 
   <section class="preview-panel" aria-label="Card preview">
+    <div class="randomize-bar">
+      <button type="button" id="randomize-item">🎲 Randomize Item</button>
+      <p class="hint">Rolls a full original item concept — name, description, and effect — based on the Category and Rarity set in the form. You can edit anything afterward.</p>
+    </div>
     <div id="card-wrapper">
       <div id="statblock-card" class="theme-parchment">
         <!-- Rendered by items.js -->
@@ -162,11 +160,13 @@
   <p class="kofi-footer-link"><a href="https://ko-fi.com/troyificus" target="_blank" rel="noopener">&#9749; Support this project on Ko-fi</a></p>
 </footer>
 
-<script src="../assets/vendor/html2canvas.min.js?v=20260812s"></script>
-<script src="../assets/vendor/jszip.min.js?v=20260812s"></script>
-<script src="icons.js?v=20260812s"></script>
-<script src="../assets/combobox.js?v=20260812s"></script>
-<script src="../assets/item-words.js?v=20260812s"></script>
-<script src="items.js?v=20260812s"></script>
+<script src="../assets/vendor/html2canvas.min.js?v=20260812t"></script>
+<script src="../assets/vendor/jszip.min.js?v=20260812t"></script>
+<script src="icons.js?v=20260812t"></script>
+<script src="../assets/combobox.js?v=20260812t"></script>
+<script src="../assets/back-to-top.js?v=20260812t"></script>
+<script src="../assets/field-highlight.js?v=20260812t"></script>
+<script src="../assets/item-words.js?v=20260812t"></script>
+<script src="items.js?v=20260812t"></script>
 </body>
 </html>
