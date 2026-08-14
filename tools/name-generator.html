@@ -88,8 +88,17 @@
     color: var(--text);
     border-radius: 3px;
     min-width: 180px;
+    width: 100%;
   }
   .field { flex: 1; min-width: 160px; }
+  .checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+  .checkbox-field input { width: 16px; height: 16px; }
   #generate {
     display: block;
     width: 100%;
@@ -118,16 +127,25 @@
     font-size: 0.9rem;
   }
   .name-row {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--panel-border);
+  }
+  .name-row:last-child { border-bottom: none; }
+  .name-main {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 18px;
-    border-bottom: 1px solid var(--panel-border);
     font-family: 'Spectral', Georgia, serif;
     font-size: 1.15rem;
   }
-  .name-row:last-child { border-bottom: none; }
-  .name-row .copy-btn {
+  .name-descriptor {
+    margin-top: 4px;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    font-style: italic;
+    line-height: 1.4;
+  }
+  .copy-btn {
     background: transparent;
     border: 1px solid var(--panel-border);
     color: var(--text-dim);
@@ -137,9 +155,30 @@
     border-radius: 3px;
     cursor: pointer;
     letter-spacing: 0.3px;
+    flex-shrink: 0;
+    margin-left: 12px;
   }
-  .name-row .copy-btn:hover { border-color: var(--gold); color: var(--gold); }
-  .name-row .copy-btn.copied { border-color: var(--gold); color: var(--gold); }
+  .copy-btn:hover, .copy-btn.copied { border-color: var(--gold); color: var(--gold); }
+
+  .elemental-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--panel-border);
+  }
+  .elemental-block { background: var(--panel); padding: 16px 18px; }
+  .elemental-block h3 {
+    font-family: 'Spectral', Georgia, serif;
+    margin: 0 0 10px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.82rem;
+  }
+  .elemental-block .name-row { padding: 8px 0; border-bottom: 1px dotted var(--panel-border); }
+  .elemental-block .name-row:last-child { border-bottom: none; }
+  @media (max-width: 560px) { .elemental-grid { grid-template-columns: 1fr; } }
+
   .hint {
     font-size: 0.78rem;
     color: var(--text-dim);
@@ -162,24 +201,22 @@
 <header class="site-header">
   <a class="back-link" href="../index.html">&larr; Statblock Forge</a>
   <h1>NPC Name Generator</h1>
-  <p>Original names across seven fantasy cultures — system-agnostic, works with any table.</p>
+  <p>Original names across a dozen fantasy cultures, with race-appropriate physical details — system-agnostic, works with any table.</p>
 </header>
 
 <main>
   <div class="controls">
     <div class="control-row">
       <div class="field">
-        <label for="culture">Culture / Style</label>
-        <select id="culture">
-          <option value="human">Human</option>
-          <option value="elvish">Elvish</option>
-          <option value="dwarvish">Dwarvish</option>
-          <option value="orcish">Orcish / Goblinoid</option>
-          <option value="halfling">Halfling</option>
-          <option value="draconic">Draconic / Exotic</option>
-          <option value="eldritch">Eldritch / Cosmic</option>
-        </select>
+        <label for="race">Race</label>
+        <select id="race"></select>
       </div>
+      <div class="field" id="subtype-field">
+        <label for="subtype">Culture / Region</label>
+        <select id="subtype"></select>
+      </div>
+    </div>
+    <div class="control-row" id="normal-controls">
       <div class="field">
         <label for="gender">Leaning</label>
         <select id="gender">
@@ -197,85 +234,377 @@
         </select>
       </div>
     </div>
+    <div class="control-row">
+      <div class="checkbox-field">
+        <input type="checkbox" id="descriptors">
+        <label for="descriptors" style="margin:0;">Include a physical descriptor with each name</label>
+      </div>
+    </div>
     <button type="button" id="generate">Generate Names</button>
   </div>
 
   <div class="results" id="results">
-    <div class="results-empty">Pick a culture and hit Generate.</div>
+    <div class="results-empty">Pick a race and hit Generate.</div>
   </div>
-  <p class="hint">Every name here is original — not drawn from any published setting's named characters.</p>
+  <p class="hint">Every name and descriptor here is original — not drawn from any published setting's named characters.</p>
 </main>
 
 <footer class="site-footer">
-  <p>Fan-made tool. Names generated here are original content, free to use in your own games.</p>
+  <p>Fan-made tool. Names and descriptors generated here are original content, free to use in your own games.</p>
 </footer>
 
 <script>
-const POOLS = {
+const RACES = {
   human: {
-    masc: ['Bram','Corwin','Dashiell','Edrick','Fenwick','Garrick','Hollis','Ivor','Jasper','Lucan','Merrick','Osric','Percival','Roderick','Silas','Tobin','Wystan'],
-    fem: ['Adaline','Briar','Cassandra','Delphine','Elowen','Fiora','Genevieve','Helia','Isolde','Josselyn','Marguerite','Odile','Rosalind','Seraphine','Tamsin','Wren'],
-    surnames: ['Ashworth','Blackwood','Colby','Draven','Everhart','Farrow','Graves','Hawthorne','Kestrel','Larkspur','Meadowlark','Norwood','Pemberton','Quill','Redmond','Sable','Thackeray','Vance','Wintermere'],
-    pattern: (first, sur) => `${first} ${sur}`
+    label: 'Human',
+    pattern: (first, sur) => `${first} ${sur}`,
+    descriptors: [
+      'a jagged scar running through one eyebrow',
+      'missing the tip of the left index finger',
+      'a notably crooked nose, broken more than once',
+      'a gap-toothed grin, hard to forget',
+      'a faded burn scar along one forearm',
+      'a streak of grey through otherwise dark hair, far too young for it',
+      'calloused hands and permanently dirt-stained nails',
+      'a milky, sightless left eye',
+      'a small string of old tattoos climbing one wrist',
+      'walks with a slight limp from an old injury that never fully healed',
+      'a birthmark shaped uncannily like a familiar constellation',
+      'weathered, sun-creased skin from a life spent outdoors'
+    ],
+    subtypes: {
+      european: {
+        label: 'The Old Kingdoms',
+        masc: ['Bram','Corwin','Dashiell','Edrick','Fenwick','Garrick','Hollis','Ivor','Jasper','Lucan','Merrick','Osric'],
+        fem: ['Adaline','Briar','Cassandra','Delphine','Elowen','Fiora','Genevieve','Helia','Isolde','Josselyn','Marguerite','Odile'],
+        surnames: ['Ashworth','Blackwood','Colby','Draven','Everhart','Farrow','Graves','Hawthorne','Kestrel','Larkspur','Meadowlark','Norwood']
+      },
+      jade: {
+        label: 'The Jade Provinces',
+        masc: ['Jian','Kaito','Renshu','Haruto','Wei','Takeshi','Zihao','Ryo','Minjun','Daiki','Cheng','Hiroshi'],
+        fem: ['Meiling','Sakura','Xiulan','Hana','Yumei','Aiko','Lianhua','Emiko','Xueying','Michiko','Fen','Rin'],
+        surnames: ['Zhao','Nakamura','Feng','Takahashi','Lian','Yoshida','Meihua','Kobayashi','Shen','Watanabe','Tao','Hoshino']
+      },
+      amber: {
+        label: 'The Amber Dunes',
+        masc: ['Farid','Jamal','Rashid','Tariq','Zaid','Karim','Idris','Malik','Nasser','Samir','Yusuf','Hakim'],
+        fem: ['Amara','Layla','Nadia','Samira','Yasmin','Zahra','Farida','Jamila','Noor','Rania','Salma','Amira'],
+        surnames: ['al-Rashid','Farouk','Hadad','Kassar','Mansour','Najjar','Qadir','Saleh','Tahan','Zaman','al-Din','Haddad']
+      },
+      frost: {
+        label: 'The Frost Marches',
+        masc: ['Dmitri','Ivan','Mikhail','Pavel','Sergei','Viktor','Yuri','Boris','Nikolai','Anton','Kirill','Vasily'],
+        fem: ['Anastasia','Ekaterina','Irina','Nadia','Svetlana','Yelena','Zoya','Larisa','Oksana','Vera','Galina','Marina'],
+        surnames: ['Volkov','Sokolov','Morozov','Petrov','Kuznetsov','Orlova','Belova','Zima','Voronin','Lebedev','Ivanov','Rusakov']
+      },
+      ember: {
+        label: 'The Ember Plains',
+        masc: ['Kwame','Sefu','Jelani','Obi','Tau','Zuberi','Kofi','Amare','Chike','Idowu','Bakari','Femi'],
+        fem: ['Amara','Chidi','Folami','Nia','Zola','Aisha','Imani','Kesi','Nala','Sanaa','Adaeze','Thandiwe'],
+        surnames: ['Adisa','Bekele','Diallo','Kamau','Mensah','Nwosu','Okafor','Osei','Tesfaye','Zuberi','Abara','Nkosi']
+      },
+      frontier: {
+        label: 'The Frontier Territories',
+        masc: ['Cole','Dutch','Ezra','Grady','Hank','Jesse','Levi','Nolan','Reeve','Silas','Wade','Wyatt'],
+        fem: ['Annie','Birdie','Callie','Della','Etta','Josephine','Lucy','Maybelle','Nadine','Ruth','Sadie','Willa'],
+        surnames: ['Calloway','Dutton','Garner','Holt','Kessler','Marsh','Pruitt','Radley','Sawyer','Tanner','Wexford','Youngblood']
+      }
+    }
   },
   elvish: {
-    masc: ['Aerendyl','Caelthorn','Elarion','Faelan','Isendor','Lorithal','Nyssarion','Ravendor','Sylvaen','Thelorin'],
-    fem: ['Aelwen','Caeliris','Elowyn','Faelith','Isarel','Lyriana','Nyvaella','Silvaris','Thessaly','Wysteria'],
-    surnames: ['Dawnwhisper','Duskwalker','Evensong','Frostleaf','Moonbrook','Nightfall','Silverbough','Starweave','Sunveil','Windshadow'],
-    pattern: (first, sur) => Math.random() < 0.65 ? `${first} ${sur}` : first
+    label: 'Elvish',
+    pattern: (first, sur) => Math.random() < 0.65 ? `${first} ${sur}` : first,
+    descriptors: [
+      'ears with an unusual second notch, marking some old event never explained',
+      'eyes of two faintly different colors',
+      'hair a shade of silver-white, striking against a young face',
+      'an eerily still, deliberate way of standing',
+      'an old scar that healed strangely pale, almost luminous',
+      'a voice with a faint, unplaceable musical lilt',
+      'eyes that seem to track movement a beat before it happens',
+      'unnaturally light, near-silent footsteps',
+      'faint freckle-like markings that seem to glimmer very faintly in low light',
+      'an asymmetric, striking set of features — beautiful, but not quite symmetrical'
+    ],
+    subtypes: {
+      high: {
+        label: 'High Elves',
+        masc: ['Aerendyl','Caelthorn','Elarion','Faelan','Isendor','Lorithal','Nyssarion','Ravendor','Sylvaen','Thelorin'],
+        fem: ['Aelwen','Caeliris','Elowyn','Faelith','Isarel','Lyriana','Nyvaella','Silvaris','Thessaly','Wysteria'],
+        surnames: ['Dawnwhisper','Evensong','Moonbrook','Silverbough','Starweave','Sunveil','Highgarden','Lorevale','Aurelane','Skyreach']
+      },
+      wood: {
+        label: 'Wood Elves',
+        masc: ['Bryndor','Corwyth','Fenrion','Halric','Larenthil','Oswyn','Rowanthal','Talroth','Vethric','Wrenlan'],
+        fem: ['Amberleaf','Briallen','Cyriel','Fernwyn','Hazelith','Lorelai','Mossbriar','Sorrelin','Thornia','Willowen'],
+        surnames: ['Deeproot','Duskwalker','Frostleaf','Greenshade','Mossbrook','Nightfall','Oakenshield','Thistledown','Vinewalker','Windshadow']
+      },
+      umbral: {
+        label: 'Umbral Elves',
+        masc: ['Kethric','Malvorin','Nyxareth','Orvenn','Quorath','Sethrael','Ulmarion','Veskarion','Xandrel','Zorathin'],
+        fem: ['Ashariel','Kirenna','Morwyth','Nyxella','Orvenne','Quorienne','Serathine','Ulmara','Vethelyn','Xandriel'],
+        surnames: ['Blackveil','Duskbane','Emberwane','Grimshadow','Hollowmourn','Nightshroud','Ravenspire','Shadewell','Voidwhisper','Wraithbourne']
+      }
+    }
   },
   dwarvish: {
-    masc: ['Borin','Dain','Gromlok','Harnok','Kildrek','Norbin','Orrin','Thurgrim','Ulfrek','Vondrik'],
-    fem: ['Brenna','Disa','Grunhild','Hilda','Katrin','Nordis','Runa','Sigrid','Thyra','Vessa'],
-    surnames: ['Anvilheart','Boulderfist','Coalbeard','Deepdelve','Emberforge','Granitehand','Ironfist','Stonebeard','Thundercask','Warhammer'],
-    pattern: (first, sur) => `${first} ${sur}`
+    label: 'Dwarvish',
+    pattern: (first, sur) => `${first} ${sur}`,
+    descriptors: [
+      'a beautifully worked beard-clasp, missing one bead they refuse to talk about',
+      'a singed, patchy beard-line from a forge accident',
+      'missing the last two fingers on the off hand',
+      'one cloudy eye, the legacy of an old cave-in',
+      'soot worked so deep into the skin creases it never quite washes out',
+      'a voice made permanently gravelly by years of mine dust',
+      'a crude but sturdy prosthetic hand of hammered metal',
+      'forearms latticed with old forge-burn scars',
+      'notably tall for a dwarf, and self-conscious about it',
+      'a limp from a mining accident, offset by an iron-shod cane'
+    ],
+    subtypes: {
+      mountain: {
+        label: 'Mountain Dwarves',
+        masc: ['Borin','Dain','Kildrek','Norbin','Orrin','Thurgrim','Ulfrek','Vondrik','Baldrek','Harnok'],
+        fem: ['Brenna','Disa','Hilda','Katrin','Nordis','Runa','Sigrid','Thyra','Vessa','Grunhild'],
+        surnames: ['Anvilheart','Boulderfist','Deepdelve','Granitehand','Ironfist','Stonebeard','Thundercask','Warhammer','Peakguard','Stormforge']
+      },
+      hill: {
+        label: 'Hill Dwarves',
+        masc: ['Dorbin','Farrik','Grondar','Harlow','Loric','Perrin','Rombus','Tanwick','Wendrik','Yorric'],
+        fem: ['Bramma','Cordelia','Effra','Junia','Marell','Odetta','Pemma','Rosalind','Tavia','Wilhelmina'],
+        surnames: ['Applecask','Brewstone','Coppervein','Farrowmeadow','Goldwheel','Hearthstone','Millbarrow','Oakhollow','Pipvale','Sunmeadow']
+      },
+      dark: {
+        label: 'Dark Dwarves',
+        masc: ['Grimnar','Karkoth','Morvek','Nulgrim','Orzek','Skreg','Thrakan','Ulgor','Vraskin','Zhurnak'],
+        fem: ['Grelka','Karva','Morza','Nulra','Orska','Skreva','Thraka','Ulgra','Vraska','Zhurna'],
+        surnames: ['Ashfoundry','Blackseam','Direforge','Emberdeep','Grimhollow','Nightanvil','Ravencask','Shadowvein','Slagheart','Voidforge']
+      }
+    }
   },
   orcish: {
-    masc: ['Drozgar','Grukk','Karrash','Morgul','Nagrok','Skarr','Thokk','Uruzz','Vranok','Zurgak'],
-    fem: ['Griska','Karguk','Morza','Nagra','Skavva','Thokka','Uzza','Vragga','Zulka','Zurga'],
-    surnames: ['Bloodfang','Bonecrusher','Doomclaw','Gutrender','Ironjaw','Redtusk','Scarhide','Skullsplitter','Steeljaw','Warscar'],
-    pattern: (first, sur) => `${first} ${sur}`
+    label: 'Orcish / Goblinoid',
+    pattern: (first, sur) => `${first} ${sur}`,
+    descriptors: [
+      'a broken or missing tusk',
+      'a torn, notched ear from an old fight',
+      'a battle-scar running clean across the bridge of the nose',
+      'tusks deliberately filed to points',
+      'ritual scarring across both forearms',
+      'a milky, blinded eye from an old spear-wound',
+      'knuckles permanently scarred and swollen from bare-fisted fighting',
+      'a tusk capped in crude hammered metal',
+      'a heavy old burn scar across one shoulder',
+      'a jaw that sits slightly crooked, badly reset after a break'
+    ],
+    subtypes: {
+      standard: {
+        label: 'Standard',
+        masc: ['Drozgar','Grukk','Karrash','Morgul','Nagrok','Skarr','Thokk','Uruzz','Vranok','Zurgak'],
+        fem: ['Griska','Karguk','Morza','Nagra','Skavva','Thokka','Uzza','Vragga','Zulka','Zurga'],
+        surnames: ['Bloodfang','Bonecrusher','Doomclaw','Gutrender','Ironjaw','Redtusk','Scarhide','Skullsplitter','Steeljaw','Warscar']
+      }
+    }
   },
   halfling: {
-    masc: ['Dobber','Fennick','Garby','Hollo','Milo','Nobb','Pipkin','Rollo','Tobble','Wilfred'],
-    fem: ['Ada','Bramble','Daisy','Fennel','Ginny','Marigold','Nettie','Poppy','Rosie','Tilly'],
-    surnames: ['Appleseed','Brambleburr','Cloverfield','Fiddlefoot','Greenbottle','Honeywell','Meadowbrook','Puddlefoot','Thistlefoot','Underhill'],
-    pattern: (first, sur) => `${first} ${sur}`
+    label: 'Halfling',
+    pattern: (first, sur) => `${first} ${sur}`,
+    descriptors: [
+      'a cheerful round scar from a childhood mishap with a hay rake',
+      'missing the top joint of a finger, lost to an overenthusiastic cheese knife',
+      'unusually tall for a halfling, and rather proud of it',
+      'fingers permanently stained from years of dye-work or baking',
+      'a small burn scar on one hand from a stove mishap',
+      'freckled from head to toe',
+      'deep, well-earned laugh-lines',
+      'a favorite hat, scarf, or trinket never taken off',
+      'unusually curly hair that defies every attempt to tame it',
+      'a slight paunch, worn like a badge of honor'
+    ],
+    subtypes: {
+      standard: {
+        label: 'Standard',
+        masc: ['Dobber','Fennick','Garby','Hollo','Milo','Nobb','Pipkin','Rollo','Tobble','Wilfred'],
+        fem: ['Ada','Bramble','Daisy','Fennel','Ginny','Marigold','Nettie','Poppy','Rosie','Tilly'],
+        surnames: ['Appleseed','Brambleburr','Cloverfield','Fiddlefoot','Greenbottle','Honeywell','Meadowbrook','Puddlefoot','Thistlefoot','Underhill']
+      }
+    }
   },
   draconic: {
-    masc: ['Aurethys','Bhaalzor','Cindralux','Drakaris','Emberoth','Golgrathis','Ithzaerys','Nyxvaraan','Pyrrhandor','Vaelithra','Zephyranth','Korrvathis','Malacrix','Sethyrion','Vorthanax'],
-    fem: ['Aurethys','Bhaalzor','Cindralux','Drakaris','Emberoth','Golgrathis','Ithzaerys','Nyxvaraan','Pyrrhandor','Vaelithra','Zephyranth','Korrvathis','Malacrix','Sethyrion','Vorthanax'],
-    surnames: ['Emberscale','Frostwing','Goldclaw','Ironhide','Nightshard','Skysunder','Stormcoil','Sunfang','Voidwing','Wyrmbane'],
-    pattern: (first, sur) => Math.random() < 0.5 ? first : `${first} ${sur}`
+    label: 'Draconic / Exotic',
+    pattern: (first, sur) => Math.random() < 0.5 ? first : `${first} ${sur}`,
+    descriptors: [
+      'a single scale, noticeably different in color from the rest',
+      'a cracked or chipped horn',
+      'a faint wisp of smoke that curls from the nostrils when agitated',
+      'one eye that seems to glow faintly in dim light',
+      'scales that shimmer faintly, almost like oil on water',
+      'a bare patch where a scale never grew back',
+      'elongated canine teeth, just visible when they speak',
+      'a faint, ever-present smell of sulfur',
+      'claws slightly longer and sharper than is typical',
+      'a low, resonant undertone to their voice, like a distant growl'
+    ],
+    subtypes: {
+      standard: {
+        label: 'Standard',
+        masc: ['Aurethys','Bhaalzor','Cindralux','Drakaris','Emberoth','Golgrathis','Ithzaerys','Nyxvaraan','Pyrrhandor','Vaelithra','Zephyranth','Korrvathis','Malacrix','Sethyrion','Vorthanax'],
+        fem: ['Aurethys','Bhaalzor','Cindralux','Drakaris','Emberoth','Golgrathis','Ithzaerys','Nyxvaraan','Pyrrhandor','Vaelithra','Zephyranth','Korrvathis','Malacrix','Sethyrion','Vorthanax'],
+        surnames: ['Emberscale','Frostwing','Goldclaw','Ironhide','Nightshard','Skysunder','Stormcoil','Sunfang','Voidwing','Wyrmbane']
+      }
+    }
   },
   eldritch: {
-    masc: ['Ashkarel',"Nythul'gor",'Quoreth',"Sszaveth","Thal'morrath",'Ulvareth','Voskhar','Xaethys','Yshkaal','Zhurenthil',"Kal'vraxis",'Ombrathess',"Vhen'zaruul",'Yggrothul','Zaphkiel-Nur'],
-    fem: ['Ashkarel',"Nythul'gor",'Quoreth',"Sszaveth","Thal'morrath",'Ulvareth','Voskhar','Xaethys','Yshkaal','Zhurenthil',"Kal'vraxis",'Ombrathess',"Vhen'zaruul",'Yggrothul','Zaphkiel-Nur'],
-    surnames: ['the Hollow-Eyed','the Star-Touched','the Unmade','the Void-Marked','the Whisper-Bound','the Wormwood-Born','the Yawning','that Which Waits','the Ash-Tongued','the Dreaming'],
-    pattern: (first, sur) => `${first}, ${sur}`
+    label: 'Eldritch / Cosmic',
+    pattern: (first, sur) => `${first}, ${sur}`,
+    descriptors: [
+      'eyes of such infinite darkness they seem to draw the light from the room',
+      'a voice that seems to arrive a half-second before their lips move',
+      'a shadow that doesn\u2019t quite match their own movements',
+      'skin marked with faint geometric patterns that seem to shift if stared at too long',
+      'an unplaceable, uncomfortable sense that they have one joint too many',
+      'a whisper audible only at the very edge of hearing whenever they\u2019re near',
+      'the air noticeably colder wherever they stand',
+      'a reflection that lags a fraction of a second behind their actual movement',
+      'a third eye, rarely open, that only they ever seem to notice',
+      'a stillness so complete it becomes unsettling after a few seconds'
+    ],
+    subtypes: {
+      standard: {
+        label: 'Standard',
+        masc: ['Ashkarel',"Nythul'gor",'Quoreth',"Sszaveth","Thal'morrath",'Ulvareth','Voskhar','Xaethys','Yshkaal','Zhurenthil',"Kal'vraxis",'Ombrathess',"Vhen'zaruul",'Yggrothul','Zaphkiel-Nur'],
+        fem: ['Ashkarel',"Nythul'gor",'Quoreth',"Sszaveth","Thal'morrath",'Ulvareth','Voskhar','Xaethys','Yshkaal','Zhurenthil',"Kal'vraxis",'Ombrathess',"Vhen'zaruul",'Yggrothul','Zaphkiel-Nur'],
+        surnames: ['the Hollow-Eyed','the Star-Touched','the Unmade','the Void-Marked','the Whisper-Bound','the Wormwood-Born','the Yawning','that Which Waits','the Ash-Tongued','the Dreaming']
+      }
+    }
+  }
+};
+
+const ELEMENTAL = {
+  fire: {
+    label: 'Fire',
+    names: ['Ignara','Cinderoth','Blazveth','Emberil'],
+    descriptors: [
+      'faint ember-glow scarring across the knuckles',
+      'a curl of smoke that rises from the hair when angered',
+      'skin like sunbaked, cracked earth, glowing faintly at the seams',
+      'eyes that flicker and dim like dying coals'
+    ]
+  },
+  water: {
+    label: 'Water',
+    names: ['Mirelle','Thalassin','Ondraeth','Coralys'],
+    descriptors: [
+      'skin with a faint, permanent damp sheen',
+      'hair that drifts gently, as if underwater even in still air',
+      'eyes the deep, unreadable color of open ocean',
+      'a faint, constant scent of rain and brine'
+    ]
+  },
+  earth: {
+    label: 'Earth',
+    names: ['Grantor','Bouldrik','Terrowyn','Kragmoss'],
+    descriptors: [
+      'skin with a rough, stone-like texture in patches',
+      'small crystalline growths at the knuckles and jaw',
+      'footsteps unnervingly heavy and deliberate',
+      'a voice like slow-grinding stone'
+    ]
+  },
+  air: {
+    label: 'Air',
+    names: ['Zephyrin','Aurelight','Windra','Skyvane'],
+    descriptors: [
+      'hair in constant, faint motion even indoors',
+      'a barely-audible whistle in every breath',
+      'eyes pale as an open sky',
+      'footsteps almost entirely silent'
+    ]
   }
 };
 
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-function generateOne(cultureKey, genderKey, usedFirsts) {
-  const pool = POOLS[cultureKey];
+function populateRaceSelect() {
+  const raceEl = document.getElementById('race');
+  Object.keys(RACES).forEach(key => {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = RACES[key].label;
+    raceEl.appendChild(opt);
+  });
+  const elemOpt = document.createElement('option');
+  elemOpt.value = 'elemental';
+  elemOpt.textContent = 'Elemental';
+  raceEl.appendChild(elemOpt);
+}
+
+function populateSubtypeSelect() {
+  const race = document.getElementById('race').value;
+  const subtypeField = document.getElementById('subtype-field');
+  const subtypeEl = document.getElementById('subtype');
+  const normalControls = document.getElementById('normal-controls');
+  subtypeEl.innerHTML = '';
+
+  if (race === 'elemental') {
+    subtypeField.style.display = 'none';
+    normalControls.style.display = 'none';
+    return;
+  }
+  normalControls.style.display = 'flex';
+
+  const subtypes = RACES[race].subtypes;
+  const keys = Object.keys(subtypes);
+  subtypeField.style.display = keys.length === 1 ? 'none' : 'block';
+  keys.forEach(k => {
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = subtypes[k].label;
+    subtypeEl.appendChild(opt);
+  });
+}
+
+function generateOne(raceKey, subtypeKey, genderKey, usedFirsts) {
+  const race = RACES[raceKey];
+  const sub = race.subtypes[subtypeKey];
   let firstPool;
-  if (genderKey === 'masc') firstPool = pool.masc;
-  else if (genderKey === 'fem') firstPool = pool.fem;
-  else firstPool = pool.masc.concat(pool.fem);
-  // Prefer a first name not already used in this batch, so a small pool
-  // (e.g. 10-15 eldritch names) doesn't read as repetitive just because
-  // the epithet/surname differs — fall back to allowing a repeat only
-  // once every first name in the pool has already been used once.
+  if (genderKey === 'masc') firstPool = sub.masc;
+  else if (genderKey === 'fem') firstPool = sub.fem;
+  else firstPool = sub.masc.concat(sub.fem);
   const unused = firstPool.filter(n => !usedFirsts.has(n));
   const first = unused.length ? pick(unused) : pick(firstPool);
-  const sur = pick(pool.surnames);
-  return { name: pool.pattern(first, sur), first };
+  const sur = pick(sub.surnames);
+  return { name: race.pattern(first, sur), first };
+}
+
+function renderNameRow(name, descriptor) {
+  const descHtml = descriptor ? `<div class="name-descriptor">${descriptor}</div>` : '';
+  return `<div class="name-row"><div class="name-main"><span>${name}</span><button type="button" class="copy-btn" data-name="${name.replace(/"/g, '&quot;')}">Copy</button></div>${descHtml}</div>`;
 }
 
 document.getElementById('generate').addEventListener('click', () => {
-  const culture = document.getElementById('culture').value;
+  const race = document.getElementById('race').value;
+  const includeDescriptors = document.getElementById('descriptors').checked;
+  const resultsEl = document.getElementById('results');
+
+  if (race === 'elemental') {
+    let html = '<div class="elemental-grid">';
+    Object.keys(ELEMENTAL).forEach(elKey => {
+      const el = ELEMENTAL[elKey];
+      html += `<div class="elemental-block"><h3>${el.label}</h3>`;
+      el.names.forEach((n, i) => {
+        const desc = includeDescriptors ? el.descriptors[i] : null;
+        html += renderNameRow(n, desc);
+      });
+      html += '</div>';
+    });
+    html += '</div>';
+    resultsEl.innerHTML = html;
+    return;
+  }
+
+  const subtype = document.getElementById('subtype').value || Object.keys(RACES[race].subtypes)[0];
   const gender = document.getElementById('gender').value;
   const count = parseInt(document.getElementById('count').value, 10);
   const seenNames = new Set();
@@ -283,7 +612,7 @@ document.getElementById('generate').addEventListener('click', () => {
   const names = [];
   let attempts = 0;
   while (names.length < count && attempts < count * 20) {
-    const { name, first } = generateOne(culture, gender, usedFirsts);
+    const { name, first } = generateOne(race, subtype, gender, usedFirsts);
     attempts++;
     if (!seenNames.has(name)) {
       seenNames.add(name);
@@ -291,10 +620,15 @@ document.getElementById('generate').addEventListener('click', () => {
       names.push(name);
     }
   }
-  const resultsEl = document.getElementById('results');
-  resultsEl.innerHTML = names.map(n =>
-    `<div class="name-row"><span>${n}</span><button type="button" class="copy-btn" data-name="${n.replace(/"/g, '&quot;')}">Copy</button></div>`
-  ).join('');
+  const descPool = RACES[race].descriptors;
+  const usedDescs = new Set();
+  function pickDesc() {
+    const unused = descPool.filter(d => !usedDescs.has(d));
+    const d = unused.length ? pick(unused) : pick(descPool);
+    usedDescs.add(d);
+    return d;
+  }
+  resultsEl.innerHTML = names.map(n => renderNameRow(n, includeDescriptors ? pickDesc() : null)).join('');
 });
 
 document.getElementById('results').addEventListener('click', (e) => {
@@ -306,6 +640,11 @@ document.getElementById('results').addEventListener('click', (e) => {
     setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1200);
   });
 });
+
+document.getElementById('race').addEventListener('change', populateSubtypeSelect);
+
+populateRaceSelect();
+populateSubtypeSelect();
 </script>
 
 </body>
