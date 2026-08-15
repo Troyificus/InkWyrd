@@ -176,7 +176,7 @@ body {
 
 .kofi-link {
   display: inline-block;
-  margin-bottom: 14px;
+  margin: 0 6px 14px;
   padding: 8px 18px;
   border: 1px solid var(--gold);
   color: var(--ink);
