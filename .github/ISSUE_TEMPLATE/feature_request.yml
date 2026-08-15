@@ -1,0 +1,43 @@
+name: Suggestion / Feature Request
+description: An idea for something new, or a change to how something already works
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: page
+    attributes:
+      label: What's this about?
+      options:
+        - Daggerheart Statblock Generator
+        - Daggerheart Magic Item Generator
+        - D&D 5E Statblock Generator
+        - D&D 5E Magic Item Generator
+        - Pathfinder 2E Statblock Generator
+        - Pathfinder 2E Magic Item Generator
+        - NPC Generator
+        - Hub / homepage
+        - A new tool, not on the site yet
+        - Something else
+    validations:
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: What's your idea?
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: What would this make easier, or what problem would it solve?
+      description: Optional, but genuinely useful context for prioritizing.
+    validations:
+      required: false
+
+  - type: textarea
+    id: anything-else
+    attributes:
+      label: Anything else worth knowing?
+    validations:
+      required: false
