@@ -152,6 +152,8 @@ function renderForm() {
   document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === card.cardType));
   document.querySelectorAll('.adv-only').forEach(el => el.hidden = card.cardType !== 'adversary');
   document.querySelectorAll('.env-only').forEach(el => el.hidden = card.cardType !== 'environment');
+  const statsBar = $('stats-randomize-bar');
+  if (statsBar) statsBar.classList.toggle('stats-disabled', card.cardType !== 'adversary');
 
   document.querySelectorAll('[data-field]').forEach(el => {
     const field = el.dataset.field;
@@ -811,6 +813,37 @@ $('print-sheet').addEventListener('click', () => {
   `);
   win.document.close();
   win.onload = () => win.print();
+});
+
+function randomInt(low, high) {
+  return Math.floor(Math.random() * (high - low + 1)) + low;
+}
+
+$('randomize-stats').addEventListener('click', () => {
+  const card = currentCard();
+  if (card.cardType !== 'adversary') return;
+  const g = tierGuidance(card.tier);
+  card.difficultyAdv = randomInt(g.difficultyLow, g.difficultyHigh);
+  card.thresholdMajor = randomInt(g.majorLow, g.majorHigh);
+  card.thresholdSevere = randomInt(g.severeLow, g.severeHigh);
+  card.hp = randomInt(g.hpLow, g.hpHigh);
+  card.stress = randomInt(g.stressLow, g.stressHigh);
+  renderForm();
+  renderCard();
+  saveDeck();
+});
+
+$('reset-stats').addEventListener('click', () => {
+  const card = currentCard();
+  if (card.cardType !== 'adversary') return;
+  card.difficultyAdv = '';
+  card.thresholdMajor = '';
+  card.thresholdSevere = '';
+  card.hp = '';
+  card.stress = '';
+  renderForm();
+  renderCard();
+  saveDeck();
 });
 
 // ===== Init =====

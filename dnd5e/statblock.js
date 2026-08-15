@@ -821,6 +821,31 @@ $('convert-pf2e').addEventListener('click', () => {
   showConvertStatus('Pathfinder 2E', '../pathfinder2e/statblock.html', converted.flags);
 });
 
+function randomInt(low, high) {
+  return Math.floor(Math.random() * (high - low + 1)) + low;
+}
+
+$('randomize-stats').addEventListener('click', () => {
+  const card = currentCard();
+  const g = crGuidance(card.cr);
+  card.ac = String(randomInt(g.ac - 1, g.ac + 1));
+  card.hp = String(randomInt(g.hpLow, g.hpHigh));
+  card.proficiencyBonus = g.pb;
+  renderForm();
+  renderCard();
+  saveDeck();
+});
+
+$('reset-stats').addEventListener('click', () => {
+  const card = currentCard();
+  card.ac = '';
+  card.hp = '';
+  card.proficiencyBonus = '';
+  renderForm();
+  renderCard();
+  saveDeck();
+});
+
 // ===== Init =====
 deck = loadDeck();
 currentId = deck[0].id;

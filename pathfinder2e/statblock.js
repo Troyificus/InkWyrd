@@ -824,6 +824,37 @@ $('convert-5e').addEventListener('click', () => {
   showConvertStatus('D&D 5E', '../dnd5e/statblock.html', converted.flags);
 });
 
+function randomInt(low, high) {
+  return Math.floor(Math.random() * (high - low + 1)) + low;
+}
+
+$('randomize-stats').addEventListener('click', () => {
+  const card = currentCard();
+  const g = levelGuidance(card.level);
+  card.ac = String(randomInt(g.ac - 1, g.ac + 1));
+  card.hp = String(randomInt(g.hpLow, g.hpHigh));
+  card.perception = '+' + randomInt(g.baseline - 1, g.baseline + 2);
+  card.fort = '+' + randomInt(g.baseline - 2, g.baseline + 2);
+  card.ref = '+' + randomInt(g.baseline - 2, g.baseline + 2);
+  card.will = '+' + randomInt(g.baseline - 2, g.baseline + 2);
+  renderForm();
+  renderCard();
+  saveDeck();
+});
+
+$('reset-stats').addEventListener('click', () => {
+  const card = currentCard();
+  card.ac = '';
+  card.hp = '';
+  card.perception = '';
+  card.fort = '';
+  card.ref = '';
+  card.will = '';
+  renderForm();
+  renderCard();
+  saveDeck();
+});
+
 // ===== Init =====
 deck = loadDeck();
 currentId = deck[0].id;

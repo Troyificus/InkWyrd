@@ -314,6 +314,12 @@ input, textarea, select {
 
 .randomize-bar button:hover { opacity: 0.9; }
 
+.stats-randomize-row { display: flex; gap: 8px; }
+.stats-randomize-row button { width: auto; flex: 1; }
+#reset-stats { background: transparent; border: 1px solid var(--panel-border); color: var(--text-dim); }
+#reset-stats:hover { border-color: var(--gold); color: var(--gold); opacity: 1; }
+.randomize-bar.stats-disabled { opacity: 0.5; pointer-events: none; }
+
 .randomize-bar .hint { margin: 8px 0 0; text-align: left; }
 
 .field-highlighted {
