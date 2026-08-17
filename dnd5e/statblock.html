@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260812w">
+<link rel="stylesheet" href="style.css?v=20260812x">
 </head>
 <body>
 
@@ -71,7 +71,7 @@
         <label>Name <input type="text" data-field="name"></label>
         <label>Size <input type="text" data-field="size" list="size-list" placeholder="Medium"></label>
         <label>Type <input type="text" data-field="creatureType" list="type-list" placeholder="Beast, Undead, Humanoid (goblinoid)..."></label>
-        <label>Alignment <input type="text" data-field="alignment" list="alignment-list" placeholder="unaligned, chaotic evil..."></label>
+        <label>Alignment <input type="text" class="capitalize-display" data-field="alignment" list="alignment-list" placeholder="unaligned, chaotic evil..."></label>
         <datalist id="size-list">
           <option value="Tiny"><option value="Small"><option value="Medium"><option value="Large"><option value="Huge"><option value="Gargantuan">
         </datalist>
@@ -93,19 +93,20 @@
         <label>Armor Class <input type="text" data-field="ac" placeholder="15 (natural armor)"><span class="field-hint" id="hint-ac"></span></label>
         <label>Hit Points <input type="text" data-field="hp" placeholder="45 (6d10+12)"><span class="field-hint" id="hint-hp"></span></label>
         <label>Speed <input type="text" data-field="speed" placeholder="30 ft., fly 60 ft."></label>
+        <label>Initiative Override (optional) <input type="text" data-field="initiative" placeholder="Auto-calculated from DEX unless set"></label>
       </fieldset>
 
       <fieldset>
         <legend>Ability Scores</legend>
         <div class="ability-grid">
-          <label>STR <input type="number" data-field="str" min="1" max="30"></label>
-          <label>DEX <input type="number" data-field="dex" min="1" max="30"></label>
-          <label>CON <input type="number" data-field="con" min="1" max="30"></label>
-          <label>INT <input type="number" data-field="int" min="1" max="30"></label>
-          <label>WIS <input type="number" data-field="wis" min="1" max="30"></label>
-          <label>CHA <input type="number" data-field="cha" min="1" max="30"></label>
+          <label>STR <input type="text" inputmode="numeric" data-field="str"></label>
+          <label>DEX <input type="text" inputmode="numeric" data-field="dex"></label>
+          <label>CON <input type="text" inputmode="numeric" data-field="con"></label>
+          <label>INT <input type="text" inputmode="numeric" data-field="int"></label>
+          <label>WIS <input type="text" inputmode="numeric" data-field="wis"></label>
+          <label>CHA <input type="text" inputmode="numeric" data-field="cha"></label>
         </div>
-        <label>Proficiency Bonus <input type="number" data-field="proficiencyBonus" min="0" max="9"><span class="field-hint" id="hint-pb"></span></label>
+        <label>Proficiency Bonus <input type="text" inputmode="numeric" data-field="proficiencyBonus"><span class="field-hint" id="hint-pb"></span></label>
       </fieldset>
 
       <fieldset>
@@ -119,7 +120,7 @@
         <label>Senses <input type="text" data-field="senses" placeholder="darkvision 60 ft., passive Perception 16"></label>
         <label>Languages <input type="text" data-field="languages"></label>
         <label>Challenge Rating <input type="text" data-field="cr" placeholder="5"></label>
-        <label>XP <input type="number" data-field="xp"></label>
+        <label>XP <input type="text" inputmode="numeric" data-field="xp"></label>
       </fieldset>
 
       <details class="fieldset-details">
@@ -190,13 +191,13 @@
   <p class="kofi-footer-link"><a href="https://github.com/Troyificus/daggerheart-statblock-generator/issues/new/choose" target="_blank" rel="noopener">&#128027; Bugs & Ideas</a></p>
 </footer>
 
-<script src="../assets/vendor/html2canvas.min.js?v=20260812w"></script>
-<script src="../assets/vendor/jszip.min.js?v=20260812w"></script>
-<script src="icons.js?v=20260812w"></script>
-<script src="../assets/combobox.js?v=20260812w"></script>
-<script src="../assets/back-to-top.js?v=20260812w"></script>
-<script src="../assets/field-highlight.js?v=20260812w"></script>
-<script src="../assets/convert.js?v=20260812w"></script>
-<script src="statblock.js?v=20260812w"></script>
+<script src="../assets/vendor/html2canvas.min.js?v=20260812x"></script>
+<script src="../assets/vendor/jszip.min.js?v=20260812x"></script>
+<script src="icons.js?v=20260812x"></script>
+<script src="../assets/combobox.js?v=20260812x"></script>
+<script src="../assets/back-to-top.js?v=20260812x"></script>
+<script src="../assets/field-highlight.js?v=20260812x"></script>
+<script src="../assets/convert.js?v=20260812x"></script>
+<script src="statblock.js?v=20260812x"></script>
 </body>
 </html>

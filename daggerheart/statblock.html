@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260812w">
+<link rel="stylesheet" href="style.css?v=20260812x">
 </head>
 <body>
 
@@ -65,7 +65,7 @@
       <fieldset>
         <legend>Basics</legend>
         <label>Name <input type="text" data-field="name"></label>
-        <label>Tier <input type="number" data-field="tier" min="1" max="4"></label>
+        <label>Tier <input type="text" inputmode="numeric" data-field="tier"></label>
         <label class="adv-only">Type <input type="text" data-field="type" list="dh-type-list" placeholder="Start typing or pick a role..."></label>
         <label class="env-only" hidden>Type <input type="text" data-field="envType" list="dh-env-type-list" placeholder="Start typing or pick a role..."></label>
         <datalist id="dh-type-list">
@@ -88,17 +88,17 @@
 
       <fieldset class="adv-only">
         <legend>Other Combat Stats</legend>
-        <label>Difficulty <input type="number" data-field="difficultyAdv"><span class="field-hint" id="hint-difficulty"></span></label>
-        <label>Major Threshold <input type="number" data-field="thresholdMajor"><span class="field-hint" id="hint-major"></span></label>
-        <label>Severe Threshold <input type="number" data-field="thresholdSevere"><span class="field-hint" id="hint-severe"></span></label>
-        <label>HP <input type="number" data-field="hp"><span class="field-hint" id="hint-hp"></span></label>
-        <label>Stress <input type="number" data-field="stress"><span class="field-hint" id="hint-stress"></span></label>
+        <label>Difficulty <input type="text" inputmode="numeric" data-field="difficultyAdv"><span class="field-hint" id="hint-difficulty"></span></label>
+        <label>Major Threshold <input type="text" inputmode="numeric" data-field="thresholdMajor"><span class="field-hint" id="hint-major"></span></label>
+        <label>Severe Threshold <input type="text" inputmode="numeric" data-field="thresholdSevere"><span class="field-hint" id="hint-severe"></span></label>
+        <label>HP <input type="text" inputmode="numeric" data-field="hp"><span class="field-hint" id="hint-hp"></span></label>
+        <label>Stress <input type="text" inputmode="numeric" data-field="stress"><span class="field-hint" id="hint-stress"></span></label>
         <label>Experience <input type="text" data-field="experience"></label>
       </fieldset>
 
       <fieldset class="env-only" hidden>
         <legend>Environment</legend>
-        <label>Difficulty <input type="number" data-field="difficultyEnv"></label>
+        <label>Difficulty <input type="text" inputmode="numeric" data-field="difficultyEnv"></label>
         <label>Potential Adversaries <input type="text" data-field="potential"></label>
       </fieldset>
 
@@ -168,12 +168,12 @@
   <p class="kofi-footer-link"><a href="https://github.com/Troyificus/daggerheart-statblock-generator/issues/new/choose" target="_blank" rel="noopener">&#128027; Bugs & Ideas</a></p>
 </footer>
 
-<script src="../assets/vendor/html2canvas.min.js?v=20260812w"></script>
-<script src="../assets/vendor/jszip.min.js?v=20260812w"></script>
-<script src="icons.js?v=20260812w"></script>
-<script src="../assets/combobox.js?v=20260812w"></script>
-<script src="../assets/back-to-top.js?v=20260812w"></script>
-<script src="../assets/field-highlight.js?v=20260812w"></script>
-<script src="statblock.js?v=20260812w"></script>
+<script src="../assets/vendor/html2canvas.min.js?v=20260812x"></script>
+<script src="../assets/vendor/jszip.min.js?v=20260812x"></script>
+<script src="icons.js?v=20260812x"></script>
+<script src="../assets/combobox.js?v=20260812x"></script>
+<script src="../assets/back-to-top.js?v=20260812x"></script>
+<script src="../assets/field-highlight.js?v=20260812x"></script>
+<script src="statblock.js?v=20260812x"></script>
 </body>
 </html>

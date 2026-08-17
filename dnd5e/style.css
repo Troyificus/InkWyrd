@@ -279,6 +279,16 @@ input, textarea, select {
 
 .stats-randomize-row { display: flex; gap: 8px; }
 .stats-randomize-row button { width: auto; flex: 1; }
+
+/* The 5E SRD's own alignment values (lawful good, unaligned, etc.) are
+   lowercase by convention, and that's genuinely correct for how the 2014
+   card format writes them inline ("Large beast, unaligned"). This is
+   purely cosmetic — capitalizes how it LOOKS in the form/dropdown without
+   touching the actual stored value or the correctly-lowercase card text. */
+.capitalize-display,
+.combobox-wrapper:has(.capitalize-display) .combobox-dropdown li {
+  text-transform: capitalize;
+}
 #reset-stats { background: transparent; border: 1px solid var(--panel-border); color: var(--text-dim); }
 #reset-stats:hover { border-color: var(--gold); color: var(--gold); opacity: 1; }
 .randomize-bar.stats-disabled { opacity: 0.5; pointer-events: none; }
@@ -594,7 +604,7 @@ textarea { resize: vertical; }
 #statblock-card.theme-verdant { background: #10201a; color: #e3ecdf; border: 1px solid #3c5347; outline: 1px solid #3c5347; outline-offset: -4px; }
 #statblock-card.theme-arcane { background: #14101f; color: #e6e1f2; border: 1px solid #4a3f63; outline: 1px solid #4a3f63; outline-offset: -4px; }
 
-.corner-tag { position: absolute; top: 0; padding: 6px 12px 5px; text-align: center; background: rgba(0,0,0,0.03); }
+.corner-tag { position: absolute; top: 0; padding: 6px 12px 5px; text-align: center; background: rgba(0,0,0,0.03); max-width: 45%; overflow-wrap: break-word; word-break: break-word; }
 .corner-tag.corner-right { right: 0; border: 1px solid var(--card-accent, #8a2727); border-top: none; border-right: none; }
 .corner-tag.corner-left { left: 0; border: 1px solid var(--card-accent, #8a2727); border-top: none; border-left: none; }
 .theme-dark .corner-tag, .theme-verdant .corner-tag, .theme-arcane .corner-tag { background: rgba(255,255,255,0.04); }

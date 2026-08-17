@@ -15,6 +15,7 @@ function newCard(overrides = {}) {
     ac: '12',
     hp: '11 (2d8+2)',
     speed: '30 ft.',
+    initiative: '',
     str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10,
     proficiencyBonus: 2,
     savingThrows: '',
@@ -94,6 +95,7 @@ function migrateCard(card) {
   if (card.proficiencyBonus === undefined) card.proficiencyBonus = 2;
   if (!card.format) card.format = '2024';
   if (card.damageVulnerabilities === undefined) card.damageVulnerabilities = '';
+  if (card.initiative === undefined) card.initiative = '';
   return card;
 }
 
@@ -501,16 +503,19 @@ function cardInnerHtml(card) {
 
   if (card.description) html += `<div class="card-desc" data-source-field="description">${sub(card.description)}</div>`;
 
+  const initiativeDisplay = card.initiative ? sub(card.initiative) : `${modifier(card.dex)} (${10 + dexMod})`;
+
   let coreHtml = '';
   if (is2024) {
     coreHtml += `<div class="core-stat-row">
         <div class="core-stat" data-source-field="ac"><b>AC</b> ${sub(card.ac)}</div>
-        <div class="core-stat"><b>Initiative</b> ${modifier(card.dex)} (${10 + dexMod})</div>
+        <div class="core-stat" data-source-field="initiative"><b>Initiative</b> ${initiativeDisplay}</div>
         <div class="core-stat" data-source-field="hp"><b>HP</b> ${sub(card.hp)}</div>
         <div class="core-stat" data-source-field="speed"><b>Speed</b> ${sub(card.speed)}</div>
       </div>`;
   } else {
     coreHtml += `<div class="card-line" data-source-field="ac"><b>Armor Class</b> ${sub(card.ac)}</div>`;
+    coreHtml += `<div class="card-line" data-source-field="initiative"><b>Initiative</b> ${initiativeDisplay}</div>`;
     coreHtml += `<div class="card-line" data-source-field="hp"><b>Hit Points</b> ${sub(card.hp)}</div>`;
     coreHtml += `<div class="card-line" data-source-field="speed"><b>Speed</b> ${sub(card.speed)}</div>`;
   }
