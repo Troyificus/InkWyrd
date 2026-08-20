@@ -553,7 +553,7 @@ function cardInnerHtml(card) {
   restHtml += `<div class="section-divider">Offense</div>`;
   restHtml += `<div class="card-line" data-source-field="speed"><b>Speed</b> ${sub(card.speed)}</div>`;
   (card.attacks || []).forEach((a, i) => {
-    restHtml += `<div class="card-line" data-source-field="attack-${i}"><b>${escapeHtml(a.type)}</b> (${escapeHtml(a.actionCost)}) ${sub(a.name)} ${sub(a.bonus)}, <b>Damage</b> ${sub(a.damage)}</div>`;
+    restHtml += `<div class="card-line" data-source-field="attack-${i}"><b>${escapeHtml(a.type)}</b> (${escapeHtml(a.actionCost)}) <i>${sub(a.name)}</i> ${sub(a.bonus)}, <b>Damage</b> ${sub(a.damage)}</div>`;
   });
 
   FEATURE_CATEGORIES.forEach(cat => {

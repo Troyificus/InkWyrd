@@ -544,7 +544,7 @@ function cardInnerHtml(card) {
   if (isAdv) {
     statHtml += `<div class="card-line" data-source-field="difficultyAdv"><b>Difficulty:</b> ${escapeHtml(card.difficultyAdv)}</div>`;
     (card.attacks || []).forEach((a, i) => {
-      statHtml += `<div class="card-line" data-source-field="attack-${i}"><b>Attack (${sub(a.atk)}):</b> ${sub(a.name)} — ${sub(a.range)}, ${sub(a.damage)}</div>`;
+      statHtml += `<div class="card-line" data-source-field="attack-${i}"><b>Attack (${sub(a.atk)}):</b> <i>${sub(a.name)}</i> — ${sub(a.range)}, ${sub(a.damage)}</div>`;
     });
 
     if (rowImage) {
