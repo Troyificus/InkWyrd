@@ -334,7 +334,12 @@ function ccToNeutral(fromSystem, card, resolveFn) {
     attacks = [];
     (card.features || []).forEach(f => {
       if (f.category !== 'Action') return;
-      const parsed = ccParse5EAttackText(f.text);
+      // f.text may contain unresolved [TOKEN] placeholders (e.g. [STRHIT])
+      // instead of a literal "+11 to hit" — resolve those to real values
+      // first, or the regex-based parser below can't find a bonus/damage
+      // number at all and silently falls back to a generic computed one.
+      const resolvedText = resolveFn ? resolveFn(f.text, card) : f.text;
+      const parsed = ccParse5EAttackText(resolvedText);
       if (!parsed) return;
       const bonusNum = parsed.bonus ? parseInt(parsed.bonus.replace('+', ''), 10) : null;
       const dmgAvg = parsed.damageText ? ccAvgFromDamageText(parsed.damageText) : null;
