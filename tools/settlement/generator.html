@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settlement Generator — Statblock Forge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=20260822a">
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="../../index.html">&larr; Statblock Forge</a>
+  <h1>Settlement Generator</h1>
+  <p>From a mud-hut hamlet to a walled city — governance, taverns, and a name, all rerollable piece by piece.</p>
+</header>
+
+<main>
+  <section class="deck-panel" aria-label="Your settlements">
+    <h2>Your Settlements</h2>
+    <div id="deck-list"></div>
+    <button type="button" id="new-settlement">+ New Settlement</button>
+    <button type="button" id="duplicate-settlement">Duplicate Selected</button>
+    <button type="button" id="delete-settlement">Delete Selected</button>
+    <button type="button" id="export-deck">Export Deck (JSON)</button>
+    <label style="font-size:0.75rem;">Import Deck (JSON)
+      <input type="file" id="import-deck" accept="application/json">
+    </label>
+  </section>
+
+  <section class="form-panel" aria-label="Settlement form">
+    <fieldset>
+      <legend>Basics</legend>
+      <label>Population <select id="race-select"></select></label>
+      <label>Size <select id="tier-select">
+        <option value="hamlet">Hamlet</option>
+        <option value="village" selected>Village</option>
+        <option value="town">Town</option>
+        <option value="city">City</option>
+      </select></label>
+      <label>Name <input type="text" id="name-input"></label>
+      <div class="reroll-row"><button type="button" id="reroll-name">🎲 Reroll Name</button></div>
+      <label>Character <input type="text" id="vibe-input"></label>
+      <div class="reroll-row"><button type="button" id="reroll-vibe">🎲 Reroll Character</button></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Governance</legend>
+      <label id="gov-type-field" hidden>Rule by <select id="gov-type-select">
+        <option value="council">Council</option>
+        <option value="solo">Lord / Lady</option>
+      </select></label>
+      <div class="reroll-row"><button type="button" id="reroll-governance">🎲 Reroll Governance</button></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Tavern</legend>
+      <div class="checkbox-row">
+        <input type="checkbox" id="food-toggle" checked>
+        <label for="food-toggle" style="margin:0;">Serves food (generates a menu)</label>
+      </div>
+      <div class="reroll-row"><button type="button" id="reroll-tavern">🎲 Reroll Tavern</button></div>
+    </fieldset>
+  </section>
+
+  <section class="preview-panel" aria-label="Settlement preview">
+    <div class="randomize-bar">
+      <button type="button" id="generate-all">🎲 Generate New Settlement</button>
+      <p class="hint">Rolls everything at once — name, character, governance, and tavern. Use the individual Reroll buttons above to redo just one part.</p>
+    </div>
+    <div id="card-wrapper">
+      <div id="settlement-card">
+        <!-- Rendered by generator.js -->
+      </div>
+    </div>
+    <div class="export-controls">
+      <button type="button" id="export-png">Download PNG</button>
+    </div>
+    <p style="text-align:center; font-size:0.78rem; color:var(--text-dim); margin-top:14px;">
+      Every name and detail here is original content, free to use in your own games.
+    </p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>Fan-made tool. Not affiliated with or endorsed by any tabletop publisher.</p>
+</footer>
+
+<script src="../../assets/vendor/html2canvas.min.js?v=20260822a"></script>
+<script src="../../assets/npc-data.js?v=20260822a"></script>
+<script src="settlement-data.js?v=20260822a"></script>
+<script src="generator.js?v=20260822a"></script>
+
+</body>
+</html>
