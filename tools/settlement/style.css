@@ -121,7 +121,7 @@ label {
   color: var(--text-dim);
   margin-bottom: 14px;
 }
-select, input[type="text"] {
+select, input[type="text"], textarea {
   display: block;
   width: 100%;
   margin-top: 5px;
@@ -217,17 +217,20 @@ select, input[type="text"] {
   border-bottom: 2px solid #a9843f;
   margin-bottom: 16px;
 }
+.card-tabs { flex-wrap: wrap; }
 .card-tab-btn {
-  padding: 8px 16px;
+  padding: 7px 10px;
   background: rgba(169,132,63,0.12);
   border: none;
   font-family: 'Work Sans', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   color: #6b5a3f;
   cursor: pointer;
   border-radius: 3px 3px 0 0;
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 .card-tab-btn.active { background: #a9843f; color: #f3ecd8; }
 .card-tab-panel { display: none; }
