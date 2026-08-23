@@ -250,12 +250,46 @@ function starterCard() {
 let deck = [];
 let currentId = null;
 
+// Maps the old pre-rewrite string tier keys (which were literally Human's
+// own tier names, since every population shared one universal ladder
+// before) to a starting tierIndex guess for migration purposes.
+const LEGACY_TIER_MAP = { hamlet: 0, village: 1, town: 2, city: 3 };
+
+// Cards saved before the population-specific rewrite have no tierIndex at
+// all (size was a string like 'city') and their governance/tavern/
+// merchants/tension data was built by the old universal generators, which
+// used different field shapes than the new population-aware ones. Rather
+// than trying to carefully patch every old field name, treat any card
+// missing a valid tierIndex as pre-rewrite: keep only what's safely
+// version-independent (id, name, vibe, food toggle), regenerate
+// everything else fresh under the new system. Also guards against a
+// race key that no longer exists (defensive, not currently reachable).
+function migrateCard(card) {
+  if (!RACES[card.race] || !POPULATION_CONFIG[card.race]) card.race = 'human';
+
+  const hasValidTierIndex = Number.isInteger(card.tierIndex) &&
+    card.tierIndex >= 0 && card.tierIndex <= maxTierIndex(card.race);
+
+  if (hasValidTierIndex) return card;
+
+  const legacyGuess = typeof card.tier === 'string' ? LEGACY_TIER_MAP[card.tier] : undefined;
+  card.tierIndex = clampTierIndex(card.race, legacyGuess !== undefined ? legacyGuess : 1);
+  delete card.tier;
+  card.govType = card.govType === 'solo' ? 'solo' : 'council';
+  regenerateGovernance(card);
+  regenerateTavern(card);
+  regenerateMerchants(card);
+  regenerateTension(card);
+  regenerateLocations(card);
+  return card;
+}
+
 function loadDeck() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length) return parsed;
+      if (Array.isArray(parsed) && parsed.length) return parsed.map(migrateCard);
     }
   } catch (e) { /* fall through */ }
   const card = starterCard();
@@ -562,7 +596,7 @@ $('import-deck').addEventListener('change', e => {
     try {
       const imported = JSON.parse(reader.result);
       if (Array.isArray(imported) && imported.length) {
-        deck = imported;
+        deck = imported.map(migrateCard);
         currentId = deck[0].id;
         renderDeckList(); renderForm(); renderCard(); saveDeck();
       }
