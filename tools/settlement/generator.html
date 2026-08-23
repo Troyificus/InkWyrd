@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260822c">
+<link rel="stylesheet" href="style.css?v=20260822d">
 </head>
 <body>
 
@@ -34,12 +34,7 @@
     <fieldset>
       <legend>Basics</legend>
       <label>Population <select id="race-select"></select></label>
-      <label>Size <select id="tier-select">
-        <option value="hamlet">Hamlet</option>
-        <option value="village" selected>Village</option>
-        <option value="town">Town</option>
-        <option value="city">City</option>
-      </select></label>
+      <label>Size <select id="tier-select"></select></label>
       <label>Name <input type="text" id="name-input"></label>
       <div class="reroll-row"><button type="button" id="reroll-name">🎲 Reroll Name</button></div>
       <label>Character <textarea id="vibe-input" rows="3"></textarea></label>
@@ -49,10 +44,7 @@
 
     <fieldset>
       <legend>Governance</legend>
-      <label id="gov-type-field" hidden>Rule by <select id="gov-type-select">
-        <option value="council">Council</option>
-        <option value="solo">Lord / Lady</option>
-      </select></label>
+      <label id="gov-type-field" hidden>Rule by <select id="gov-type-select"></select></label>
       <div class="reroll-row"><button type="button" id="reroll-governance">🎲 Reroll Governance</button></div>
     </fieldset>
 
@@ -67,7 +59,7 @@
 
     <fieldset>
       <legend>Merchants</legend>
-      <p class="hint" style="font-size:0.8rem; color:var(--text-dim); margin:0 0 10px;">Shops and services scale with settlement size \u2014 a hamlet gets informal trade, a city gets a full spread of specialists.</p>
+      <p class="hint" style="font-size:0.8rem; color:var(--text-dim); margin:0 0 10px;">Shops and services scale with settlement size — a hamlet gets informal trade, a city gets a full spread of specialists.</p>
       <div class="reroll-row"><button type="button" id="reroll-merchants">🎲 Reroll Merchants</button></div>
     </fieldset>
 
@@ -90,6 +82,7 @@
     </div>
     <div class="export-controls">
       <button type="button" id="export-png">Download PNG</button>
+      <button type="button" id="export-xlsx">Download XLSX</button>
     </div>
     <p style="text-align:center; font-size:0.78rem; color:var(--text-dim); margin-top:14px;">
       Every name and detail here is original content, free to use in your own games.
@@ -101,10 +94,12 @@
   <p>Fan-made tool. Not affiliated with or endorsed by any tabletop publisher.</p>
 </footer>
 
-<script src="../../assets/vendor/html2canvas.min.js?v=20260822c"></script>
-<script src="../../assets/npc-data.js?v=20260822c"></script>
-<script src="settlement-data.js?v=20260822c"></script>
-<script src="generator.js?v=20260822c"></script>
+<script src="../../assets/vendor/html2canvas.min.js?v=20260822d"></script>
+<script src="../../assets/vendor/xlsx.full.min.js?v=20260822d"></script>
+<script src="../../assets/npc-data.js?v=20260822d"></script>
+<script src="settlement-data.js?v=20260822d"></script>
+<script src="population-config.js?v=20260822d"></script>
+<script src="generator.js?v=20260822d"></script>
 
 </body>
 </html>
