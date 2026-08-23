@@ -105,15 +105,86 @@ function genTavern(tier, raceKey, includeFood) {
   return { kind: 'real', name: main.name, innkeeper: main.innkeeper, history, includeFood, menu, extras };
 }
 
+function genShopkeeperAndName(raceKey, shopType) {
+  const race = RACES[raceKey];
+  const sub = race.subtypes[pickRaceSubtype(raceKey)];
+  const first = pick(sub.masc.concat(sub.fem));
+  const sur = pick(sub.surnames);
+  return { proprietor: race.pattern(first, sur), shopName: `${sur}\u2019s ${shopType}` };
+}
+
+function genMerchants(tier, raceKey) {
+  if (tier === 'hamlet') {
+    return { kind: 'informal', blurb: pick(HAMLET_TRADE_BLURBS) };
+  }
+  const availableTypes = SHOP_TYPES.filter(s => TIER_ORDER.indexOf(s.minTier) <= TIER_ORDER.indexOf(tier));
+  const counts = { village: [1, 2], town: [3, 4], city: [5, 7] };
+  const [lo, hi] = counts[tier];
+  const count = Math.min(randomInt(lo, hi), availableTypes.length);
+  const usedTypes = new Set();
+  const shops = [];
+  for (let i = 0; i < count; i++) {
+    const pool = availableTypes.filter(s => !usedTypes.has(s.type));
+    const typeEntry = pool.length ? pick(pool) : pick(availableTypes);
+    usedTypes.add(typeEntry.type);
+    const { proprietor, shopName } = genShopkeeperAndName(raceKey, typeEntry.type);
+    shops.push({ shopName, type: typeEntry.type, proprietor, blurb: pick(typeEntry.blurbs) });
+  }
+  let temple = null;
+  if ((tier === 'town' || tier === 'city') && Math.random() < 0.6) {
+    temple = { caretaker: genPersonName(raceKey), dedication: pick(TEMPLE_DEDICATIONS) };
+  }
+  return { kind: 'shops', shops, temple };
+}
+
+function genTension(tier, raceKey) {
+  if (tier === 'hamlet' || tier === 'village') {
+    const sub = RACES[raceKey].subtypes[pickRaceSubtype(raceKey)];
+    let famA = pick(sub.surnames);
+    let famB = pick(sub.surnames);
+    let guard = 0;
+    while (famB === famA && guard < 10) { famB = pick(sub.surnames); guard++; }
+    return { kind: 'family', familyA: famA, familyB: famB, reason: pick(FAMILY_GRUDGE_REASONS) };
+  }
+  if (tier === 'town') {
+    const partyA = genPersonName(raceKey);
+    let partyB = genPersonName(raceKey);
+    let guard = 0;
+    while (partyB === partyA && guard < 10) { partyB = genPersonName(raceKey); guard++; }
+    return { kind: 'dispute', partyA, partyB, reason: pick(DISPUTE_REASONS) };
+  }
+  let gangA = pick(GANG_NAMES);
+  let gangB = pick(GANG_NAMES);
+  let guard = 0;
+  while (gangB === gangA && guard < 10) { gangB = pick(GANG_NAMES); guard++; }
+  return { kind: 'gangs', gangA, gangB, blurb: pick(GANG_RIVALRY_BLURBS) };
+}
+
+function genLocations(tier) {
+  const counts = { hamlet: [0, 1], village: [1, 1], town: [2, 2], city: [3, 4] };
+  const [lo, hi] = counts[tier];
+  const count = randomInt(lo, hi);
+  const used = new Set();
+  const locations = [];
+  for (let i = 0; i < count; i++) locations.push(pickUnique(NOTABLE_LOCATIONS, used));
+  return locations;
+}
+
 function regenerateName(card) { card.name = genSettlementName(); }
 function regenerateVibe(card) { card.vibe = genVibe(); }
 function regenerateGovernance(card) { card.governance = genGovernance(card.tier, card.race, card.govType); }
 function regenerateTavern(card) { card.tavern = genTavern(card.tier, card.race, card.includeFood); }
+function regenerateMerchants(card) { card.merchants = genMerchants(card.tier, card.race); }
+function regenerateTension(card) { card.tension = genTension(card.tier, card.race); }
+function regenerateLocations(card) { card.locations = genLocations(card.tier); }
 function regenerateAll(card) {
   regenerateName(card);
   regenerateVibe(card);
   regenerateGovernance(card);
   regenerateTavern(card);
+  regenerateMerchants(card);
+  regenerateTension(card);
+  regenerateLocations(card);
 }
 
 function starterCard() {
@@ -126,7 +197,10 @@ function starterCard() {
     govType: 'council',
     includeFood: true,
     governance: null,
-    tavern: null
+    tavern: null,
+    merchants: null,
+    tension: null,
+    locations: null
   };
 }
 
@@ -245,6 +319,46 @@ function renderTavernHtml(tav) {
   return html;
 }
 
+function renderMerchantsHtml(merch) {
+  if (!merch) return '';
+  if (merch.kind === 'informal') {
+    return `<div class="card-line">${escapeHtml(merch.blurb)}</div>`;
+  }
+  let html = '';
+  merch.shops.forEach(s => {
+    html += `<div class="gov-figure">
+      <div class="gov-figure-name">${escapeHtml(s.shopName)}</div>
+      <div class="gov-figure-title">${escapeHtml(s.type)} \u2014 ${escapeHtml(s.proprietor)}</div>
+      <div class="gov-figure-desc">${escapeHtml(s.blurb)}</div>
+    </div>`;
+  });
+  if (merch.temple) {
+    html += `<div class="gov-figure">
+      <div class="gov-figure-name">Shrine, dedicated to ${escapeHtml(merch.temple.dedication)}</div>
+      <div class="gov-figure-title">Caretaker: ${escapeHtml(merch.temple.caretaker)}</div>
+    </div>`;
+  }
+  return html;
+}
+
+function renderTensionHtml(tension) {
+  if (!tension) return '';
+  if (tension.kind === 'family') {
+    return `<div class="card-line"><b>${escapeHtml(tension.familyA)}</b> and <b>${escapeHtml(tension.familyB)}</b> \u2014 ${escapeHtml(tension.reason)}.</div>`;
+  }
+  if (tension.kind === 'dispute') {
+    return `<div class="card-line"><b>${escapeHtml(tension.partyA)}</b> and <b>${escapeHtml(tension.partyB)}</b>, over ${escapeHtml(tension.reason)}.</div>`;
+  }
+  return `<div class="card-line"><b>${escapeHtml(tension.gangA)}</b> and <b>${escapeHtml(tension.gangB)}</b> are ${escapeHtml(tension.blurb)}</div>`;
+}
+
+function renderLocationsHtml(locations) {
+  if (!locations || !locations.length) return '';
+  let html = '<div class="card-line" style="margin-top:14px;"><b>Notable locations</b></div>';
+  locations.forEach(loc => { html += `<div class="card-line">${escapeHtml(loc)}</div>`; });
+  return html;
+}
+
 function renderCard() {
   const card = currentCard();
   const cardEl = $('settlement-card');
@@ -258,15 +372,20 @@ function renderCard() {
     <button type="button" class="card-tab-btn${activeTab === 'overview' ? ' active' : ''}" data-tab="overview">Overview</button>
     <button type="button" class="card-tab-btn${activeTab === 'governance' ? ' active' : ''}" data-tab="governance">Governance</button>
     <button type="button" class="card-tab-btn${activeTab === 'tavern' ? ' active' : ''}" data-tab="tavern">Tavern</button>
+    <button type="button" class="card-tab-btn${activeTab === 'merchants' ? ' active' : ''}" data-tab="merchants">Merchants</button>
+    <button type="button" class="card-tab-btn${activeTab === 'tension' ? ' active' : ''}" data-tab="tension">Tension</button>
   </div>`;
 
   html += `<div class="card-tab-panel${activeTab === 'overview' ? ' active' : ''}" data-panel="overview">
     <div class="card-line"><b>Population</b> ${escapeHtml(RACES[card.race].label)}</div>
     <div class="card-line"><b>Size</b> ${capitalize(card.tier)}</div>
+    ${renderLocationsHtml(card.locations)}
   </div>`;
 
   html += `<div class="card-tab-panel${activeTab === 'governance' ? ' active' : ''}" data-panel="governance">${renderGovernanceHtml(card.governance)}</div>`;
   html += `<div class="card-tab-panel${activeTab === 'tavern' ? ' active' : ''}" data-panel="tavern">${renderTavernHtml(card.tavern)}</div>`;
+  html += `<div class="card-tab-panel${activeTab === 'merchants' ? ' active' : ''}" data-panel="merchants">${renderMerchantsHtml(card.merchants)}</div>`;
+  html += `<div class="card-tab-panel${activeTab === 'tension' ? ' active' : ''}" data-panel="tension">${renderTensionHtml(card.tension)}</div>`;
 
   html += `<div class="card-footer">Statblock Forge &middot; original settlement concept</div>`;
 
@@ -283,7 +402,12 @@ function renderCard() {
 // ===== Event wiring =====
 
 $('race-select').addEventListener('change', e => {
-  currentCard().race = e.target.value;
+  const card = currentCard();
+  card.race = e.target.value;
+  regenerateGovernance(card);
+  regenerateTavern(card);
+  regenerateMerchants(card);
+  regenerateTension(card);
   saveDeck();
   renderCard();
 });
@@ -294,6 +418,9 @@ $('tier-select').addEventListener('change', e => {
   renderForm();
   regenerateGovernance(card);
   regenerateTavern(card);
+  regenerateMerchants(card);
+  regenerateTension(card);
+  regenerateLocations(card);
   saveDeck();
   renderCard();
 });
@@ -343,6 +470,18 @@ $('reroll-governance').addEventListener('click', () => {
 });
 $('reroll-tavern').addEventListener('click', () => {
   regenerateTavern(currentCard());
+  saveDeck(); renderCard();
+});
+$('reroll-merchants').addEventListener('click', () => {
+  regenerateMerchants(currentCard());
+  saveDeck(); renderCard();
+});
+$('reroll-tension').addEventListener('click', () => {
+  regenerateTension(currentCard());
+  saveDeck(); renderCard();
+});
+$('reroll-locations').addEventListener('click', () => {
+  regenerateLocations(currentCard());
   saveDeck(); renderCard();
 });
 

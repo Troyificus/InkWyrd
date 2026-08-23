@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260822a">
+<link rel="stylesheet" href="style.css?v=20260822b">
 </head>
 <body>
 
@@ -44,6 +44,7 @@
       <div class="reroll-row"><button type="button" id="reroll-name">🎲 Reroll Name</button></div>
       <label>Character <input type="text" id="vibe-input"></label>
       <div class="reroll-row"><button type="button" id="reroll-vibe">🎲 Reroll Character</button></div>
+      <div class="reroll-row"><button type="button" id="reroll-locations">🎲 Reroll Notable Locations</button></div>
     </fieldset>
 
     <fieldset>
@@ -62,6 +63,18 @@
         <label for="food-toggle" style="margin:0;">Serves food (generates a menu)</label>
       </div>
       <div class="reroll-row"><button type="button" id="reroll-tavern">🎲 Reroll Tavern</button></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Merchants</legend>
+      <p class="hint" style="font-size:0.8rem; color:var(--text-dim); margin:0 0 10px;">Shops and services scale with settlement size \u2014 a hamlet gets informal trade, a city gets a full spread of specialists.</p>
+      <div class="reroll-row"><button type="button" id="reroll-merchants">🎲 Reroll Merchants</button></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Local Tension</legend>
+      <p class="hint" style="font-size:0.8rem; color:var(--text-dim); margin:0 0 10px;">Hamlets and villages get feuding families, towns get a named dispute, cities get rival gangs.</p>
+      <div class="reroll-row"><button type="button" id="reroll-tension">🎲 Reroll Tension</button></div>
     </fieldset>
   </section>
 
@@ -88,10 +101,10 @@
   <p>Fan-made tool. Not affiliated with or endorsed by any tabletop publisher.</p>
 </footer>
 
-<script src="../../assets/vendor/html2canvas.min.js?v=20260822a"></script>
-<script src="../../assets/npc-data.js?v=20260822a"></script>
-<script src="settlement-data.js?v=20260822a"></script>
-<script src="generator.js?v=20260822a"></script>
+<script src="../../assets/vendor/html2canvas.min.js?v=20260822b"></script>
+<script src="../../assets/npc-data.js?v=20260822b"></script>
+<script src="settlement-data.js?v=20260822b"></script>
+<script src="generator.js?v=20260822b"></script>
 
 </body>
 </html>
