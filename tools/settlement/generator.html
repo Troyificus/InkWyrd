@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260822e">
+<link rel="stylesheet" href="style.css?v=20260822f">
 </head>
 <body>
 
@@ -33,13 +33,21 @@
   <section class="form-panel" aria-label="Settlement form">
     <fieldset>
       <legend>Basics</legend>
-      <label>Population <select id="race-select"></select></label>
+      <label>Primary Population <select id="race-select"></select></label>
+      <label>Total Population (approximate) <input type="text" inputmode="numeric" id="population-input" placeholder="e.g. 5000"></label>
       <label>Size <select id="tier-select"></select></label>
       <label>Name <input type="text" id="name-input"></label>
       <div class="reroll-row"><button type="button" id="reroll-name">🎲 Reroll Name</button></div>
       <label>Character <textarea id="vibe-input" rows="3"></textarea></label>
       <div class="reroll-row"><button type="button" id="reroll-vibe">🎲 Reroll Character</button></div>
       <div class="reroll-row"><button type="button" id="reroll-locations">🎲 Reroll Notable Locations</button></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Demographics (optional)</legend>
+      <p class="hint" style="font-size:0.8rem; color:var(--text-dim); margin:0 0 10px;">Add other populations living here. Each gets an independent, weighted chance of filling a council seat, a tavern, or a shop — not a guaranteed one, so a 5% population might show up on none of your rolls, or more than one.</p>
+      <div id="demographics-list"></div>
+      <div class="reroll-row"><button type="button" id="add-demographic">+ Add Population</button></div>
     </fieldset>
 
     <fieldset>
@@ -94,12 +102,12 @@
   <p>Fan-made tool. Not affiliated with or endorsed by any tabletop publisher.</p>
 </footer>
 
-<script src="../../assets/vendor/html2canvas.min.js?v=20260822e"></script>
-<script src="../../assets/vendor/xlsx.full.min.js?v=20260822e"></script>
-<script src="../../assets/npc-data.js?v=20260822e"></script>
-<script src="settlement-data.js?v=20260822e"></script>
-<script src="population-config.js?v=20260822e"></script>
-<script src="generator.js?v=20260822e"></script>
+<script src="../../assets/vendor/html2canvas.min.js?v=20260822f"></script>
+<script src="../../assets/vendor/xlsx.full.min.js?v=20260822f"></script>
+<script src="../../assets/npc-data.js?v=20260822f"></script>
+<script src="settlement-data.js?v=20260822f"></script>
+<script src="population-config.js?v=20260822f"></script>
+<script src="generator.js?v=20260822f"></script>
 
 </body>
 </html>

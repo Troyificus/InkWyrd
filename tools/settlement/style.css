@@ -136,6 +136,35 @@ select, input[type="text"], textarea {
 .checkbox-row input { width: 16px; height: 16px; }
 .checkbox-row label { margin: 0; }
 
+.demo-row {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.demo-row-top { display: flex; gap: 8px; margin-bottom: 8px; align-items: flex-end; }
+.demo-row-top .demo-race { flex: 2; }
+.demo-row-top .demo-weight { flex: 1; }
+.demo-row-top label { margin: 0; font-size: 0.78rem; }
+.demo-row select, .demo-row input[type="text"] { margin-top: 3px; }
+.demo-row-checks { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.78rem; color: var(--text-dim); margin-bottom: 8px; }
+.demo-row-checks label { display: flex; align-items: center; gap: 4px; margin: 0; }
+.demo-row-checks input { width: 14px; height: 14px; }
+.demo-remove-btn {
+  width: 100%;
+  padding: 6px;
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.demo-remove-btn:hover { border-color: #a85a4a; color: #8a4a2a; }
+
+.race-tag { font-size: 0.78em; font-weight: normal; font-style: italic; color: #6b5a3f; }
+
 .reroll-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
 .reroll-row button {
   flex: 1;
