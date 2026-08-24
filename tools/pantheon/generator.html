@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pantheon Generator — Statblock Forge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="../../index.html">&larr; Statblock Forge</a>
+  <h1>Pantheon Generator</h1>
+  <p>Race- and culture-specific gods — alignment, domain, symbol, and presentation, all rerollable.</p>
+</header>
+
+<main>
+  <section class="deck-panel" aria-label="Your pantheons">
+    <h2>Your Pantheons</h2>
+    <div id="deck-list"></div>
+    <button type="button" id="new-pantheon">+ New Pantheon</button>
+    <button type="button" id="duplicate-pantheon">Duplicate Selected</button>
+    <button type="button" id="delete-pantheon">Delete Selected</button>
+    <button type="button" id="export-deck">Export Deck (JSON)</button>
+    <label style="font-size:0.75rem;">Import Deck (JSON)
+      <input type="file" id="import-deck" accept="application/json">
+    </label>
+  </section>
+
+  <section class="form-panel" aria-label="Pantheon form">
+    <fieldset>
+      <legend>Basics</legend>
+      <label>Population <select id="race-select"></select></label>
+      <label id="culture-field">Culture / Region <select id="culture-select"></select></label>
+      <label>Pantheon Name <input type="text" id="name-input"></label>
+      <div class="reroll-row"><button type="button" id="reroll-name">🎲 Reroll Name</button></div>
+      <label>Number of Deities (1&ndash;12) <input type="text" inputmode="numeric" id="count-input" value="6"></label>
+    </fieldset>
+  </section>
+
+  <section class="preview-panel" aria-label="Pantheon preview">
+    <div class="randomize-bar">
+      <button type="button" id="generate-all">🎲 Generate New Pantheon</button>
+      <p class="hint">Rolls a whole new pantheon at once. Use the Reroll button next to any individual god to redo just that one.</p>
+    </div>
+    <div id="card-wrapper">
+      <div id="pantheon-card">
+        <!-- Rendered by generator.js -->
+      </div>
+    </div>
+    <div class="export-controls">
+      <button type="button" id="export-png">Download PNG</button>
+      <button type="button" id="export-xlsx">Download XLSX</button>
+    </div>
+    <p style="text-align:center; font-size:0.78rem; color:var(--text-dim); margin-top:14px;">
+      Every name and detail here is original content, free to use in your own games.
+    </p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>Fan-made tool. Not affiliated with or endorsed by any tabletop publisher.</p>
+</footer>
+
+<script src="../../assets/vendor/html2canvas.min.js?v=1"></script>
+<script src="../../assets/vendor/xlsx.full.min.js?v=1"></script>
+<script src="../../assets/npc-data.js?v=1"></script>
+<script src="pantheon-data.js?v=1"></script>
+<script src="generator.js?v=1"></script>
+
+</body>
+</html>
