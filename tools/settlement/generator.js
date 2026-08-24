@@ -22,9 +22,21 @@ function pickRaceSubtype(raceKey) {
   return keys[Math.floor(Math.random() * keys.length)];
 }
 
-function genPersonName(raceKey) {
+// Resolves which subtype (Culture/Region) a name draw for a given race
+// should use within the current settlement: the explicit choice on the
+// primary population, or on whichever demographic entry matches that
+// race, or null (meaning "Any" — keep rolling a random subtype per name,
+// the original behavior) if nothing specific was chosen.
+function getSubtypeForRace(card, raceKey) {
+  if (raceKey === card.race) return card.raceSubtype || null;
+  const demo = (card.demographics || []).find(d => d.race === raceKey);
+  return (demo && demo.subtype) || null;
+}
+
+function genPersonName(raceKey, forcedSubtype) {
   const race = RACES[raceKey];
-  const sub = race.subtypes[pickRaceSubtype(raceKey)];
+  const subtypeKey = (forcedSubtype && race.subtypes[forcedSubtype]) ? forcedSubtype : pickRaceSubtype(raceKey);
+  const sub = race.subtypes[subtypeKey];
   const first = pick(sub.masc.concat(sub.fem));
   const sur = pick(sub.surnames);
   return race.pattern(first, sur);
@@ -78,9 +90,10 @@ function genGovernance(raceKey, tierIndex, govChoice, card) {
   const usedTraitsByRace = new Map();
   function nextFigure() {
     const figureRace = rollWeightedRace(card, 'governance');
-    let name = genPersonName(figureRace);
+    const subtype = getSubtypeForRace(card, figureRace);
+    let name = genPersonName(figureRace, subtype);
     let guard = 0;
-    while (usedNames.has(name) && guard < 10) { name = genPersonName(figureRace); guard++; }
+    while (usedNames.has(name) && guard < 10) { name = genPersonName(figureRace, subtype); guard++; }
     usedNames.add(name);
     if (!usedTraitsByRace.has(figureRace)) usedTraitsByRace.set(figureRace, new Set());
     const desc = pickUnique(RACES[figureRace].descriptors.trait, usedTraitsByRace.get(figureRace));
@@ -147,7 +160,7 @@ function genTavernEntry(card, tierIndex, maxT, includeFood) {
   const entryRace = rollWeightedRace(card, 'tavern');
   const config = POPULATION_CONFIG[entryRace];
   const name = `The ${pick(config.tavernAdjectives)} ${pick(config.tavernNouns)}`;
-  const innkeeper = genPersonName(entryRace);
+  const innkeeper = genPersonName(entryRace, getSubtypeForRace(card, entryRace));
   const history = pick(config.tavernHistory);
   let menu = null;
   if (includeFood) {
@@ -204,7 +217,9 @@ function genMerchants(raceKey, tierIndex, card) {
     const typeEntry = pool.length ? pick(pool) : pick(availableTypes);
     usedTypes.add(typeEntry.type);
     const race = RACES[shopRace];
-    const sub = race.subtypes[pickRaceSubtype(shopRace)];
+    const forcedSubtype = getSubtypeForRace(card, shopRace);
+    const subtypeKey = (forcedSubtype && race.subtypes[forcedSubtype]) ? forcedSubtype : pickRaceSubtype(shopRace);
+    const sub = race.subtypes[subtypeKey];
     const first = pick(sub.masc.concat(sub.fem));
     const sur = pick(sub.surnames);
     const proprietor = race.pattern(first, sur);
@@ -213,18 +228,20 @@ function genMerchants(raceKey, tierIndex, card) {
   let temple = null;
   if (tierIndex >= Math.min(2, maxT) && Math.random() < 0.6) {
     if (config.shrineOverride) {
-      temple = { title: config.shrineOverride.title, caretaker: genPersonName(raceKey), dedication: pick(config.shrineOverride.dedications) };
+      temple = { title: config.shrineOverride.title, caretaker: genPersonName(raceKey, getSubtypeForRace(card, raceKey)), dedication: pick(config.shrineOverride.dedications) };
     } else if (config.templeDedications) {
-      temple = { title: 'Shrine', caretaker: genPersonName(raceKey), dedication: pick(config.templeDedications) };
+      temple = { title: 'Shrine', caretaker: genPersonName(raceKey, getSubtypeForRace(card, raceKey)), dedication: pick(config.templeDedications) };
     }
   }
   return { kind: 'shops', shops, temple };
 }
 
-function genTension(raceKey, tierIndex) {
+function genTension(raceKey, tierIndex, card) {
   const config = POPULATION_CONFIG[raceKey];
   const maxT = maxTierIndex(raceKey);
-  const sub = RACES[raceKey].subtypes[pickRaceSubtype(raceKey)];
+  const forcedSubtype = getSubtypeForRace(card, raceKey);
+  const subtypeKey = (forcedSubtype && RACES[raceKey].subtypes[forcedSubtype]) ? forcedSubtype : pickRaceSubtype(raceKey);
+  const sub = RACES[raceKey].subtypes[subtypeKey];
 
   if (tierIndex <= (maxT >= 3 ? 1 : 0)) {
     let famA = pick(sub.surnames);
@@ -234,10 +251,10 @@ function genTension(raceKey, tierIndex) {
     return { kind: 'family', familyA: famA, familyB: famB, reason: pick(config.tensionSmall.reasons) };
   }
   if (tierIndex < maxT || !config.tensionLarge) {
-    const partyA = genPersonName(raceKey);
-    let partyB = genPersonName(raceKey);
+    const partyA = genPersonName(raceKey, forcedSubtype);
+    let partyB = genPersonName(raceKey, forcedSubtype);
     let guard = 0;
-    while (partyB === partyA && guard < 10) { partyB = genPersonName(raceKey); guard++; }
+    while (partyB === partyA && guard < 10) { partyB = genPersonName(raceKey, forcedSubtype); guard++; }
     return { kind: 'dispute', partyA, partyB, reason: pick(config.tensionMid.reasons) };
   }
   let groupA = pick(config.tensionLarge.names);
@@ -264,7 +281,7 @@ function regenerateVibe(card) { card.vibe = genVibe(); }
 function regenerateGovernance(card) { card.governance = genGovernance(card.race, card.tierIndex, card.govType, card); }
 function regenerateTavern(card) { card.tavern = genTavern(card.race, card.tierIndex, card.includeFood, card); }
 function regenerateMerchants(card) { card.merchants = genMerchants(card.race, card.tierIndex, card); }
-function regenerateTension(card) { card.tension = genTension(card.race, card.tierIndex); }
+function regenerateTension(card) { card.tension = genTension(card.race, card.tierIndex, card); }
 function regenerateLocations(card) { card.locations = genLocations(card.race, card.tierIndex); }
 function regenerateAll(card) {
   card.tierIndex = clampTierIndex(card.race, card.tierIndex);
@@ -281,6 +298,7 @@ function starterCard() {
   return {
     id: 'settlement-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
     race: 'human',
+    raceSubtype: null,
     tierIndex: 1,
     name: '',
     vibe: '',
@@ -319,6 +337,7 @@ function migrateCard(card) {
   if (!RACES[card.race] || !POPULATION_CONFIG[card.race]) card.race = 'human';
   if (!Array.isArray(card.demographics)) card.demographics = [];
   if (card.population === undefined) card.population = null;
+  if (card.raceSubtype === undefined || (card.raceSubtype && !RACES[card.race].subtypes[card.raceSubtype])) card.raceSubtype = null;
 
   const hasValidTierIndex = Number.isInteger(card.tierIndex) &&
     card.tierIndex >= 0 && card.tierIndex <= maxTierIndex(card.race);
@@ -400,6 +419,32 @@ function populateTierSelect(raceKey, selectedIndex) {
   });
 }
 
+// Populates a Culture/Region <select> for the given race, with a leading
+// "Any" option (empty value) that keeps the original behavior of rolling
+// a random subtype per name. Hides the whole field if the race only has
+// one subtype, matching the NPC Generator's own pattern exactly.
+function populateCultureSelect(selectEl, fieldEl, raceKey, selectedSubtype) {
+  selectEl.innerHTML = '';
+  const subtypes = RACES[raceKey].subtypes;
+  const keys = Object.keys(subtypes);
+  if (keys.length === 1) {
+    fieldEl.style.display = 'none';
+    return;
+  }
+  fieldEl.style.display = '';
+  const anyOpt = document.createElement('option');
+  anyOpt.value = '';
+  anyOpt.textContent = 'Any';
+  selectEl.appendChild(anyOpt);
+  keys.forEach(k => {
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = subtypes[k].label;
+    if (k === selectedSubtype) opt.selected = true;
+    selectEl.appendChild(opt);
+  });
+}
+
 function populateGovTypeSelect(raceKey, tierIndex, selected) {
   const field = $('gov-type-field');
   const sel = $('gov-type-select');
@@ -424,6 +469,7 @@ function populateGovTypeSelect(raceKey, tierIndex, selected) {
 function renderForm() {
   const card = currentCard();
   $('race-select').value = card.race;
+  populateCultureSelect($('race-subtype-select'), $('race-subtype-field'), card.race, card.raceSubtype);
   $('population-input').value = card.population || '';
   populateTierSelect(card.race, card.tierIndex);
   $('name-input').value = card.name;
@@ -458,8 +504,9 @@ function renderDemographicsList() {
     });
     raceSelect.addEventListener('change', e => {
       demo.race = e.target.value;
+      demo.subtype = null; // reset — the old subtype belonged to the previous race
       regenerateGovernance(card); regenerateTavern(card); regenerateMerchants(card);
-      saveDeck(); renderCard();
+      renderForm(); saveDeck(); renderCard();
     });
     raceField.appendChild(raceSelect);
 
@@ -480,6 +527,19 @@ function renderDemographicsList() {
     top.appendChild(raceField);
     top.appendChild(weightField);
     row.appendChild(top);
+
+    const cultureField = document.createElement('label');
+    cultureField.className = 'demo-culture';
+    cultureField.textContent = 'Culture / Region';
+    const cultureSelect = document.createElement('select');
+    cultureField.appendChild(cultureSelect);
+    row.appendChild(cultureField);
+    populateCultureSelect(cultureSelect, cultureField, demo.race, demo.subtype);
+    cultureSelect.addEventListener('change', e => {
+      demo.subtype = e.target.value || null;
+      regenerateGovernance(card); regenerateTavern(card); regenerateMerchants(card);
+      saveDeck(); renderCard();
+    });
 
     const checks = document.createElement('div');
     checks.className = 'demo-row-checks';
@@ -643,6 +703,7 @@ function renderCard() {
 $('race-select').addEventListener('change', e => {
   const card = currentCard();
   card.race = e.target.value;
+  card.raceSubtype = null; // reset — the old subtype belonged to the previous race
   card.tierIndex = clampTierIndex(card.race, card.tierIndex);
   card.govType = 'council';
   // Drop any secondary population entry that now duplicates the new primary.
@@ -653,6 +714,17 @@ $('race-select').addEventListener('change', e => {
   regenerateTension(card);
   regenerateLocations(card);
   renderForm();
+  saveDeck();
+  renderCard();
+});
+
+$('race-subtype-select').addEventListener('change', e => {
+  const card = currentCard();
+  card.raceSubtype = e.target.value || null;
+  regenerateGovernance(card);
+  regenerateTavern(card);
+  regenerateMerchants(card);
+  regenerateTension(card);
   saveDeck();
   renderCard();
 });
@@ -686,7 +758,7 @@ $('add-demographic').addEventListener('click', () => {
   const card = currentCard();
   const otherRaces = Object.keys(RACES).filter(k => k !== card.race);
   const defaultRace = otherRaces.find(k => !card.demographics.some(d => d.race === k)) || otherRaces[0];
-  card.demographics.push({ race: defaultRace, weight: 5, allowGovernance: true, allowTavern: true, allowMerchants: true });
+  card.demographics.push({ race: defaultRace, subtype: null, weight: 5, allowGovernance: true, allowTavern: true, allowMerchants: true });
   regenerateGovernance(card); regenerateTavern(card); regenerateMerchants(card);
   renderForm(); saveDeck(); renderCard();
 });
