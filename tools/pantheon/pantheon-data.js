@@ -75,6 +75,102 @@ const PANTHEON_CULTURES = {
         { name: 'Wynne', epithet: 'the Quiet Mercy' },
         { name: 'Halric', epithet: 'the Storm-Caller' }
       ]
+    },
+    jade: {
+      label: 'The Jade Provinces',
+      domainBias: ['Knowledge', 'Fate', 'the Moon', 'Craft', 'Justice', 'the Harvest', 'Life'],
+      alignmentBias: ['Lawful Good', 'Lawful Neutral', 'True Neutral', 'Neutral Good'],
+      deities: [
+        { name: 'Zhaolin', epithet: 'the Measured Path' },
+        { name: 'Meihua', epithet: 'Keeper of Ten Thousand Names' },
+        { name: 'Takeshi', epithet: 'the Unbending Reed' },
+        { name: 'Xiulan', epithet: 'Who Balances the Scale' },
+        { name: 'Haruki', epithet: 'the Second Harvest' },
+        { name: 'Yumei', epithet: 'the Silver Loom' },
+        { name: 'Renshu', epithet: 'the Ancestor\u2019s Debt' },
+        { name: 'Fenghua', epithet: 'of the Turning Wheel' },
+        { name: 'Kaito', epithet: 'the Quiet Discipline' },
+        { name: 'Lianhua', epithet: 'the Lotus Judge' },
+        { name: 'Daisuke', epithet: 'Who Walks the Old Roads' },
+        { name: 'Shizuka', epithet: 'the Moon\u2019s Reflection' },
+        { name: 'Junwei', epithet: 'the Standing Stone' }
+      ]
+    },
+    amber: {
+      label: 'The Amber Dunes',
+      domainBias: ['the Sun', 'Travel', 'Fate', 'Storms', 'Luck', 'Justice', 'the Sea'],
+      alignmentBias: ['Lawful Good', 'True Neutral', 'Lawful Neutral', 'Chaotic Good'],
+      deities: [
+        { name: 'Rashida', epithet: 'the Sun\u2019s First Blessing' },
+        { name: 'Kassim', epithet: 'Who Walks the Long Road' },
+        { name: 'Aaliyah', epithet: 'the Oasis Keeper' },
+        { name: 'Farouk', epithet: 'the Iron Caravan' },
+        { name: 'Nadira', epithet: 'of the Shifting Sands' },
+        { name: 'Zayd', epithet: 'the Storm on the Horizon' },
+        { name: 'Yasmina', epithet: 'the Fair Bargain' },
+        { name: 'Malik', epithet: 'Who Counts the Stars' },
+        { name: 'Samira', epithet: 'the Well-Found' },
+        { name: 'Hadid', epithet: 'the Unbroken Contract' },
+        { name: 'Layla', epithet: 'of the Second Dawn' },
+        { name: 'Tariq', epithet: 'the Wanderer\u2019s Debt' }
+      ]
+    },
+    frost: {
+      label: 'The Frost Marches',
+      domainBias: ['War', 'Storms', 'the Hunt', 'Beasts', 'Death', 'the Forge'],
+      alignmentBias: ['Chaotic Good', 'True Neutral', 'Chaotic Neutral', 'Lawful Neutral'],
+      deities: [
+        { name: 'Volkarik', epithet: 'the Wolf\u2019s Own Judgment' },
+        { name: 'Morzhena', epithet: 'Mother of the Long Winter' },
+        { name: 'Sokolav', epithet: 'the Iron Talon' },
+        { name: 'Zimara', epithet: 'Who Walks the Ice Unbroken' },
+        { name: 'Bogomir', epithet: 'the Last Ember' },
+        { name: 'Yaroslana', epithet: 'the Storm-Wife' },
+        { name: 'Kazimir', epithet: 'the Bear\u2019s Debt' },
+        { name: 'Vesnika', epithet: 'of the Thawing Ground' },
+        { name: 'Oleg', epithet: 'the Unyielding Frost' },
+        { name: 'Radomira', epithet: 'the Hunter\u2019s Toll' },
+        { name: 'Stanimir', epithet: 'Who Counts the Fallen Snow' },
+        { name: 'Miroslava', epithet: 'the Quiet Blizzard' }
+      ]
+    },
+    ember: {
+      label: 'The Ember Plains',
+      domainBias: ['the Sun', 'the Harvest', 'Life', 'Nature', 'the Hunt', 'Fate', 'Beasts'],
+      alignmentBias: ['Neutral Good', 'True Neutral', 'Lawful Good', 'Chaotic Good'],
+      deities: [
+        { name: 'Kwabena', epithet: 'the First Sunrise' },
+        { name: 'Adaeze', epithet: 'Keeper of the Living Root' },
+        { name: 'Osei', epithet: 'the Unbroken Drum' },
+        { name: 'Nia', epithet: 'of the Gathering Rains' },
+        { name: 'Chidubem', epithet: 'the Ancestor\u2019s Voice' },
+        { name: 'Folasade', epithet: 'the Golden Harvest' },
+        { name: 'Kwame', epithet: 'Who Walks Before the Herd' },
+        { name: 'Zainab', epithet: 'the Patient River' },
+        { name: 'Tunde', epithet: 'the Lion\u2019s Own Judgment' },
+        { name: 'Adanna', epithet: 'of the Sacred Grove' },
+        { name: 'Chike', epithet: 'the Long Memory' },
+        { name: 'Amara', epithet: 'the Life-Bringer' }
+      ]
+    },
+    frontier: {
+      label: 'The Frontier Territories',
+      domainBias: ['Travel', 'Luck', 'Justice', 'the Harvest', 'War', 'Craft'],
+      alignmentBias: ['Chaotic Good', 'Neutral Good', 'True Neutral', 'Lawful Neutral'],
+      deities: [
+        { name: 'Dutch', epithet: 'the First Stake Driven' },
+        { name: 'Josephine', epithet: 'the Lucky Crossing' },
+        { name: 'Ezra', epithet: 'the Fair Claim' },
+        { name: 'Willa', epithet: 'of the New Furrow' },
+        { name: 'Reeve', epithet: 'the Long Ledger' },
+        { name: 'Maybelle', epithet: 'the Standing Fence' },
+        { name: 'Silas', epithet: 'Who Judges the Boundary' },
+        { name: 'Sadie', epithet: 'the Second Chance' },
+        { name: 'Wyatt', epithet: 'the Root and Stone' },
+        { name: 'Etta', epithet: 'the Open Road' },
+        { name: 'Grady', epithet: 'of the Settled Debt' },
+        { name: 'Birdie', epithet: 'the Gentle Reckoning' }
+      ]
     }
   },
 
@@ -138,6 +234,66 @@ const PANTHEON_CULTURES = {
     }
   },
 
+  dwarvish: {
+    mountain: {
+      label: 'Mountain Dwarves',
+      domainBias: ['the Forge', 'Craft', 'War', 'Storms', 'Justice', 'Death'],
+      alignmentBias: ['Lawful Good', 'Lawful Neutral', 'Lawful Evil', 'True Neutral'],
+      deities: [
+        { name: 'Thurgrimm', epithet: 'the Unbroken Vein' },
+        { name: 'Brenhilda', epithet: 'Keeper of the Deep Oath' },
+        { name: 'Dainor', epithet: 'the Anvil\u2019s Judgment' },
+        { name: 'Grunvald', epithet: 'Who Names the Mountain\u2019s Root' },
+        { name: 'Sigrunna', epithet: 'the Thunder Below' },
+        { name: 'Baldrek', epithet: 'the Iron Testament' },
+        { name: 'Vondra', epithet: 'of the Endless Delve' },
+        { name: 'Harnok', epithet: 'the Standing Peak' },
+        { name: 'Katrindra', epithet: 'the Forge-Sworn' },
+        { name: 'Orrindal', epithet: 'Who Answers the Deep Bell' },
+        { name: 'Runeheld', epithet: 'the Unshaken Wall' },
+        { name: 'Thyranna', epithet: 'the Last Chamber' }
+      ]
+    },
+    hill: {
+      label: 'Hill Dwarves',
+      domainBias: ['the Hearth', 'the Harvest', 'Craft', 'Luck', 'the Sun', 'Love'],
+      alignmentBias: ['Neutral Good', 'Lawful Good', 'True Neutral', 'Chaotic Good'],
+      deities: [
+        { name: 'Dorbin', epithet: 'the Full Cask' },
+        { name: 'Cordelietta', epithet: 'Keeper of the Warm Table' },
+        { name: 'Farrik', epithet: 'the Lucky Harvest' },
+        { name: 'Marellda', epithet: 'of the Golden Wheel' },
+        { name: 'Perrindale', epithet: 'the Brewer\u2019s Blessing' },
+        { name: 'Odessa', epithet: 'the Sunlit Meadow' },
+        { name: 'Wendrick', epithet: 'Who Fills the Empty Bowl' },
+        { name: 'Tavianna', epithet: 'the Second Helping' },
+        { name: 'Rombus', epithet: 'the Hearth-Keeper' },
+        { name: 'Junieta', epithet: 'of the First Frost Cellar' },
+        { name: 'Yorrick', epithet: 'the Generous Toll' },
+        { name: 'Bramma', epithet: 'the Orchard\u2019s Own' }
+      ]
+    },
+    dark: {
+      label: 'Dark Dwarves',
+      domainBias: ['the Forge', 'Shadows', 'Death', 'Secrets', 'War'],
+      alignmentBias: ['Lawful Evil', 'Neutral Evil', 'Chaotic Evil', 'True Neutral'],
+      deities: [
+        { name: 'Grimnarok', epithet: 'the Cold Forge' },
+        { name: 'Karvassa', epithet: 'Keeper of the Buried Debt' },
+        { name: 'Nulgrimm', epithet: 'the Unlit Seam' },
+        { name: 'Orzethra', epithet: 'Who Names No Price Too High' },
+        { name: 'Skregnar', epithet: 'the Slag-Handed' },
+        { name: 'Thrakonis', epithet: 'the Deep Betrayal' },
+        { name: 'Ulgorra', epithet: 'of the Hollow Vault' },
+        { name: 'Vraskanth', epithet: 'the Voidforge Oath' },
+        { name: 'Zhurnath', epithet: 'the Last Ember Turned Cold' },
+        { name: 'Morvekka', epithet: 'Who Counts the Silent Dead' },
+        { name: 'Direthok', epithet: 'the Grim Contract' },
+        { name: 'Ashkarra', epithet: 'the Buried Flame' }
+      ]
+    }
+  },
+
   orcish: {
     standard: {
       label: 'Standard',
@@ -156,6 +312,50 @@ const PANTHEON_CULTURES = {
         { name: 'Skavara', epithet: 'the Wild Reckoning' },
         { name: 'Grumnash', epithet: 'Who Answers No Chief' },
         { name: 'Nagrothi', epithet: 'the Iron Verdict' }
+      ]
+    }
+  },
+
+  halfling: {
+    standard: {
+      label: 'Standard',
+      domainBias: ['the Hearth', 'the Harvest', 'Love', 'Luck', 'Life', 'Nature'],
+      alignmentBias: ['Neutral Good', 'Lawful Good', 'Chaotic Good', 'True Neutral'],
+      deities: [
+        { name: 'Merrywyn', epithet: 'the Full Larder' },
+        { name: 'Tobias', epithet: 'Keeper of the Second Slice' },
+        { name: 'Poppy', epithet: 'the Lucky Threshold' },
+        { name: 'Bramblewick', epithet: 'of the Well-Tended Row' },
+        { name: 'Marigold', epithet: 'the Warm Welcome' },
+        { name: 'Fennick', epithet: 'Who Remembers Every Name' },
+        { name: 'Clementine', epithet: 'the Overflowing Basket' },
+        { name: 'Wilbur', epithet: 'the Patient Garden' },
+        { name: 'Daisy', epithet: 'of the Shared Table' },
+        { name: 'Peregrin', epithet: 'the Homeward Path' },
+        { name: 'Rosalie', epithet: 'the Gentle Harvest' },
+        { name: 'Fitzwilliam', epithet: 'the Good Neighbor' }
+      ]
+    }
+  },
+
+  draconic: {
+    standard: {
+      label: 'Standard',
+      domainBias: ['the Sun', 'War', 'Fate', 'Knowledge', 'the Forge', 'Luck'],
+      alignmentBias: ['Lawful Neutral', 'Neutral Evil', 'Lawful Evil', 'True Neutral'],
+      deities: [
+        { name: 'Vaelithrax', epithet: 'the First Flame Claimed' },
+        { name: 'Ashkariel', epithet: 'Keeper of the Old Hoard' },
+        { name: 'Zephyrion', epithet: 'the Unbroken Wing' },
+        { name: 'Nyrathiss', epithet: 'Who Names the True Price' },
+        { name: 'Korvantis', epithet: 'the Ember Testament' },
+        { name: 'Sylvarax', epithet: 'of the Ancient Claim' },
+        { name: 'Thraxamere', epithet: 'the Golden Reckoning' },
+        { name: 'Ilvarion', epithet: 'the Sky-Bound Judge' },
+        { name: 'Vexandria', epithet: 'the Coiled Wisdom' },
+        { name: 'Draxenth', epithet: 'Who Remembers Every Debt' },
+        { name: 'Ophrelia', epithet: 'the Sunlit Hoard' },
+        { name: 'Kaelthorn', epithet: 'the Last Ember' }
       ]
     }
   },
@@ -182,6 +382,4 @@ const PANTHEON_CULTURES = {
     }
   }
 
-  // Still to author: human (jade, amber, frost, ember, frontier),
-  // dwarvish (mountain, hill, dark), halfling, draconic.
 };
