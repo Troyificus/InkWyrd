@@ -30,14 +30,7 @@ function genDeity(raceKey, culture, usedNames) {
   const cultureData = PANTHEON_CULTURES[raceKey][culture];
   const entry = pickUnique(cultureData.deities, usedNames, d => d.name);
   const alignment = biasedPick(cultureData.alignmentBias, PANTHEON_ALIGNMENTS);
-  const domainCount = Math.random() < 0.4 ? 2 : 1;
-  const domains = [];
-  let guard = 0;
-  while (domains.length < domainCount && guard < 20) {
-    const d = biasedPick(cultureData.domainBias, PANTHEON_DOMAINS);
-    if (!domains.includes(d)) domains.push(d);
-    guard++;
-  }
+  const domains = entry.domains;
   const symbolDomain = pick(domains);
   const symbol = pick(DOMAIN_SYMBOLS[symbolDomain] || ['an unadorned circle']);
   const gender = pick(GENDER_PRESENTATIONS);
