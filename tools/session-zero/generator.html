@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session Zero Questionnaire — Statblock Forge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="../../index.html">&larr; Statblock Forge</a>
+  <h1>Session Zero Questionnaire</h1>
+  <p>A discussion checklist for the whole table, before the campaign starts &mdash; toggle what applies, print or copy the rest.</p>
+</header>
+
+<main>
+  <section class="form-panel" aria-label="Question selection">
+    <div class="randomize-bar">
+      <div style="display:flex; gap:8px;">
+        <button type="button" id="select-all">Select All</button>
+        <button type="button" id="select-none">Select None</button>
+      </div>
+      <p class="hint">Starts with everything selected &mdash; a comprehensive first pass. Toggle off whole sections or individual questions that don’t apply to your table.</p>
+    </div>
+
+    <div id="core-sections"></div>
+
+    <fieldset>
+      <legend>System-Specific Notes (optional)</legend>
+      <p class="hint" style="font-size:0.8rem; color:var(--text-dim); margin:0 0 10px;">Only shown for the systems you actually play &mdash; toggle a system on to include its notes.</p>
+      <div id="system-sections"></div>
+    </fieldset>
+  </section>
+
+  <section class="preview-panel" aria-label="Document preview">
+    <div id="document-preview">
+      <!-- Rendered by generator.js -->
+    </div>
+    <div class="export-controls">
+      <button type="button" id="print-doc">Print / Save as PDF</button>
+      <button type="button" id="copy-text">Copy as Text</button>
+    </div>
+    <p style="text-align:center; font-size:0.78rem; color:var(--text-dim); margin-top:14px;">
+      Every question here is original content, free to use with your own table.
+    </p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>Fan-made tool. Not affiliated with or endorsed by any tabletop publisher.</p>
+</footer>
+
+<script src="session-zero-data.js?v=1"></script>
+<script src="generator.js?v=1"></script>
+
+</body>
+</html>
