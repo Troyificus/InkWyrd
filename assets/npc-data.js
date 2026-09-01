@@ -114,7 +114,7 @@ const RACES = {
     pattern: (first, sur) => `${first} ${sur}`,
     descriptors: {
       build: [
-        'barrel-chested and immovable','short even for a dwarf','broad-shouldered with forearms like tree trunks','stocky and low to the ground','surprisingly light on their feet despite their bulk','thickly muscled from decades at the forge or in the mines','built like they were carved from the mountain itself','wider than they are tall','solidly, dependably built, like good stonework','compact but dense — heavier than they look'
+        'barrel-chested and immovable','short even for a dwarf','broad-shouldered with forearms like tree trunks','stocky and low to the ground','surprisingly light on their feet despite their bulk','thickly muscled from decades at the forge or in the mines','built like they were carved from the mountain itself','wider than they are tall','solidly, dependably built, like good stonework','compact but dense. Much heavier than they look'
       ],
       feature: [
         'a beautifully worked beard-clasp, missing one bead they refuse to talk about','a singed, patchy beard-line from a forge accident','missing the last two fingers on the off hand','one cloudy eye, the legacy of an old cave-in','soot worked so deep into the skin creases it never quite washes out','a voice made permanently gravelly by years of mine dust','a crude but sturdy prosthetic hand of hammered metal','forearms latticed with old forge-burn scars','notably tall for a dwarf, and self-conscious about it','a limp from a mining accident, offset by an iron-shod cane'
@@ -365,7 +365,7 @@ function generateOne(raceKey, subtypeKey, genderKey, usedFirsts) {
 }
 
 // Picks ONE entry from a category pool, preferring one not already used in
-// this batch — used for build/accessory/mannerism, which every character
+// this batch. Used for build/accessory/mannerism, which every character
 // has exactly one of.
 function pickUnique(pool, usedSet) {
   const unused = pool.filter(x => !usedSet.has(x));
@@ -375,7 +375,7 @@ function pickUnique(pool, usedSet) {
 }
 
 // Picks a VARIABLE number of entries (0-3, weighted toward 1) for
-// categories where real people vary — some have no standout feature,
+// categories where real people vary; some have no standout feature,
 // most have one, a few have several. Never repeats a value within the
 // same character, and still prefers values unused elsewhere in the batch.
 function pickVariableUnique(pool, usedSet) {

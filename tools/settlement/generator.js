@@ -25,7 +25,7 @@ function pickRaceSubtype(raceKey) {
 // Resolves which subtype (Culture/Region) a name draw for a given race
 // should use within the current settlement: the explicit choice on the
 // primary population, or on whichever demographic entry matches that
-// race, or null (meaning "Any" — keep rolling a random subtype per name,
+// race, or null (meaning "Any" keep rolling a random subtype per name,
 // the original behavior) if nothing specific was chosen.
 function getSubtypeForRace(card, raceKey) {
   if (raceKey === card.race) return card.raceSubtype || null;
@@ -51,7 +51,7 @@ function clampTierIndex(raceKey, tierIndex) {
 
 // Rolls which population a single seat/tavern/shop belongs to, weighted
 // by the settlement's demographics for the given category ('governance',
-// 'tavern', or 'merchants'). Each roll is independent — a five-seat
+// 'tavern', or 'merchants'). Each roll is independent, a five-seat
 // council with a 5% dwarvish population has a real, correctly
 // proportioned chance of one seat landing dwarvish on any given roll,
 // not a guaranteed "one dwarf seat" outcome. A secondary population not
@@ -504,7 +504,7 @@ function renderDemographicsList() {
     });
     raceSelect.addEventListener('change', e => {
       demo.race = e.target.value;
-      demo.subtype = null; // reset — the old subtype belonged to the previous race
+      demo.subtype = null; // reset, the old subtype belonged to the previous race
       regenerateGovernance(card); regenerateTavern(card); regenerateMerchants(card);
       renderForm(); saveDeck(); renderCard();
     });
@@ -703,7 +703,7 @@ function renderCard() {
 $('race-select').addEventListener('change', e => {
   const card = currentCard();
   card.race = e.target.value;
-  card.raceSubtype = null; // reset — the old subtype belonged to the previous race
+  card.raceSubtype = null; // reset, the old subtype belonged to the previous race
   card.tierIndex = clampTierIndex(card.race, card.tierIndex);
   card.govType = 'council';
   // Drop any secondary population entry that now duplicates the new primary.

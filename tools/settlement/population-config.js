@@ -1,11 +1,11 @@
 // Population-specific settlement configuration. Each race gets its own
 // tier ladder (not every population builds "cities" the way humans do),
 // its own governance vocabulary and structure, and its own tavern/shop/
-// tension/location flavor — rather than one universal set of content
+// tension/location flavor, rather than one universal set of content
 // reused verbatim across every population with only names swapped.
 //
 // Governance-figure PERSONALITY reuses RACES[raceKey].descriptors.trait
-// from the shared NPC data directly, rather than a separate pool — that
+// from the shared NPC data directly, rather than a separate pool. That
 // data is already race-correct and battle-tested, so an Eldritch warden
 // draws from Eldritch traits ("finds human urgency incomprehensible"),
 // never from a human-flavored pool like "well past due for retirement."

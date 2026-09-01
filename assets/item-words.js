@@ -1,10 +1,10 @@
 // Original word pools and mechanical baselines for procedurally generating
 // magic item concepts. Nothing here reproduces named items or exact tables
-// from any publisher's books — these are original words/phrases and our own
+// from any publisher's books, these are original words/phrases and our own
 // reasonable approximate baseline stats, combined at random.
 
 // Themes tie a prefix, an origin, and a damage type together so a generated
-// item reads as coherent — "Sunken" and "reclaimed by the tide" both point at
+// item reads as coherent. "Sunken" and "reclaimed by the tide" both point at
 // water/cold, so the theme's damage type is cold, not an unrelated fire roll.
 // damageType: null marks the neutral theme, used for items that shouldn't
 // read as elemental at all (prestige/utility flavor instead).
@@ -76,7 +76,7 @@ const ITEM_NOUNS = {
 };
 
 // Real baseline weapon stats (our own reasonable approximation of common fantasy
-// weapon conventions — die, damage type). Used both by the randomizer and by the
+// weapon conventions, such as die, damage type). Used both by the randomizer and by the
 // "look up base stats for this weapon" helper in the form.
 const WEAPON_TYPES = [
   { name: 'Dagger', die: '1d4', type: 'piercing', range: 'Melee (or thrown, range 20/60 ft)' },
@@ -134,7 +134,7 @@ function saveDcForTier(tier) {
 
 // Effect phrases for wearable / consumable / wondrous items, grouped by power
 // tier (1 = weakest/most common, 5 = strongest/rarest). Use {dice}, {type},
-// and {dc} placeholders — these get filled with a concrete damage type, dice
+// and {dc} placeholders. These get filled with a concrete damage type, dice
 // notation, and save DC at generation time so nothing reads as vague.
 const ITEM_EFFECTS = {
   1: [
@@ -195,7 +195,7 @@ const ITEM_EFFECTS = {
     'The bearer becomes exceptionally difficult to kill while the item remains active and bonded.',
     'The item can restore an entire fallen party member, once, with no lasting cost.',
     'Grants the bearer a signature, story-defining ability tied directly to the item\'s origin.',
-    'The item is aware, and may act — or refuse to act — according to a will of its own.'
+    'The item is aware, and may act, or refuse to act, according to a will of its own.'
   ]
 };
 
@@ -284,7 +284,7 @@ function generateItemConcept(category, powerTier, chargesLikely) {
     return { name, description, itemType: a.name, baseStats, range: '', effect, charges };
   }
 
-  // wearable / consumable / wondrous — no inherent base stats
+  // wearable / consumable / wondrous - no inherent base stats
   const noun = pick(ITEM_NOUNS[category] || ITEM_NOUNS.wondrous);
   const name = `${prefix} ${noun}`;
   const dice = BLAST_DICE[tier];

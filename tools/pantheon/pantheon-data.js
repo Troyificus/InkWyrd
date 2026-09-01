@@ -1,6 +1,6 @@
 // Shared pools, plus per-culture (race + subtype) deity pools. A culture
 // not yet listed in PANTHEON_CULTURES simply isn't available in the
-// Population dropdown yet — see the "still to author" note at the
+// Population dropdown yet. See the "still to author" note at the
 // bottom of this file for what's pending.
 
 const PANTHEON_ALIGNMENTS = [
@@ -11,7 +11,7 @@ const PANTHEON_ALIGNMENTS = [
 
 const GENDER_PRESENTATIONS = ['Masculine', 'Feminine', 'Fluid', 'Non-binary', 'Not applicable'];
 
-// Shared across every culture — real-world pantheons across every human
+// Shared across every culture. Real-world pantheons across every human
 // culture converge on largely the same handful of spheres of concern, so
 // a shared domain pool (with each culture leaning toward a biased subset
 // of it, defined per-culture below) is more honest than inventing a
@@ -27,21 +27,21 @@ const PANTHEON_DOMAINS = [
 // picked, so a War deity's iconography actually looks war-appropriate
 // rather than a symbol drawn independent of what the god is god of.
 const DOMAIN_SYMBOLS = {
-  'War': ['a crossed sword and spear', 'a notched battle-axe', 'a shield split by a single crack', 'a clenched gauntlet'],
-  'Death': ['an hourglass with black sand', 'a single unlit candle', 'a raven with wings spread', 'a door standing ajar'],
-  'Life': ['a sprouting seed', 'an open hand cupping water', 'a newborn\u2019s first breath rendered as mist', 'a green shoot through stone'],
-  'Love': ['two interlocked rings', 'a heart pierced by a quill, not an arrow', 'twin doves in flight', 'a knot that cannot be untied'],
-  'Trickery': ['a fox\u2019s mask', 'a coin that shows the same face on both sides', 'a door with no handle', 'a jester\u2019s three-pointed cap'],
-  'Nature': ['an antler wreathed in vines', 'a single oak leaf', 'a spiral of growing thorns', 'a wolf\u2019s paw print'],
-  'Knowledge': ['an open book with no visible text', 'an eye set inside a spiral', 'a lantern with a flame that never gutters', 'a key without a matching lock'],
+  'War': ['a crossed sword and spear', 'a notched battle-axe', 'a shield split by a single crack', 'a clenched gauntlet', 'a morning star in flight', 'a blood red sky over a battlefield', 'an arrow in the socket of a skull', 'a spear in the ribcage of a skeleton'],
+  'Death': ['an hourglass with black sand', 'a single unlit candle', 'a raven with wings spread', 'a door standing ajar', 'a desert of black sand', 'a scythe against a field of golden wheat'],
+  'Life': ['a sprouting seed', 'an open hand cupping water', 'a newborn\u2019s first breath rendered as mist', 'a green shoot through stone', 'a blazing sun over a field of golden wheat', 'a lit candle with a black flame'],
+  'Love': ['two interlocked rings', 'a heart pierced by a quill, not an arrow', 'twin doves in flight', 'a knot that cannot be untied', 'a heart aflame'],
+  'Trickery': ['a fox\u2019s mask', 'a coin that shows the same face on both sides', 'a door with no handle', 'a jester\u2019s three-pointed cap', 'a coin on it\u2019s edge', 'a hand of 5 cards, all aces'],
+  'Nature': ['an antler wreathed in vines', 'a single oak leaf', 'a spiral of growing thorns', 'a wolf\u2019s paw print','a stream over lush moorland','a stag with symettrical antlers'],
+  'Knowledge': ['an open book with no visible text', 'an eye set inside a spiral', 'a lantern with a flame that never gutters', 'a key in the forehead of a skull','a golden quill'],
   'Craft': ['a hammer resting on an anvil', 'interlocking gears', 'a chisel and a single perfect stone', 'a loom mid-weave'],
-  'Storms': ['a forked bolt of lightning', 'a spiral of wind', 'a cracked sky rendered in one jagged line', 'a ship\u2019s broken mast'],
-  'the Hunt': ['a drawn bow', 'a wolf\u2019s howling silhouette', 'a set of antlers', 'a single arrow through a leaf'],
-  'the Forge': ['a hammer wreathed in flame', 'a horseshoe glowing at the center', 'molten metal frozen mid-pour', 'an anvil cracked clean in two'],
+  'Storms': ['a forked bolt of lightning', 'a spiral of wind', 'a cracked sky rendered in one jagged line', 'a ship\u2019s broken mast','a fist holding a bolt of lightning'],
+  'the Hunt': ['a drawn bow', 'a wolf\u2019s howling silhouette', 'a shrub with a pair of eyes visible', 'a single arrow through a leaf'],
+  'the Forge': ['a hammer wreathed in flame', 'a horseshoe glowing at the center', 'molten metal frozen mid-pour', 'an anvil cracked clean in two','a glowing forge'],
   'the Hearth': ['a hearth-fire inside an open doorway', 'a kettle over embers', 'a woven basket of bread', 'a lit candle in a window'],
-  'Fate': ['three interwoven threads', 'a set of scales with no weights', 'an unspooling loom', 'a single die frozen mid-roll'],
-  'Dreams': ['a closed eye with a spiral beneath it', 'a moth circling a candle', 'a key made of smoke', 'a doorway opening onto stars'],
-  'the Sea': ['a wave curling into a spiral', 'a single anchor', 'a shell split to show a pearl', 'a trident wrapped in kelp'],
+  'Fate': ['three interwoven threads', 'a set of scales with no weights', 'an unspooling loom', 'a pair of dice frozen mid-roll','a snake biting its own tail'],
+  'Dreams': ['a closed eye with a spiral beneath it', 'a moth circling a candle', 'a key made of smoke', 'a doorway opening onto stars','a closed door standing on open water'],
+  'the Sea': ['a wave curling into a spiral', 'a single anchor', 'a shell split to show a pearl', 'a trident wrapped in kelp','a crab with its claws raised'],
   'the Sun': ['a full sunburst', 'a single eye rayed like the sun', 'a golden disc, half-eclipsed', 'a flame shaped like a crown'],
   'the Moon': ['a crescent cradling a single star', 'a full moon reflected in still water', 'three moons in phase', 'a silver disc behind a wolf\u2019s silhouette'],
   'Shadows': ['a candle casting a shadow larger than itself', 'a cloak with no wearer', 'an eclipsed sun', 'a doorway leading into darkness'],

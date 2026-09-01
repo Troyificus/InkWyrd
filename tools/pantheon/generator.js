@@ -64,7 +64,7 @@ function genPantheonName(raceKey, culture) {
 }
 
 // pickUnique needs a keyFn variant here since deity entries are objects,
-// not plain strings — this small wrapper adapts the shared helper.
+// not plain strings, this small wrapper adapts the shared helper.
 function pickUnique(pool, usedSet, keyFn) {
   const available = pool.filter(item => !usedSet.has(keyFn ? keyFn(item) : item));
   const chosen = available.length ? pick(available) : pick(pool);

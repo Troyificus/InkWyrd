@@ -1,12 +1,12 @@
 // Cross-system condition reference. This is a fan-made SUMMARY for quick
-// comparison, not exact rules text, and not exhaustive — official
+// comparison, not exact rules text, and not exhaustive, official
 // wording can be more precise (and gets errata'd over time). Always
 // check the actual SRD/rulebook for precise current wording before
 // relying on this at the table.
 //
 // Verified against each system's own SRD before writing anything here:
 // Daggerheart genuinely only has three universal conditions (Hidden,
-// Vulnerable, Restrained) — everything else in Daggerheart is handled
+// Vulnerable, Restrained), everything else in Daggerheart is handled
 // narratively or through specific move/feature text, not a big shared
 // condition list like 5E/PF2E have. Where that's true below, it says so
 // plainly rather than inventing a fake equivalent.

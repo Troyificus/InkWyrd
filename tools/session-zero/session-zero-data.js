@@ -1,7 +1,7 @@
 // Session Zero Questionnaire content. Organized into sections, each with
 // a set of discussion prompts. Selection state (which sections/questions
 // are included) is stored in localStorage, not per-item like the other
-// generators — this is a single configurable document, not a deck of
+// generators. This is a single configurable document, not a deck of
 // separately-saved things.
 
 const SESSION_ZERO_SECTIONS = [
@@ -74,7 +74,7 @@ const SESSION_ZERO_SECTIONS = [
   }
 ];
 
-// Optional, toggleable independently of the core sections above — a
+// Optional, toggleable independently of the core sections above, a
 // group only sees the notes for whichever system(s) they actually play.
 const SESSION_ZERO_SYSTEM_NOTES = {
   daggerheart: {

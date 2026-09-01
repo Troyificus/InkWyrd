@@ -2,7 +2,7 @@
 /* Loaded by every page before its own style.css. Contains everything
    that's genuinely identical across pages: color variables (each page
    overrides --accent to its own system color right after loading this
-   file — everything else here is meant to stay shared), typography,
+   file, everything else here is meant to stay shared), typography,
    the site header/footer, the deck/form/preview panel layout, form
    elements, buttons, and the back-to-top control. Card-specific styling
    (the actual statblock/item/settlement/etc. card layout) stays in each
@@ -369,11 +369,11 @@ textarea { resize: vertical; }
 
 /* The newer "tool" pages (Settlement, Pantheon, Session Zero, Conditions)
    use a slightly different header/layout markup convention than the
-   original Daggerheart/5E/PF2E pages above — a bare <p> under
+   original Daggerheart/5E/PF2E pages above, a bare <p> under
    .site-header instead of a .tagline class, and a bare <main> as the
    flex layout container instead of a .layout class. Both conventions
    are supported here side by side since they use different selectors
-   and never conflict — each page's own HTML only matches whichever
+   and never conflict, each page's own HTML only matches whichever
    convention it actually uses. */
 .site-header p {
   color: var(--text-dim);

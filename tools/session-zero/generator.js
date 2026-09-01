@@ -197,7 +197,7 @@ function renderDocument() {
   });
 
   if (!hasAnyContent) {
-    html += '<div class="doc-question" style="font-style:italic; color:var(--text-dim);">Nothing selected yet — toggle some questions on the left to build your questionnaire.</div>';
+    html += '<div class="doc-question" style="font-style:italic; color:var(--text-dim);">Nothing selected yet, toggle some questions on the left to build your questionnaire.</div>';
   }
 
   html += `<div class="card-footer">Statblock Forge &middot; original session zero content</div>`;
@@ -248,7 +248,7 @@ document.getElementById('copy-text').addEventListener('click', () => {
     btn.textContent = 'Copied!';
     setTimeout(() => { btn.textContent = original; }, 1500);
   }).catch(() => {
-    alert('Could not copy automatically — your browser may be blocking clipboard access.');
+    alert('Could not copy automatically, your browser may be blocking clipboard access.');
   });
 });
 

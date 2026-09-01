@@ -1,6 +1,6 @@
 // Cross-system creature converter (Daggerheart <-> D&D 5E <-> Pathfinder 2E).
 //
-// Design: this never claims a perfect mechanical translation — the three
+// Design: this never claims a perfect mechanical translation, the three
 // systems use fundamentally different math (ability scores vs modifiers,
 // CR vs Level vs Tier, AC vs Difficulty, dice-based HP vs flat pools). What
 // it DOES do honestly:
@@ -18,7 +18,7 @@
 //      the returned flags[] array.
 //   4. Feature/ability TEXT is never auto-translated (mechanics like Fear,
 //      Stress, or PF2E's action-cost economy can't be safely rewritten by
-//      formula) — it carries over verbatim with an appended review note.
+//      formula), it carries over verbatim with an appended review note.
 
 // ===== Duplicated baseline guidance per system (self-contained on purpose,
 // so this file works regardless of which page loads it). =====
@@ -179,7 +179,7 @@ function ccParse5EAttackText(text) {
   return { bonus, damageText, damageType, range };
 }
 
-// ===== Feature category remapping — best-effort, not mechanically
+// ===== Feature category remapping. Best-effort, not mechanically
 // equivalent (the systems' action economies don't line up 1:1). =====
 
 const CC_CATEGORY_TO_NEUTRAL = {
@@ -201,9 +201,9 @@ const CC_REVIEW_NOTE = {
 };
 
 // Rewrites 5E/PF2E "DC X [Ability] saving throw" phrasing into Daggerheart's
-// own vocabulary — a Reaction Roll against a stated Difficulty. Same
+// own vocabulary, a Reaction Roll against a stated Difficulty. Same
 // underlying concept (a target number the PC rolls against), so this is a
-// real structural rewrite, not a guess — only the Ability -> Trait mapping
+// real structural rewrite, not a guess. Only the Ability -> Trait mapping
 // is approximate, since Daggerheart's six Traits don't line up 1:1 with
 // six ability scores (e.g. there's no direct Constitution equivalent).
 const CC_ABILITY_TO_DH_TRAIT = {
@@ -240,7 +240,7 @@ function ccRewriteSavingThrowsForPF2E(text) {
 }
 
 // Reverse direction: PF2E's three named saves don't map back to one specific
-// ability score the way 5E requires — this uses the single most common
+// ability score the way 5E requires, this uses the single most common
 // association for each (Fortitude->Constitution, Reflex->Dexterity,
 // Will->Wisdom), which is the same approximation any GM would reach for.
 const CC_PF2E_SAVE_TO_ABILITY = { fortitude: 'Constitution', reflex: 'Dexterity', will: 'Wisdom' };
@@ -260,7 +260,7 @@ function ccConvertFeature(feature, fromSystem, toSystem, card, resolveFn) {
   const category = CC_NEUTRAL_TO_CATEGORY[toSystem][neutral];
   const name = feature.name;
   // Resolve [TOKEN] references (e.g. [STRSAVE]) against the SOURCE card
-  // before the text ever leaves that system — a target system has no idea
+  // before the text ever leaves that system. A target system has no idea
   // what a source-only token means, so an unresolved token left in would
   // just print as literal garbage on the converted card.
   let resolvedText = resolveFn ? resolveFn(feature.text, card) : feature.text;
@@ -272,13 +272,13 @@ function ccConvertFeature(feature, fromSystem, toSystem, card, resolveFn) {
   // the DC number itself is carried across as-is, only the vocabulary
   // changes, so it's flagged rather than silently treated as exact.
   const dcNoteNeeded = /DC\s*\d+/i.test(resolvedText) && (toSystem === 'pf2e' || toSystem === 'dnd5e') && fromSystem !== toSystem && (fromSystem === 'dnd5e' || fromSystem === 'pf2e');
-  const text = `${resolvedText} [Converted — ${CC_REVIEW_NOTE[toSystem]}${dcNoteNeeded ? '; DC number carried across as-is, but the two systems scale DCs differently — sanity-check it against a typical DC for this level' : ''}.]`;
+  const text = `${resolvedText} [Converted ${CC_REVIEW_NOTE[toSystem]}${dcNoteNeeded ? '; DC number carried across as-is, but the two systems scale DCs differently, so sanity-check it against a typical DC for this level' : ''}.]`;
   return { category, type: category, name, text };
 }
 
 // 5E-specific structural entries that exist only because of how 5E writes
-// statblocks (Multiattack just narrates "use these other actions together")
-// — they carry no information a target system's card doesn't already show
+// statblocks (Multiattack just narrates "use these other actions together"),
+// they carry no information a target system's card doesn't already show
 // via its own attack lines, so they get dropped rather than copied over as
 // a confusing duplicate feature.
 function ccIsStructuralOnly(fromSystem, feature) {
@@ -335,7 +335,7 @@ function ccToNeutral(fromSystem, card, resolveFn) {
     (card.features || []).forEach(f => {
       if (f.category !== 'Action') return;
       // f.text may contain unresolved [TOKEN] placeholders (e.g. [STRHIT])
-      // instead of a literal "+11 to hit" — resolve those to real values
+      // instead of a literal "+11 to hit." Resolve those to real values
       // first, or the regex-based parser below can't find a bonus/damage
       // number at all and silently falls back to a generic computed one.
       const resolvedText = resolveFn ? resolveFn(f.text, card) : f.text;
@@ -353,10 +353,10 @@ function ccToNeutral(fromSystem, card, resolveFn) {
       });
       consumedFeatures.push(f);
     });
-    if (!attacks.length) flags.push('No attacks could be parsed from 5E Action text — a placeholder attack was generated instead.');
+    if (!attacks.length) flags.push('No attacks could be parsed from 5E Action text, a placeholder attack was generated instead.');
 
-    // Extract which abilities 5E lists as proficient saves (e.g. "Dex +6, Con +4")
-    // — real differentiated info worth carrying forward when targeting PF2E.
+    // Extract which abilities 5E lists as proficient saves (e.g. "Dex +6, Con +4"),
+    // real differentiated info worth carrying forward when targeting PF2E.
     strongSaves = [];
     (String(card.savingThrows || '').match(/\b(Str|Dex|Con|Int|Wis|Cha)\b/gi) || []).forEach(m => {
       const key = { str: 'str', dex: 'dex', con: 'con', int: 'int', wis: 'wis', cha: 'cha' }[m.toLowerCase()];
@@ -410,7 +410,7 @@ function ccFromNeutral(toSystem, neutral, fromSystem) {
   const card = { name: neutral.name, description: neutral.description };
 
   // Dampen ratio noise going TO Daggerheart's coarse small-integer scale
-  // (only applied once — dh never converts to/from itself, so only one
+  // (only applied once, dh never converts to/from itself, so only one
   // side of any given conversion is ever 'dh').
   const dampFactor = (toSystem === 'dh' && fromSystem !== 'dh') ? 0.5 : 1;
   const hpRatio = ccDampen(neutral.hpRatio, dampFactor);
@@ -436,7 +436,7 @@ function ccFromNeutral(toSystem, neutral, fromSystem) {
     }) : [{ atk: '+' + g.atk, name: 'Strike', range: 'Melee', damage: ccDiceForAvg(g.dmgMid, 8) }];
     card.experience = '';
     card.motives = '';
-    flags.push('Ability scores/skills/senses have no Daggerheart equivalent and were not carried over — this card only has the fields Daggerheart adversaries use. Experience and Motives & Tactics are left blank rather than invented — the source system has no structured data to draw them from honestly, so write these from the description above.');
+    flags.push('Ability scores/skills/senses have no Daggerheart equivalent and were not carried over, this card only has the fields Daggerheart adversaries use. Experience and Motives & Tactics are left blank rather than invented, the source system has no structured data to draw them from honestly, so write these from the description above.');
   } else if (toSystem === 'dnd5e') {
     const cr = neutral.powerLevel.tier !== undefined ? ccTierToCrOrLevel(neutral.powerLevel.tier) : (neutral.powerLevel.level !== undefined ? neutral.powerLevel.level : ccParseCR(neutral.powerLevel.cr));
     const g = ccCRGuidance(cr);
@@ -472,9 +472,9 @@ function ccFromNeutral(toSystem, neutral, fromSystem) {
       };
     });
     if (neutral.abilityMods) {
-      flags.push('Ability scores converted directly from the source modifiers. Skills/senses/languages carry over as raw text where the calling page supports it — review wording, since PF2E and 5E phrase some skills differently. Saving throw proficiencies have no PF2E equivalent to draw from and were left blank.');
+      flags.push('Ability scores converted directly from the source modifiers. Skills/senses/languages carry over as raw text where the calling page supports it. Review wording, since PF2E and 5E phrase some skills differently. Saving throw proficiencies have no PF2E equivalent to draw from and were left blank.');
     } else {
-      flags.push('Ability scores/skills/saves have no source-system equivalent and were reset to a flat 10 (+0) — review before use.');
+      flags.push('Ability scores/skills/saves have no source-system equivalent and were reset to a flat 10 (+0). Review before use.');
     }
   } else if (toSystem === 'pf2e') {
     const level = neutral.powerLevel.tier !== undefined ? ccTierToCrOrLevel(neutral.powerLevel.tier) : (neutral.powerLevel.cr !== undefined ? Math.round(ccParseCR(neutral.powerLevel.cr)) : neutral.powerLevel.level);
@@ -491,7 +491,7 @@ function ccFromNeutral(toSystem, neutral, fromSystem) {
     }
     const moderate = level + 8;
     card.fort = '+' + moderate; card.ref = '+' + moderate; card.will = '+' + moderate;
-    // 5E lists specific proficient saves (e.g. "Dex +6, Con +4") — that's
+    // 5E lists specific proficient saves (e.g. "Dex +6, Con +4"), that's
     // real differentiated information PF2E's own flat-baseline reset was
     // throwing away. Nudge the matching PF2E save up from the moderate
     // baseline rather than inventing an exact number (the two scales don't
@@ -522,9 +522,9 @@ function ccFromNeutral(toSystem, neutral, fromSystem) {
       };
     });
     if (neutral.abilityMods) {
-      flags.push('Ability modifiers converted directly from the source scores. Fort/Ref/Will start at a moderate baseline for this level' + (neutral.strongSaves && neutral.strongSaves.length ? ", with the saves matching the source's proficient ability scores nudged up — exact numbers don't convert cleanly between the two systems' proficiency models, so treat these as a starting point, not a precise conversion." : '.') + ' Skills/senses/languages carry over as raw text where the calling page supports it — review wording.');
+      flags.push('Ability modifiers converted directly from the source scores. Fort/Ref/Will start at a moderate baseline for this level' + (neutral.strongSaves && neutral.strongSaves.length ? ", with the saves matching the source's proficient ability scores nudged up, exact numbers don't convert cleanly between the two systems' proficiency models, so treat these as a starting point, not a precise conversion." : '.') + ' Skills/senses/languages carry over as raw text where the calling page supports it. Review wording.');
     } else {
-      flags.push('Ability modifiers/skills/saves have no source-system equivalent and were reset to a flat moderate baseline — review before use.');
+      flags.push('Ability modifiers/skills/saves have no source-system equivalent and were reset to a flat moderate baseline. Review before use.');
     }
   }
 

@@ -3,7 +3,7 @@
 // actually editing.
 //
 // The card is fully re-rendered (innerHTML replaced) on every keystroke,
-// which would normally wipe out any highlight class immediately — so
+// which would normally wipe out any highlight class immediately, so
 // instead of a simple "highlight on focus" toggle, this tracks which field
 // key is currently focused and re-applies the highlight via a
 // MutationObserver every time the card's DOM actually changes, regardless
@@ -28,7 +28,7 @@ function applyHighlight() {
   // data-source-field lists multiple keys (e.g. a combined "AC; Fort, Ref,
   // Will" line) still highlights correctly regardless of which specific
   // form field is focused. querySelectorAll (not querySelector) because a
-  // few fields — Rarity, Category — legitimately appear twice on a card
+  // few fields, Rarity, Category, legitimately appear twice on a card
   // (once in the corner badge, once in the trait-chip row), and both
   // should highlight together, not just whichever is first in the DOM.
   const targets = card.querySelectorAll(`[data-source-field~="${CSS.escape(currentHighlightKey)}"]`);

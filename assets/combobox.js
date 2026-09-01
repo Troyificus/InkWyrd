@@ -3,7 +3,7 @@
 //
 // Native <datalist> has two problems that can't be fixed with CSS: it's
 // rendered by the browser/OS, not the page, so it can't be restyled or
-// repositioned — and every major browser filters the suggestion list down
+// repositioned, and every major browser filters the suggestion list down
 // to only options matching what's already typed. That's reasonable for a
 // huge autocomplete list, but for a short, fixed vocabulary (Solo/Bruiser/
 // Skulk/..., Medium/Large/..., etc.) it means typing "Solo" hides every
@@ -21,7 +21,7 @@ function initCombobox(input) {
   if (!datalist) return;
   const options = Array.from(datalist.querySelectorAll('option')).map(o => o.value);
 
-  // Suppress the native popup entirely — we're replacing it, not
+  // Suppress the native popup entirely. We're replacing it, not
   // supplementing it.
   input.removeAttribute('list');
   input.setAttribute('autocomplete', 'off');

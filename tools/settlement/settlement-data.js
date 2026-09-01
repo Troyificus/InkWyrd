@@ -1,5 +1,5 @@
 // Content pools for the Settlement Generator (Phase 1: Identity,
-// Governance, Tavern — scaled across Hamlet/Village/Town/City).
+// Governance, Tavern, scaled across Hamlet/Village/Town/City).
 // Person names (governance figures, innkeepers) are drawn from the shared
 // NPC data (assets/npc-data.js) using whatever race/culture the user
 // selects as the settlement's population, rather than a separate pool.
