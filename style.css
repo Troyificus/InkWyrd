@@ -78,7 +78,7 @@ body {
 .hub-col-pathfinder { background: linear-gradient(160deg, var(--pf-color) 0%, var(--pf-color-dark) 100%); }
 
 .hub-col h2 {
-  font-family: 'Cinzel Decorative', Georgia, serif;
+  font-family: "Cinzel Decorative", Georgia, serif;
   font-weight: 700;
   font-size: 2.1rem;
   margin: 0 0 16px;
