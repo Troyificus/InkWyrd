@@ -3,19 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Settlement Generator — Statblock Forge</title>
+<title>Settlement Generator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/base.css?v=1">
 <link rel="stylesheet" href="style.css?v=2">
+<link rel="icon" href="/InkWyrd.png">
 </head>
 <body>
 
 <header class="site-header">
-  <a class="back-link" href="../../index.html">&larr; Statblock Forge</a>
+  <a class="back-link" href="../../index.html">&larr; InkWyrd</a>
   <h1>Settlement Generator</h1>
-  <p>From a mud-hut hamlet to a walled city — governance, taverns, and a name, all rerollable piece by piece.</p>
+  <p>From a mud-hut hamlet to a walled city; governance, taverns, and a name, all rerollable piece by piece.</p>
 </header>
 
 <main>
@@ -47,7 +48,7 @@
 
     <fieldset>
       <legend>Demographics (optional)</legend>
-      <p class="hint" style="font-size:0.8rem; color:var(--text-dim); margin:0 0 10px;">Add other populations living here. Each gets an independent, weighted chance of filling a council seat, a tavern, or a shop — not a guaranteed one, so a 5% population might show up on none of your rolls, or more than one.</p>
+      <p class="hint" style="font-size:0.8rem; color:var(--text-dim); margin:0 0 10px;">Add other populations living here. Each gets an independent, weighted chance of filling a council seat, a tavern, or a shop, but not a guaranteed one, so a 5% population might show up on none of your rolls, or more than one.</p>
       <div id="demographics-list"></div>
       <div class="reroll-row"><button type="button" id="add-demographic">+ Add Population</button></div>
     </fieldset>
@@ -69,7 +70,7 @@
 
     <fieldset>
       <legend>Merchants</legend>
-      <p class="hint" style="font-size:0.8rem; color:var(--text-dim); margin:0 0 10px;">Shops and services scale with settlement size — a hamlet gets informal trade, a city gets a full spread of specialists.</p>
+      <p class="hint" style="font-size:0.8rem; color:var(--text-dim); margin:0 0 10px;">Shops and services scale with settlement size. A hamlet gets informal trade, a city gets a full spread of specialists.</p>
       <div class="reroll-row"><button type="button" id="reroll-merchants">🎲 Reroll Merchants</button></div>
     </fieldset>
 
@@ -83,7 +84,7 @@
   <section class="preview-panel" aria-label="Settlement preview">
     <div class="randomize-bar">
       <button type="button" id="generate-all">🎲 Generate New Settlement</button>
-      <p class="hint">Rolls everything at once — name, character, governance, and tavern. Use the individual Reroll buttons above to redo just one part.</p>
+      <p class="hint">Rolls everything at once; name, character, governance, and tavern. Use the individual Reroll buttons above to redo just one part.</p>
     </div>
     <div id="card-wrapper">
       <div id="settlement-card">

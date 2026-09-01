@@ -3,19 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daggerheart Statblock Generator — Statblock Forge</title>
+<title>Daggerheart Statblock Generator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/base.css?v=1">
 <link rel="stylesheet" href="style.css?v=20260812z">
+<link rel="icon" href="/InkWyrd.png">
 </head>
 <body>
 
 <header class="site-header">
-  <a class="back-link" href="../">&larr; Statblock Forge</a>
+  <a class="back-link" href="../">&larr; InkWyrd</a>
   <h1>Daggerheart Statblock Generator</h1>
-  <p class="tagline">Adversary &amp; Environment cards — build it, preview it, export a PNG.</p>
+  <p class="tagline">Adversary &amp; Environment cards: build it, preview it, export a PNG.</p>
   <a class="cross-link" href="items.html">Looking for the Magic Item Generator? &rarr;</a>
 </header>
 
@@ -56,7 +57,7 @@
           <select data-field="imageAlign">
             <option value="right">Align right (beside stats)</option>
             <option value="left">Align left (beside stats)</option>
-            <option value="bottom">Bottom of card (full width — good for wide or long creatures)</option>
+            <option value="bottom">Bottom of card (full width, good for wide or long creatures)</option>
             <option value="none">No image</option>
           </select>
         </label>
@@ -105,7 +106,7 @@
 
       <fieldset>
         <legend>Features</legend>
-        <p class="hint">Pick a type to add a feature — click its header to expand and edit.</p>
+        <p class="hint">Pick a type to add a feature, click its header to expand and edit.</p>
         <div class="quick-add-row">
           <button type="button" class="quick-add" data-feat-type="Passive">+ Passive</button>
           <button type="button" class="quick-add" data-feat-type="Action">+ Action</button>
@@ -116,7 +117,7 @@
 
       <details class="fieldset-details">
         <summary>Custom Variables</summary>
-        <p class="hint">Define a value once, then reference it anywhere below by typing its token in brackets — e.g. a variable named <code>STR</code> can be used as <code>[STR]</code> in a feature, attack, or description field.</p>
+        <p class="hint">Define a value once, then reference it anywhere below by typing its token in brackets e.g. a variable named <code>STR</code> can be used as <code>[STR]</code> in a feature, attack, or description field.</p>
         <div id="variables-list"></div>
         <button type="button" id="add-variable">+ Add Variable</button>
       </details>
@@ -156,7 +157,7 @@
     </div>
     <p class="compliance-note">
       Built using Public Game Content from the Daggerheart SRD 1.0 under the Darrington Press Community Gaming License.
-      This tool produces original card artwork — it does not reproduce official Daggerheart artwork, logos, or layouts.
+      This tool produces original card artwork. It does not reproduce official Daggerheart artwork, logos, or layouts.
     </p>
   </section>
 
@@ -164,7 +165,7 @@
 
 <footer class="site-footer">
   <p>Fan-made tool. Not affiliated with or endorsed by Darrington Press or Critical Role, LLC. "Daggerheart" is a trademark of Critical Role, LLC.</p>
-  <p>The card layout and the balance-guidance hints in the form are this project's own approximations, based on general game-design conventions — not a reproduction of any official Daggerheart adversary-building tables, art, or book design.</p>
+  <p>The card layout and the balance-guidance hints in the form are this project's own approximations, based on general game-design conventions, not a reproduction of any official Daggerheart adversary-building tables, art, or book design.</p>
   <p class="kofi-footer-link"><a href="https://ko-fi.com/troyificus" target="_blank" rel="noopener">&#9749; Support this project on Ko-fi</a></p>
   <p class="kofi-footer-link"><a href="https://github.com/Troyificus/daggerheart-statblock-generator/issues/new/choose" target="_blank" rel="noopener">&#128027; Bugs & Ideas</a></p>
 </footer>

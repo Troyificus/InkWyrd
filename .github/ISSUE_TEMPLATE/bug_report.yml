@@ -50,7 +50,7 @@ body:
     id: screenshots
     attributes:
       label: Screenshots
-      description: Drag and drop image files here if you have any — often the fastest way to show what's wrong.
+      description: Drag and drop image files here if you have any, it's often the fastest way to show what's wrong.
     validations:
       required: false
 
