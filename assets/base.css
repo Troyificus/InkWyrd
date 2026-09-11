@@ -166,16 +166,6 @@ body {
   margin-top: 8px;
 }
 
-.convert-io {
-  border-top: 1px solid var(--panel-border);
-  padding-top: 12px;
-  margin-top: 8px;
-}
-
-.convert-io button {
-  border-color: var(--gold);
-}
-
 #deck-status {
   display: block;
   font-size: 0.78rem;

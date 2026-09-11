@@ -774,58 +774,6 @@ function ccStripPerceptionFromSkills(skillsText) {
     .join(', ');
 }
 
-function buildTargetCardPF2E(converted, sourceCard) {
-  return {
-    id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
-    name: converted.name,
-    level: converted.level,
-    rarity: converted.rarity,
-    sizeType: `${sourceCard.size || 'Medium'} ${sourceCard.creatureType || 'Creature'}`,
-    traits: '',
-    description: converted.description || '',
-    perception: converted.perception,
-    senses: sourceCard.senses || '', languages: converted.languages, skills: ccStripPerceptionFromSkills(sourceCard.skills), items: '',
-    str: converted.str, dex: converted.dex, con: converted.con, int: converted.int, wis: converted.wis, cha: converted.cha,
-    ac: converted.ac,
-    fort: converted.fort, ref: converted.ref, will: converted.will,
-    hp: converted.hp,
-    immunities: [sourceCard.damageImmunities, sourceCard.conditionImmunities].filter(Boolean).join(', '),
-    resistances: sourceCard.damageResistances || '',
-    weaknesses: sourceCard.damageVulnerabilities || '',
-    speed: '25 feet',
-    attacks: converted.attacks,
-    theme: 'parchment', accent: '#7a2020', variables: [], image: sourceCard.image, imageAlign: sourceCard.imageAlign || 'right', imageWidth: sourceCard.imageWidth || 170,
-    features: converted.features.map(f => ({ category: f.category, name: f.name, text: f.text }))
-  };
-}
-
-function pushToTargetDeck(storageKey, card) {
-  let targetDeck = [];
-  try {
-    const raw = localStorage.getItem(storageKey);
-    if (raw) targetDeck = JSON.parse(raw);
-    if (!Array.isArray(targetDeck)) targetDeck = [];
-  } catch (e) { targetDeck = []; }
-  targetDeck.push(card);
-  localStorage.setItem(storageKey, JSON.stringify(targetDeck));
-  // Marks this card so the target page selects it on load instead of
-  // defaulting to the first (often oldest) card in its deck.
-  localStorage.setItem(storageKey + '.pendingSelect', card.id);
-}
-
-function showConvertStatus(targetName, targetUrl, flags) {
-  const status = $('deck-status');
-  let msg = `Converted and sent to ${targetName}.`;
-  if (flags && flags.length) msg += ' Review: ' + flags.join(' ');
-  status.innerHTML = `${msg} <a href="${targetUrl}" target="_blank">Open ${targetName} &rarr;</a>`;
-}
-
-$('convert-pf2e').addEventListener('click', () => {
-  const converted = convertCreatureCard('dnd5e', 'pf2e', currentCard(), applySubs);
-  pushToTargetDeck('pf2e.deck.v1', buildTargetCardPF2E(converted, currentCard()));
-  showConvertStatus('Pathfinder 2E', '../pathfinder2e/statblock.html', converted.flags);
-});
-
 function randomInt(low, high) {
   return Math.floor(Math.random() * (high - low + 1)) + low;
 }
@@ -854,13 +802,6 @@ $('reset-stats').addEventListener('click', () => {
 // ===== Init =====
 deck = loadDeck();
 currentId = deck[0].id;
-try {
-  const pendingId = localStorage.getItem(STORAGE_KEY + '.pendingSelect');
-  if (pendingId && deck.some(c => c.id === pendingId)) {
-    currentId = pendingId;
-  }
-  localStorage.removeItem(STORAGE_KEY + '.pendingSelect');
-} catch (e) { /* ignore */ }
 renderDeckList();
 renderForm();
 renderCard();

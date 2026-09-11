@@ -13,8 +13,6 @@ Each system is a self-contained app under its own folder, sharing the same visua
 - **[/dnd5e/](dnd5e/)**: Creature statblock cards, built from the D&D 5E SRD (5.1 / 5.2), released by Wizards of the Coast under Creative Commons CC-BY-4.0. Toggle between 2014-style and 2024-style presentation.
 - **[/pathfinder2e/](pathfinder2e/)**: Creature statblock cards, built from Pathfinder Second Edition rules text released under the ORC License.
 
-A **cross-system creature converter** (5E ↔ Pathfinder 2E) lives inside the statblock generators themselves. Send a card from one system to the other as a starting point, with ability scores, saves, and skills carried across and fully editable after.
-
 Inspired by tools like [tetra-cube's D&D statblock generator](https://tetra-cube.com/dnd/dnd-statblock.html), but multi-system and with an original visual design throughout.
 
 ### Extra Tools

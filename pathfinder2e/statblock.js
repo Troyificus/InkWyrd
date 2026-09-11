@@ -772,58 +772,6 @@ function ccSplitPF2ESizeType(sizeType) {
   return { size: 'Medium', creatureType: sizeType || 'Creature' };
 }
 
-function buildTargetCard5E(converted, sourceCard) {
-  const split = ccSplitPF2ESizeType(sourceCard.sizeType);
-  return {
-    id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
-    format: '2024',
-    name: converted.name,
-    size: split.size,
-    creatureType: split.creatureType,
-    alignment: 'unaligned',
-    description: converted.description || '',
-    ac: converted.ac,
-    hp: converted.hp,
-    speed: '30 ft.',
-    str: converted.str, dex: converted.dex, con: converted.con, int: converted.int, wis: converted.wis, cha: converted.cha,
-    proficiencyBonus: converted.proficiencyBonus,
-    savingThrows: '', skills: sourceCard.skills || '',
-    damageVulnerabilities: sourceCard.weaknesses || '', damageResistances: sourceCard.resistances || '', damageImmunities: sourceCard.immunities || '', conditionImmunities: '',
-    senses: sourceCard.senses || converted.senses, languages: converted.languages,
-    cr: converted.cr, xp: converted.xp,
-    theme: 'parchment', accent: '#7a2020', variables: [], image: sourceCard.image, imageAlign: sourceCard.imageAlign || 'right', imageWidth: sourceCard.imageWidth || 170,
-    features: converted.features.map(f => ({ category: f.category, name: f.name, text: f.text }))
-  };
-}
-
-
-function pushToTargetDeck(storageKey, card) {
-  let targetDeck = [];
-  try {
-    const raw = localStorage.getItem(storageKey);
-    if (raw) targetDeck = JSON.parse(raw);
-    if (!Array.isArray(targetDeck)) targetDeck = [];
-  } catch (e) { targetDeck = []; }
-  targetDeck.push(card);
-  localStorage.setItem(storageKey, JSON.stringify(targetDeck));
-  // Marks this card so the target page selects it on load instead of
-  // defaulting to the first (often oldest) card in its deck.
-  localStorage.setItem(storageKey + '.pendingSelect', card.id);
-}
-
-function showConvertStatus(targetName, targetUrl, flags) {
-  const status = $('deck-status');
-  let msg = `Converted and sent to ${targetName}.`;
-  if (flags && flags.length) msg += ' Review: ' + flags.join(' ');
-  status.innerHTML = `${msg} <a href="${targetUrl}" target="_blank">Open ${targetName} &rarr;</a>`;
-}
-
-$('convert-5e').addEventListener('click', () => {
-  const converted = convertCreatureCard('pf2e', 'dnd5e', currentCard(), applySubs);
-  pushToTargetDeck('dnd5e.deck.v1', buildTargetCard5E(converted, currentCard()));
-  showConvertStatus('D&D 5E', '../dnd5e/statblock.html', converted.flags);
-});
-
 function randomInt(low, high) {
   return Math.floor(Math.random() * (high - low + 1)) + low;
 }
@@ -858,13 +806,6 @@ $('reset-stats').addEventListener('click', () => {
 // ===== Init =====
 deck = loadDeck();
 currentId = deck[0].id;
-try {
-  const pendingId = localStorage.getItem(STORAGE_KEY + '.pendingSelect');
-  if (pendingId && deck.some(c => c.id === pendingId)) {
-    currentId = pendingId;
-  }
-  localStorage.removeItem(STORAGE_KEY + '.pendingSelect');
-} catch (e) { /* ignore */ }
 renderDeckList();
 renderForm();
 renderCard();
