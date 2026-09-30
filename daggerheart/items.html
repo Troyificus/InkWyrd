@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daggerheart Magic Item Generator — Statblock Forge</title>
+<title>Daggerheart Magic Item Generator: Statblock Forge</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
 <header class="site-header">
   <a class="back-link" href="../">&larr; Statblock Forge</a>
   <h1>Daggerheart Magic Item Generator</h1>
-  <p class="tagline">Build an original magic item, or roll one at random — export a print-ready PNG.</p>
+  <p class="tagline">Build an original magic item, or roll one at random, then export a print-ready PNG.</p>
   <a class="cross-link" href="statblock.html">Looking for the Statblock Generator? &rarr;</a>
 </header>
 
@@ -52,7 +52,7 @@
           <select data-field="imageAlign">
             <option value="right">Align right (beside stats)</option>
             <option value="left">Align left (beside stats)</option>
-            <option value="bottom">Bottom of card (full width — good for wide or long creatures)</option>
+            <option value="bottom">Bottom of card (full width, good for wide or long creatures)</option>
             <option value="none">No image</option>
           </select>
         </label>
@@ -104,7 +104,7 @@
 
       <fieldset>
         <legend>Trigger, Effect &amp; Usage</legend>
-        <p class="hint">Daggerheart items usually read as "When [trigger], [effect]" and rarely track numeric charges the way D&amp;D magic items do — most are either always active or limited to once per rest or session.</p>
+        <p class="hint">Daggerheart items usually read as "When [trigger], [effect]" and rarely track numeric charges the way D&amp;D magic items do, most are either always active or limited to once per rest or session.</p>
         <label>Trigger (optional) <input type="text" data-field="itemTrigger" placeholder="When you would mark your last Stress"></label>
         <label>Effect <textarea data-field="itemEffect" rows="3" placeholder="roll a d6. On a 5+, don't mark it."></textarea></label>
         <label>Usage
@@ -114,14 +114,14 @@
           <option value="Always active"><option value="Once per short rest"><option value="Once per long rest">
           <option value="Once per session"><option value="Unlimited">
         </datalist>
-        <label>Granted Feature Name (optional — for items that attach a named feature to a weapon or armor)
+        <label>Granted Feature Name (optional, for items that attach a named feature to a weapon or armor)
           <input type="text" data-field="itemFeatureName" placeholder="Brutal">
         </label>
       </fieldset>
 
       <details class="fieldset-details">
         <summary>Custom Variables</summary>
-        <p class="hint">Define a value once, then reference it anywhere below by typing its token in brackets — e.g. a variable named <code>STR</code> can be used as <code>[STR]</code> in the description or effect field. The built-in <code>[TIER]</code> token is already available and pulls from the Tier field above — many real Daggerheart items scale directly with the bearer's current Tier (e.g. "gain a bonus to the damage roll equal to your current Tier").</p>
+        <p class="hint">Define a value once, then reference it anywhere below by typing its token in brackets e.g. a variable named <code>STR</code> can be used as <code>[STR]</code> in the description or effect field. The built-in <code>[TIER]</code> token is already available and pulls from the Tier field above. Many real Daggerheart items scale directly with the bearer's current Tier (e.g. "gain a bonus to the damage roll equal to your current Tier").</p>
         <div id="variables-list"></div>
         <button type="button" id="add-variable">+ Add Variable</button>
       </details>
@@ -145,7 +145,7 @@
   <section class="preview-panel" aria-label="Card preview">
     <div class="randomize-bar">
       <button type="button" id="randomize-item">🎲 Randomize Item</button>
-      <p class="hint">Rolls a full original item concept — name, description, and effect — based on the Category, Rarity, and Tier set in the form. You can edit anything afterward.</p>
+      <p class="hint">Rolls a full original item concept (name, description, and effect) based on the Category, Rarity, and Tier set in the form. You can edit anything afterward.</p>
     </div>
     <div id="card-wrapper">
       <div id="statblock-card" class="theme-parchment">
@@ -158,7 +158,7 @@
     </div>
     <p class="compliance-note">
       Built using Public Game Content from the Daggerheart SRD 1.0 under the Darrington Press Community Gaming License.
-      This tool produces original card artwork and original item concepts — it does not reproduce official Daggerheart artwork, logos, layouts, or named items.
+      This tool produces original card artwork and original item concepts, it does not reproduce official Daggerheart artwork, logos, layouts, or named items.
     </p>
   </section>
 
@@ -166,7 +166,7 @@
 
 <footer class="site-footer">
   <p>Fan-made tool. Not affiliated with or endorsed by Darrington Press or Critical Role, LLC. "Daggerheart" is a trademark of Critical Role, LLC.</p>
-  <p>The card layout, the balance-guidance hints, and the random item generator's names/effects are this project's own original work — not a reproduction of any official Daggerheart adversary- or item-building tables, art, or book design.</p>
+  <p>The card layout, the balance-guidance hints, and the random item generator's names/effects are this project's own original work, not a reproduction of any official Daggerheart adversary- or item-building tables, art, or book design.</p>
   <p class="kofi-footer-link"><a href="https://ko-fi.com/troyificus" target="_blank" rel="noopener">&#9749; Support this project on Ko-fi</a></p>
   <p class="kofi-footer-link"><a href="https://github.com/Troyificus/daggerheart-statblock-generator/issues/new/choose" target="_blank" rel="noopener">&#128027; Bugs & Ideas</a></p>
 </footer>

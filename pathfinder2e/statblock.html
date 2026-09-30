@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pathfinder 2E Statblock Generator — Statblock Forge</title>
+<title>Pathfinder 2E Statblock Generator: Statblock Forge</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
 <header class="site-header">
   <a class="back-link" href="../">&larr; Statblock Forge</a>
   <h1>Pathfinder 2E Statblock Generator</h1>
-  <p class="tagline">Built from Pathfinder Second Edition rules text, released under the ORC License — export a print-ready PNG statblock card.</p>
+  <p class="tagline">Built from Pathfinder Second Edition rules text, released under the ORC License, export a print-ready PNG statblock card.</p>
   <a class="cross-link" href="items.html">Looking for the Magic Item Generator? &rarr;</a>
 </header>
 
@@ -53,7 +53,7 @@
           <select data-field="imageAlign">
             <option value="right">Align right (beside stats)</option>
             <option value="left">Align left (beside stats)</option>
-            <option value="bottom">Bottom of card (full width — good for wide or long creatures)</option>
+            <option value="bottom">Bottom of card (full width; good for wide or long creatures)</option>
             <option value="none">No image</option>
           </select>
         </label>
@@ -132,14 +132,14 @@
 
       <details class="fieldset-details">
         <summary>Custom Variables</summary>
-        <p class="hint">Define a value once, then reference it anywhere below with <code>[TOKEN]</code>. Built-ins: <code>[STR]</code> <code>[DEX]</code> <code>[CON]</code> <code>[INT]</code> <code>[WIS]</code> <code>[CHA]</code> insert the ability modifier exactly as PF2E writes it (e.g. +4) — no separate "to hit" version, since a Strike's actual bonus depends on the creature's proficiency rank (trained/expert/master/legendary), which varies per weapon and per creature rather than following one fixed formula from level alone; type each Strike's bonus directly in the Bonus field instead. Also available: <code>[AC]</code>, <code>[HP]</code>, <code>[LEVEL]</code>.</p>
+        <p class="hint">Define a value once, then reference it anywhere below with <code>[TOKEN]</code>. Built-ins: <code>[STR]</code> <code>[DEX]</code> <code>[CON]</code> <code>[INT]</code> <code>[WIS]</code> <code>[CHA]</code> insert the ability modifier exactly as PF2E writes it (e.g. +4), no separate "to hit" version, since a Strike's actual bonus depends on the creature's proficiency rank (trained/expert/master/legendary), which varies per weapon and per creature rather than following one fixed formula from level alone; type each Strike's bonus directly in the Bonus field instead. Also available: <code>[AC]</code>, <code>[HP]</code>, <code>[LEVEL]</code>.</p>
         <div id="variables-list"></div>
         <button type="button" id="add-variable">+ Add Variable</button>
       </details>
 
       <fieldset>
         <legend>Abilities, Reactions &amp; Free Actions</legend>
-        <p class="hint">Pick a category to add an ability — click its header to expand and edit.</p>
+        <p class="hint">Pick a category to add an ability, click its header to expand and edit.</p>
         <div class="quick-add-row">
           <button type="button" class="quick-add" data-feat-cat="Ability">+ Ability</button>
           <button type="button" class="quick-add" data-feat-cat="Reaction">+ Reaction</button>
@@ -182,7 +182,7 @@
       <span id="export-status"></span>
     </div>
     <p class="compliance-note">
-      Built using rules text released under the ORC License (Open RPG Creative License). This tool produces original card artwork — it does not reproduce official Pathfinder artwork, logos, the Pathfinder-Icons font, or book layouts, and this product's title does not use any Paizo trademark.
+      Built using rules text released under the ORC License (Open RPG Creative License). This tool produces original card artwork, it does not reproduce official Pathfinder artwork, logos, the Pathfinder-Icons font, or book layouts, and this product's title does not use any Paizo trademark.
     </p>
   </section>
 
@@ -190,7 +190,7 @@
 
 <footer class="site-footer">
   <p>Fan-made tool. Not affiliated with or endorsed by Paizo Inc. "Pathfinder" is a registered trademark of Paizo Inc.</p>
-  <p>The card layout and the balance-guidance hints in the form are this project's own approximations, based on general game-design conventions — not a reproduction of the GM Core's creature-building tables, official fonts, art, or book design.</p>
+  <p>The card layout and the balance-guidance hints in the form are this project's own approximations, based on general game-design conventions, not a reproduction of the GM Core's creature-building tables, official fonts, art, or book design.</p>
   <p class="kofi-footer-link"><a href="https://ko-fi.com/troyificus" target="_blank" rel="noopener">&#9749; Support this project on Ko-fi</a></p>
   <p class="kofi-footer-link"><a href="https://github.com/Troyificus/daggerheart-statblock-generator/issues/new/choose" target="_blank" rel="noopener">&#128027; Bugs & Ideas</a></p>
 </footer>

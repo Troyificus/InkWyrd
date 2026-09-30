@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>D&amp;D 5E Statblock Generator — Statblock Forge</title>
+<title>D&amp;D 5E Statblock Generator: Statblock Forge</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
 <header class="site-header">
   <a class="back-link" href="../">&larr; Statblock Forge</a>
   <h1>D&amp;D 5E Statblock Generator</h1>
-  <p class="tagline">Built from the 5E SRD (5.1 / 5.2) — export a print-ready PNG statblock card.</p>
+  <p class="tagline">Built from the 5E SRD (5.1 / 5.2), then export a print-ready PNG statblock card.</p>
   <a class="cross-link" href="items.html">Looking for the Magic Item Generator? &rarr;</a>
 </header>
 
@@ -57,7 +57,7 @@
           <select data-field="imageAlign">
             <option value="right">Align right (beside stats)</option>
             <option value="left">Align left (beside stats)</option>
-            <option value="bottom">Bottom of card (full width — good for wide or long creatures)</option>
+            <option value="bottom">Bottom of card (full width; good for wide or long creatures)</option>
             <option value="none">No image</option>
           </select>
         </label>
@@ -123,14 +123,14 @@
 
       <details class="fieldset-details">
         <summary>Custom Variables</summary>
-        <p class="hint"><b>For "to hit" bonuses, use <code>[STRHIT]</code> / <code>[DEXHIT]</code> / <code>[INTHIT]</code> / <code>[WISHIT]</code> / <code>[CHAHIT]</code> (pick whichever ability the attack uses — Str/Dex for weapons, Int/Wis/Cha for spells depending on caster type) — not the bare <code>[STR]</code> token.</b> <code>[STR]</code> alone only inserts the raw ability modifier (e.g. +3); <code>[STRHIT]</code> adds your Proficiency Bonus for you and gives the actual number that goes after "+X to hit" (e.g. +6). <code>[STRSAVE]</code> etc. give the matching save DC (e.g. 15). Also available: <code>[AC]</code>, <code>[HP]</code>, <code>[CR]</code>, <code>[PB]</code>, plus any custom variable you define below, referenced the same way with <code>[TOKEN]</code>.</p>
+        <p class="hint"><b>For "to hit" bonuses, use <code>[STRHIT]</code> / <code>[DEXHIT]</code> / <code>[INTHIT]</code> / <code>[WISHIT]</code> / <code>[CHAHIT]</code> (pick whichever ability the attack uses: Str/Dex for weapons, Int/Wis/Cha for spells depending on caster type), not the bare <code>[STR]</code> token.</b> <code>[STR]</code> alone only inserts the raw ability modifier (e.g. +3); <code>[STRHIT]</code> adds your Proficiency Bonus for you and gives the actual number that goes after "+X to hit" (e.g. +6). <code>[STRSAVE]</code> etc. give the matching save DC (e.g. 15). Also available: <code>[AC]</code>, <code>[HP]</code>, <code>[CR]</code>, <code>[PB]</code>, plus any custom variable you define below, referenced the same way with <code>[TOKEN]</code>.</p>
         <div id="variables-list"></div>
         <button type="button" id="add-variable">+ Add Variable</button>
       </details>
 
       <fieldset>
         <legend>Traits, Actions &amp; Reactions</legend>
-        <p class="hint">Pick a category to add an ability — click its header to expand and edit.</p>
+        <p class="hint">Pick a category to add an ability, click its header to expand and edit.</p>
         <div class="guidance-box" id="cr-guidance-box"></div>
         <div class="quick-add-row">
           <button type="button" class="quick-add" data-feat-cat="Trait">+ Trait</button>
@@ -176,7 +176,7 @@
       <span id="export-status"></span>
     </div>
     <p class="compliance-note">
-      Built using material from the 5E System Reference Document, released by Wizards of the Coast under the Creative Commons Attribution 4.0 International License. This tool produces original card artwork — it does not reproduce official D&amp;D artwork, logos, or book layouts.
+      Built using material from the 5E System Reference Document, released by Wizards of the Coast under the Creative Commons Attribution 4.0 International License. This tool produces original card artwork, it does not reproduce official D&amp;D artwork, logos, or book layouts.
     </p>
   </section>
 
@@ -184,7 +184,7 @@
 
 <footer class="site-footer">
   <p>Fan-made tool. Not affiliated with or endorsed by Wizards of the Coast. "Dungeons &amp; Dragons" and "D&amp;D" are trademarks of Wizards of the Coast LLC.</p>
-  <p>The card layout and the balance-guidance hints in the form are this project's own approximations, based on general game-design conventions — not a reproduction of the Dungeon Master's Guide's monster-building tables, official fonts, art, or book design.</p>
+  <p>The card layout and the balance-guidance hints in the form are this project's own approximations, based on general game-design conventions, not a reproduction of the Dungeon Master's Guide's monster-building tables, official fonts, art, or book design.</p>
   <p class="kofi-footer-link"><a href="https://ko-fi.com/troyificus" target="_blank" rel="noopener">&#9749; Support this project on Ko-fi</a></p>
   <p class="kofi-footer-link"><a href="https://github.com/Troyificus/daggerheart-statblock-generator/issues/new/choose" target="_blank" rel="noopener">&#128027; Bugs & Ideas</a></p>
 </footer>

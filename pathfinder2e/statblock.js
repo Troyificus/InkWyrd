@@ -131,7 +131,7 @@ function saveDeck() {
   } catch (e) {
     const status = $('deck-status');
     if (status) {
-      status.textContent = 'Could not autosave (storage full — try Export Deck as a backup).';
+      status.textContent = 'Could not autosave (storage full: try Export Deck as a backup).';
       setTimeout(() => { if (status.textContent.startsWith('Could not autosave')) status.textContent = ''; }, 5000);
     }
   }
@@ -650,7 +650,7 @@ $('import-json').addEventListener('change', (e) => {
       renderDeckList(); renderForm(); renderCard(); saveDeck();
       $('deck-status').textContent = `Imported ${deck.length} card(s).`;
     } catch (err) {
-      $('deck-status').textContent = 'Import failed — invalid JSON or no statblock cards.';
+      $('deck-status').textContent = 'Import failed: invalid JSON or no statblock cards.';
     }
     setTimeout(() => $('deck-status').textContent = '', 3000);
   };
@@ -691,7 +691,7 @@ $('export-png').addEventListener('click', async () => {
     setTimeout(() => status.textContent = '', 2000);
   } catch (err) {
     console.error(err);
-    status.textContent = 'Export failed — see console.';
+    status.textContent = 'Export failed: see console.';
   }
 });
 
@@ -722,7 +722,7 @@ $('export-all-png').addEventListener('click', async () => {
     status.textContent = 'ZIP downloaded.';
   } catch (err) {
     console.error(err);
-    status.textContent = 'Batch export failed — see console.';
+    status.textContent = 'Batch export failed: see console.';
   }
   setTimeout(() => status.textContent = '', 3000);
 });
@@ -742,7 +742,7 @@ $('print-sheet').addEventListener('click', () => {
 
   win.document.write(`
     <!DOCTYPE html>
-    <html><head><meta charset="UTF-8"><title>Print Sheet — Pathfinder 2E Statblock Cards</title>
+    <html><head><meta charset="UTF-8"><title>Print Sheet: Pathfinder 2E Statblock Cards</title>
     <link rel="stylesheet" href="${styleLink}">
     <style>
       body { background: #fff; padding: 20px; }

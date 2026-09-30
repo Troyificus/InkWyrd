@@ -44,7 +44,7 @@ System-agnostic utilities under **[/tools/](tools/)**, useful at any table regar
 
 ## Legal / Compliance
 
-Each system's rules content comes from a different license — summarized here.
+Each system's rules content comes from a different license, all summarized here.
 
 ### Daggerheart (`/daggerheart/`)
 Built from the [Daggerheart SRD 1.0](https://www.daggerheart.com/srd/) under the [Darrington Press Community Gaming License](https://darringtonpress.com/license/). Field labels/terminology are Public Game Content. Card design, layout, colors, and typography are original, not a copy of official Daggerheart artwork, logos, or book layouts. Required attribution:
@@ -66,4 +66,4 @@ The **Cross-System Condition Reference** is the one tool that summarizes actual 
 
 ## License
 
-Code in this repository: MIT (see `LICENSE`). Rules text referenced/used within each system's generator remains under that system's own license (DPCGL / CC-BY-4.0 / ORC as applicable) — not covered by this repo's MIT license.
+Code in this repository: MIT (see `LICENSE`). Rules text referenced/used within each system's generator remains under that system's own license (DPCGL / CC-BY-4.0 / ORC as applicable), not covered by this repo's MIT license.

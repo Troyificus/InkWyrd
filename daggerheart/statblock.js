@@ -118,7 +118,7 @@ function saveDeck() {
   } catch (e) {
     const status = $('deck-status');
     if (status) {
-      status.textContent = 'Could not autosave (storage full — try Export Deck as a backup).';
+      status.textContent = 'Could not autosave (storage full, try Export Deck as a backup).';
       setTimeout(() => { if (status.textContent.startsWith('Could not autosave')) status.textContent = ''; }, 5000);
     }
   }
@@ -537,7 +537,7 @@ function cardInnerHtml(card) {
   if (card.description) html += `<div class="card-desc" data-source-field="description">${sub(card.description)}</div>`;
 
   // Build the stat lines separately so they can either sit full-width (no
-  // image) or share a row with the illustration (image present) — the
+  // image) or share a row with the illustration (image present), the
   // divider that follows always sits outside this block, so it can never
   // run through the image regardless of how tall either side is.
   let statHtml = '';
@@ -591,7 +591,7 @@ function cardInnerHtml(card) {
 
   if (rowImage) {
     // Fold Features into the same column as the stats, so it fills the
-    // space beside the image instead of waiting until below it — the
+    // space beside the image instead of waiting until below it, the
     // divider is then a child of the narrower column, so its rule line
     // is physically bounded by that column and can never cross the image.
     if (card.features.length) {
@@ -702,7 +702,7 @@ $('import-json').addEventListener('change', (e) => {
       renderDeckList(); renderForm(); renderCard(); saveDeck();
       $('deck-status').textContent = `Imported ${deck.length} card(s).`;
     } catch (err) {
-      $('deck-status').textContent = 'Import failed — invalid JSON or no statblock cards.';
+      $('deck-status').textContent = 'Import failed: invalid JSON or no statblock cards.';
     }
     setTimeout(() => $('deck-status').textContent = '', 3000);
   };
@@ -744,7 +744,7 @@ $('export-png').addEventListener('click', async () => {
     setTimeout(() => status.textContent = '', 2000);
   } catch (err) {
     console.error(err);
-    status.textContent = 'Export failed — see console.';
+    status.textContent = 'Export failed: see console.';
   }
 });
 
@@ -776,7 +776,7 @@ $('export-all-png').addEventListener('click', async () => {
     status.textContent = 'ZIP downloaded.';
   } catch (err) {
     console.error(err);
-    status.textContent = 'Batch export failed — see console.';
+    status.textContent = 'Batch export failed: see console.';
   }
   setTimeout(() => status.textContent = '', 3000);
 });
@@ -796,7 +796,7 @@ $('print-sheet').addEventListener('click', () => {
 
   win.document.write(`
     <!DOCTYPE html>
-    <html><head><meta charset="UTF-8"><title>Print Sheet — Daggerheart Statblocks</title>
+    <html><head><meta charset="UTF-8"><title>Print Sheet: Daggerheart Statblocks</title>
     <link rel="stylesheet" href="${styleLink}">
     <style>
       body { background: #fff; padding: 20px; }

@@ -89,7 +89,7 @@ function saveDeck() {
   } catch (e) {
     const status = $('deck-status');
     if (status) {
-      status.textContent = 'Could not autosave (storage full — try Export Deck as a backup).';
+      status.textContent = 'Could not autosave (storage full, try Export Deck as a backup).';
       setTimeout(() => { if (status.textContent.startsWith('Could not autosave')) status.textContent = ''; }, 5000);
     }
   }
@@ -141,7 +141,7 @@ document.getElementById('statblock-form').addEventListener('input', (e) => {
 
 const DH_RARITY_TIER = { Common: 1, Uncommon: 2, Rare: 3, Legendary: 4 };
 
-// Daggerheart items rarely track numeric charges — most are either always
+// Daggerheart items rarely track numeric charges, most are either always
 // active or gated by a rest/session, so the randomizer picks from that
 // instead of the D&D-style charge/recharge pool the shared engine uses.
 const DH_USAGE_BY_TIER = {
@@ -170,7 +170,7 @@ $('randomize-item').addEventListener('click', () => {
   card.itemRange = concept.range || '';
   card.itemEffect = concept.effect;
   // A weapon's bonus damage or an armor's resistance is always active while
-  // worn/wielded — only active-use items (wearable/consumable/wondrous) get
+  // worn/wielded, only active-use items (wearable/consumable/wondrous) get
   // a rest/session usage restriction.
   const isPassiveCategory = card.itemCategory === 'weapon' || card.itemCategory === 'armor';
   card.itemUsage = isPassiveCategory ? '' : pickDHUsage(powerTier);
@@ -373,7 +373,7 @@ function cardInnerHtml(card) {
 
   if (rowImage) {
     // Fold Effect into the same column as the stats, so it fills the space
-    // beside the image instead of waiting until below it — the divider is
+    // beside the image instead of waiting until below it, the divider is
     // then a child of the narrower column and can never cross the image.
     statHtml += `<div class="section-divider">Effect</div>`;
     if (card.itemFeatureName) {
@@ -468,7 +468,7 @@ $('import-json').addEventListener('change', (e) => {
       renderDeckList(); renderForm(); renderCard(); saveDeck();
       $('deck-status').textContent = `Imported ${deck.length} item(s).`;
     } catch (err) {
-      $('deck-status').textContent = 'Import failed — invalid JSON.';
+      $('deck-status').textContent = 'Import failed, invalid JSON.';
     }
     setTimeout(() => $('deck-status').textContent = '', 3000);
   };
@@ -509,7 +509,7 @@ $('export-png').addEventListener('click', async () => {
     setTimeout(() => status.textContent = '', 2000);
   } catch (err) {
     console.error(err);
-    status.textContent = 'Export failed — see console.';
+    status.textContent = 'Export failed: see console.';
   }
 });
 
@@ -541,7 +541,7 @@ $('export-all-png').addEventListener('click', async () => {
     status.textContent = 'ZIP downloaded.';
   } catch (err) {
     console.error(err);
-    status.textContent = 'Batch export failed — see console.';
+    status.textContent = 'Batch export failed: see console.';
   }
   setTimeout(() => status.textContent = '', 3000);
 });
@@ -561,7 +561,7 @@ $('print-sheet').addEventListener('click', () => {
 
   win.document.write(`
     <!DOCTYPE html>
-    <html><head><meta charset="UTF-8"><title>Print Sheet — Daggerheart Items</title>
+    <html><head><meta charset="UTF-8"><title>Print Sheet, Daggerheart Items</title>
     <link rel="stylesheet" href="${styleLink}">
     <style>
       body { background: #fff; padding: 20px; }

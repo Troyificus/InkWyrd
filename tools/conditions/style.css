@@ -210,7 +210,7 @@ select, input[type="text"], textarea {
 }
 
 /* Printing (or "Save as PDF" via the browser's print dialog) shows only
-   the document preview itself, cleanly paginated — no site chrome, no
+   the document preview itself, cleanly paginated, no site chrome, no
    form, no buttons. */
 @media print {
   .site-header, .site-footer, .form-panel, .randomize-bar,

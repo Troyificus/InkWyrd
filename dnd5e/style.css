@@ -7,7 +7,7 @@
 /* The 5E SRD's own alignment values (lawful good, unaligned, etc.) are
    lowercase by convention, and that's genuinely correct for how the 2014
    card format writes them inline ("Large beast, unaligned"). This is
-   purely cosmetic — capitalizes how it LOOKS in the form/dropdown without
+   purely cosmetic, capitalizes how it LOOKS in the form/dropdown without
    touching the actual stored value or the correctly-lowercase card text. */
 .capitalize-display,
 .combobox-wrapper:has(.capitalize-display) .combobox-dropdown li {

@@ -1,4 +1,4 @@
-// Small original glyphs — not reproductions of any official D&D iconography.
+// Small original glyphs, not reproductions of any official D&D iconography.
 
 const TYPE_ICONS = {
   aberration:  '<svg viewBox="0 0 24 24"><path d="M12 2 C6 2 3 7 3 12 C3 18 8 22 12 22 C16 22 21 18 21 12 C21 7 18 2 12 2 Z M12 8 L12 16 M8 12 L16 12" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
