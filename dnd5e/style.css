@@ -301,6 +301,12 @@
 
 #statblock-card.format-2014 { width: 460px; padding: 30px 28px 22px; }
 
+/* Portrait export orientation: narrows the card so it reflows taller,
+   for print/table use where a vertical card reads better than the
+   default wide layout. Comes after .format-2014 so it wins when both
+   are applied. */
+#statblock-card.portrait { width: 440px; }
+
 #statblock-card.theme-parchment { background: #f3ecd8; color: #2a2216; border: 1px solid #2a2216; outline: 1px solid #2a2216; outline-offset: -4px; }
 #statblock-card.theme-dark { background: #17161a; color: #ece7d9; border: 1px solid #4a4640; outline: 1px solid #4a4640; outline-offset: -4px; }
 #statblock-card.theme-verdant { background: #10201a; color: #e3ecdf; border: 1px solid #3c5347; outline: 1px solid #3c5347; outline-offset: -4px; }

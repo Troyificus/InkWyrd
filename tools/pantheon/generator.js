@@ -307,6 +307,11 @@ $('import-deck').addEventListener('change', e => {
   reader.readAsText(file);
 });
 
+// Portrait orientation applies live so the preview is WYSIWYG with the export.
+$('export-portrait').addEventListener('change', () => {
+  $('pantheon-card').classList.toggle('portrait', $('export-portrait').checked);
+});
+
 $('export-png').addEventListener('click', async () => {
   const cardEl = $('pantheon-card');
   // See the D&D/Daggerheart/Pathfinder exports for why this matters: it

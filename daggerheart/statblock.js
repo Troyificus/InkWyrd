@@ -640,13 +640,24 @@ function cardInnerHtml(card) {
   return html;
 }
 
+// Whether the Portrait orientation checkbox is checked; read fresh
+// each time so toggling it updates both the live preview and export.
+function isPortrait() {
+  const cb = $('export-portrait');
+  return !!(cb && cb.checked);
+}
+
 function renderCard() {
   const card = currentCard();
   const el = $('statblock-card');
-  el.className = 'theme-' + card.theme;
+  el.className = 'theme-' + card.theme + (isPortrait() ? ' portrait' : '');
   el.style.setProperty('--card-accent', card.accent);
   el.innerHTML = cardInnerHtml(card);
 }
+
+// Live-preview the portrait toggle immediately, and let renderCardToCanvas
+// read the same checkbox at export time so preview and export always match.
+$('export-portrait').addEventListener('change', renderCard);
 
 // ===== Deck actions =====
 $('new-card').addEventListener('click', () => {
@@ -715,7 +726,7 @@ async function renderCardToCanvas(card) {
   // Render into a hidden offscreen node so it doesn't disturb the live preview.
   const offscreen = document.createElement('div');
   offscreen.id = 'statblock-card';
-  offscreen.className = 'theme-' + card.theme;
+  offscreen.className = 'theme-' + card.theme + (isPortrait() ? ' portrait' : '');
   offscreen.style.setProperty('--card-accent', card.accent);
   offscreen.style.position = 'fixed';
   offscreen.style.left = '-9999px';

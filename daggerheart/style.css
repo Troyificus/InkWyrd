@@ -348,6 +348,11 @@
   word-break: break-word;
 }
 
+/* Portrait export orientation: narrows the card so it reflows taller,
+   for print/table use where a vertical card reads better than the
+   default wide layout. */
+#statblock-card.portrait { width: 300px; }
+
 #statblock-card.theme-parchment {
   background: #f3ecd8;
   color: #2a2216;

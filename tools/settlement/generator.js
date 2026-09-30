@@ -844,6 +844,11 @@ $('import-deck').addEventListener('change', e => {
   reader.readAsText(file);
 });
 
+// Portrait orientation applies live so the preview is WYSIWYG with the export.
+$('export-portrait').addEventListener('change', () => {
+  $('settlement-card').classList.toggle('portrait', $('export-portrait').checked);
+});
+
 $('export-png').addEventListener('click', async () => {
   const cardEl = $('settlement-card');
   cardEl.classList.add('export-all');

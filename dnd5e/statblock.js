@@ -591,13 +591,24 @@ function cardInnerHtml(card) {
   return html;
 }
 
+// Whether the Portrait orientation checkbox is checked; read fresh
+// each time so toggling it updates both the live preview and export.
+function isPortrait() {
+  const cb = $('export-portrait');
+  return !!(cb && cb.checked);
+}
+
 function renderCard() {
   const card = currentCard();
   const el = $('statblock-card');
-  el.className = 'theme-' + card.theme + ' format-' + (card.format || '2024');
+  el.className = 'theme-' + card.theme + ' format-' + (card.format || '2024') + (isPortrait() ? ' portrait' : '');
   el.style.setProperty('--card-accent', card.accent);
   el.innerHTML = cardInnerHtml(card);
 }
+
+// Live-preview the portrait toggle immediately, and let renderCardToCanvas
+// read the same checkbox at export time so preview and export always match.
+$('export-portrait').addEventListener('change', renderCard);
 
 // ===== Deck actions =====
 $('new-card').addEventListener('click', () => {
@@ -665,7 +676,7 @@ $('import-json').addEventListener('change', (e) => {
 async function renderCardToCanvas(card) {
   const offscreen = document.createElement('div');
   offscreen.id = 'statblock-card';
-  offscreen.className = 'theme-' + card.theme + ' format-' + (card.format || '2024');
+  offscreen.className = 'theme-' + card.theme + ' format-' + (card.format || '2024') + (isPortrait() ? ' portrait' : '');
   offscreen.style.setProperty('--card-accent', card.accent);
   offscreen.style.position = 'fixed';
   offscreen.style.left = '-9999px';

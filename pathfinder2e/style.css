@@ -342,6 +342,11 @@
   word-break: break-word;
 }
 
+/* Portrait export orientation: narrows the card so it reflows taller,
+   for print/table use where a vertical card reads better than the
+   default wide layout. */
+#statblock-card.portrait { width: 320px; }
+
 #statblock-card.theme-parchment { background: #f3ecd8; color: #2a2216; border: 1px solid #2a2216; outline: 1px solid #2a2216; outline-offset: -4px; }
 #statblock-card.theme-dark { background: #17161a; color: #ece7d9; border: 1px solid #4a4640; outline: 1px solid #4a4640; outline-offset: -4px; }
 #statblock-card.theme-verdant { background: #10201a; color: #e3ecdf; border: 1px solid #3c5347; outline: 1px solid #3c5347; outline-offset: -4px; }

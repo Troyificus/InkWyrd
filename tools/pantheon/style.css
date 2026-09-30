@@ -115,6 +115,11 @@ select, input[type="text"], textarea {
   overflow-wrap: break-word;
   word-break: break-word;
 }
+
+/* Portrait export orientation: narrows the card so it reflows taller,
+   for print/table use where a vertical card reads better than the
+   default wide layout. */
+#pantheon-card.portrait { width: 380px; }
 .pantheon-name {
   font-size: 1.9rem;
   font-weight: 700;
