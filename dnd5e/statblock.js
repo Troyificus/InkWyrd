@@ -672,6 +672,12 @@ async function renderCardToCanvas(card) {
   offscreen.style.top = '0';
   offscreen.innerHTML = cardInnerHtml(card);
   document.body.appendChild(offscreen);
+  // Without this, html2canvas can rasterize the offscreen element before
+  // the Alegreya webfont has finished swapping in (Google Fonts uses
+  // font-display: swap), silently falling back to a generic serif with
+  // different character widths mid-capture — which shifts exactly where
+  // the title wraps relative to the corner tag, compared to the live page.
+  await document.fonts.ready;
   const canvas = await html2canvas(offscreen, { scale: 2, backgroundColor: null, windowWidth: 1400, windowHeight: 2000 });
   document.body.removeChild(offscreen);
   return canvas;

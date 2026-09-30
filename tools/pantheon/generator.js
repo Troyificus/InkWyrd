@@ -307,8 +307,12 @@ $('import-deck').addEventListener('change', e => {
   reader.readAsText(file);
 });
 
-$('export-png').addEventListener('click', () => {
+$('export-png').addEventListener('click', async () => {
   const cardEl = $('pantheon-card');
+  // See the D&D/Daggerheart/Pathfinder exports for why this matters: it
+  // guards against the same font-swap race, even though this path
+  // captures the already-visible card rather than a fresh offscreen one.
+  await document.fonts.ready;
   html2canvas(cardEl, { backgroundColor: '#f3ecd8', scale: 2 }).then(canvas => {
     const link = document.createElement('a');
     link.download = (currentCard().name || 'pantheon').replace(/[^a-z0-9]/gi, '_') + '.png';
