@@ -369,12 +369,26 @@ function isPortrait() {
   return !!(cb && cb.checked);
 }
 
+// The corner tag's footprint (text length, and how many lines it wraps to)
+// varies by content and by card width (portrait narrows the card but not
+// the tag's own text), so a single fixed padding-right on the title can't
+// reliably clear it at every width. After layout, measure the tag's real
+// rendered width and override the title's fallback padding with that.
+function adjustTitleClearance(root) {
+  const tag = root.querySelector('.corner-tag');
+  const title = root.querySelector('.card-name');
+  if (tag && title) {
+    title.style.paddingRight = (tag.offsetWidth + 16) + 'px';
+  }
+}
+
 function renderCard() {
   const card = currentCard();
   const el = $('statblock-card');
   el.className = 'theme-' + card.theme + (isPortrait() ? ' portrait' : '');
   el.style.setProperty('--card-accent', card.accent);
   el.innerHTML = cardInnerHtml(card);
+  adjustTitleClearance(el);
 }
 
 // Live-preview the portrait toggle immediately, and let renderCardToCanvas
@@ -459,6 +473,7 @@ async function renderCardToCanvas(card) {
   // different character widths mid-capture — which shifts exactly where
   // the title wraps relative to the corner tag, compared to the live page.
   await document.fonts.ready;
+  adjustTitleClearance(offscreen);
   const canvas = await html2canvas(offscreen, { scale: 2, backgroundColor: null, windowWidth: 1400, windowHeight: 2000 });
   document.body.removeChild(offscreen);
   return canvas;
