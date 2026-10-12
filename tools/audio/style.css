@@ -1,0 +1,100 @@
+/* Page-specific styles. Shared chrome lives in ../../assets/base.css. */
+
+:root { --accent: #6b5a3f; }
+
+* { box-sizing: border-box; }
+
+.audio-page {
+  display: block;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 28px 16px 60px;
+}
+
+.video-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #17161a;
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+}
+.video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.video-note {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin: 10px 0 0;
+}
+.video-note a { color: var(--gold); }
+
+.audio-download {
+  text-align: center;
+  margin: 32px 0 36px;
+}
+.download-btn {
+  display: inline-block;
+  padding: 14px 34px;
+  background: var(--gold);
+  color: #fff;
+  font-family: 'Spectral', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 1px;
+  text-decoration: none;
+  border-radius: 3px;
+  transition: background 0.15s, transform 0.15s;
+}
+.download-btn:hover { background: #8a6a30; transform: translateY(-1px); }
+.download-btn:focus-visible, .repo-link:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+.repo-link {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.88rem;
+  color: var(--gold);
+}
+.download-meta {
+  margin: 10px 0 0;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.audio-about {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 4px;
+  padding: 22px 26px;
+}
+.audio-about h2 {
+  margin: 0 0 12px;
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.audio-about ul { margin: 0; padding-left: 20px; line-height: 1.6; }
+.audio-about li { margin-bottom: 6px; }
+.audio-note {
+  margin: 16px 0 0;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.site-footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+@media (max-width: 520px) {
+  .audio-about { padding: 18px; }
+  .download-btn { padding: 13px 22px; }
+}
