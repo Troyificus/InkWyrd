@@ -94,6 +94,21 @@
   color: var(--text-dim);
 }
 
+.kofi-link {
+  display: inline-block;
+  margin: 0 0 14px;
+  padding: 8px 18px;
+  border: 1px solid var(--gold);
+  color: var(--text);
+  font-size: 0.82rem;
+  font-style: normal;
+  font-weight: 500;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.kofi-link:hover { background: var(--gold); color: #fff; }
+
 @media (max-width: 520px) {
   .audio-about { padding: 18px; }
   .download-btn { padding: 13px 22px; }
