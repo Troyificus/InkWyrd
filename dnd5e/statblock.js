@@ -762,6 +762,89 @@ $('export-all-png').addEventListener('click', async () => {
   setTimeout(() => status.textContent = '', 3000);
 });
 
+// ===== Export for Obsidian / Adventure PDF Forge =====
+// Builds the "## D&D 5E" section VaultExport wraps into a note. Follows the
+// card's own 2014/2024 labelling, and resolves [TOKEN]s the same way the
+// card does, so the printed stat block says what the card says.
+function cardToVaultSection(card) {
+  const md = (text) => VaultExport.md(applySubs(text, card));
+  const is2024 = card.format !== '2014';
+  const dexMod = Math.floor((Number(card.dex) - 10) / 2);
+  const initiative = card.initiative ? md(card.initiative) : `${modifier(card.dex)} (${10 + dexMod})`;
+  const groups = [];
+
+  groups.push(`*${md(card.size)} ${md(card.creatureType)}, ${md(card.alignment)}*`);
+
+  groups.push([
+    `**${is2024 ? 'AC' : 'Armor Class'}** ${md(card.ac)}`,
+    `**Initiative** ${initiative}`,
+    `**${is2024 ? 'HP' : 'Hit Points'}** ${md(card.hp)}`,
+    `**Speed** ${md(card.speed)}`
+  ].join('\n'));
+
+  groups.push([['STR', card.str], ['DEX', card.dex], ['CON', card.con], ['INT', card.int], ['WIS', card.wis], ['CHA', card.cha]]
+    .map(([label, score]) => `**${label}** ${VaultExport.md(score)} (${modifier(score)})`)
+    .join(' · '));
+
+  const lines = [];
+  const line = (label, value) => { if (value) lines.push(`**${label}** ${md(value)}`); };
+  line('Saving Throws', card.savingThrows);
+  line('Skills', card.skills);
+  if (is2024) {
+    line('Vulnerabilities', card.damageVulnerabilities);
+    line('Resistances', card.damageResistances);
+    line('Immunities', [card.damageImmunities, card.conditionImmunities].filter(Boolean).join(', '));
+  } else {
+    line('Damage Vulnerabilities', card.damageVulnerabilities);
+    line('Damage Resistances', card.damageResistances);
+    line('Damage Immunities', card.damageImmunities);
+    line('Condition Immunities', card.conditionImmunities);
+  }
+  line('Senses', card.senses);
+  line('Languages', card.languages);
+  const pb = signed(Number(card.proficiencyBonus) || 0);
+  if (is2024) {
+    lines.push(`**CR** ${VaultExport.md(card.cr)} (XP ${VaultExport.md(card.xp)}; PB ${pb})`);
+  } else {
+    lines.push(`**Challenge** ${VaultExport.md(card.cr)} (${VaultExport.md(card.xp)} XP)`);
+    lines.push(`**Proficiency Bonus** ${pb}`);
+  }
+  groups.push(lines.join('\n'));
+
+  FEATURE_CATEGORIES.forEach(cat => {
+    const items = card.features.filter(f => f.category === cat);
+    if (!items.length) return;
+    groups.push(`### ${cat}s`);
+    items.forEach(f => groups.push(`***${md(f.name)}.*** ${md(f.text)}`));
+  });
+
+  return { header: 'D&D 5E', intro: VaultExport.md(applySubs(card.description, card), true), body: groups.join('\n\n') };
+}
+
+$('export-md').addEventListener('click', async () => {
+  const status = $('export-status');
+  try {
+    const kind = await VaultExport.exportCard(currentCard(), cardToVaultSection);
+    status.textContent = kind === 'zip' ? 'Downloaded note and illustration (.zip).' : 'Downloaded note.';
+  } catch (err) {
+    console.error(err);
+    status.textContent = 'Export failed: see console.';
+  }
+  setTimeout(() => status.textContent = '', 3000);
+});
+
+$('export-all-md').addEventListener('click', async () => {
+  const status = $('deck-status');
+  try {
+    await VaultExport.exportDeck(deck, cardToVaultSection, 'dnd5e-vault-notes.zip');
+    status.textContent = 'ZIP downloaded.';
+  } catch (err) {
+    console.error(err);
+    status.textContent = 'Vault export failed: see console.';
+  }
+  setTimeout(() => status.textContent = '', 3000);
+});
+
 // ===== Print sheet =====
 $('print-sheet').addEventListener('click', () => {
   const win = window.open('', '_blank');

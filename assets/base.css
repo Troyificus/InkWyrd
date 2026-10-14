@@ -384,3 +384,15 @@ main {
    flex column, so #deck-list only needs a simple list reset here. */
 #deck-list { list-style: none; margin: 0 0 14px; padding: 0; }
 
+
+/* "Download for Obsidian" sits beside "Download PNG", so let the row wrap
+   on narrow panels rather than squeezing four controls onto one line. */
+.export-controls { flex-wrap: wrap; }
+.vault-hint {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  text-align: center;
+  margin: 10px 0 0;
+  line-height: 1.4;
+}
+.vault-hint a { color: var(--gold); }

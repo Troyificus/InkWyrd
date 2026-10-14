@@ -813,6 +813,64 @@ $('export-all-png').addEventListener('click', async () => {
   setTimeout(() => status.textContent = '', 3000);
 });
 
+// ===== Export for Obsidian / Adventure PDF Forge =====
+// Builds the "## Daggerheart" section VaultExport wraps into a note, for
+// adversaries and environments alike, with [TOKEN]s resolved the same way
+// the card resolves them.
+function cardToVaultSection(card) {
+  const md = (text) => VaultExport.md(applySubs(text, card));
+  const isAdv = card.cardType === 'adversary';
+  const groups = [];
+
+  groups.push(`*Tier ${VaultExport.md(card.tier)} ${md(isAdv ? card.type : card.envType)} ${isAdv ? 'Adversary' : 'Environment'}*`);
+
+  const lines = [];
+  if (isAdv) {
+    lines.push(`**Difficulty** ${VaultExport.md(card.difficultyAdv)} · **Thresholds** ${VaultExport.md(card.thresholdMajor)}/${VaultExport.md(card.thresholdSevere)} · **HP** ${VaultExport.md(card.hp)} · **Stress** ${VaultExport.md(card.stress)}`);
+    (card.attacks || []).forEach(a => {
+      lines.push(`**ATK** ${md(a.atk)} · *${md(a.name)}*: ${md(a.range)} · ${md(a.damage)}`);
+    });
+    if (card.experience) lines.push(`**Experience** ${md(card.experience)}`);
+    if (card.motives) lines.push(`**Motives & Tactics** *${md(card.motives)}*`);
+  } else {
+    lines.push(`**Difficulty** ${VaultExport.md(card.difficultyEnv)}`);
+    if (card.impulses) lines.push(`**Impulses** *${md(card.impulses)}*`);
+    if (card.potential) lines.push(`**Potential Adversaries** ${md(card.potential)}`);
+  }
+  groups.push(lines.join('\n'));
+
+  if (card.features.length) {
+    groups.push('### Features');
+    card.features.forEach(f => groups.push(`***${md(f.name)} - ${VaultExport.md(f.type)}:*** ${md(f.text)}`));
+  }
+
+  return { header: 'Daggerheart', intro: VaultExport.md(applySubs(card.description, card), true), body: groups.join('\n\n') };
+}
+
+$('export-md').addEventListener('click', async () => {
+  const status = $('export-status');
+  try {
+    const kind = await VaultExport.exportCard(currentCard(), cardToVaultSection);
+    status.textContent = kind === 'zip' ? 'Downloaded note and illustration (.zip).' : 'Downloaded note.';
+  } catch (err) {
+    console.error(err);
+    status.textContent = 'Export failed: see console.';
+  }
+  setTimeout(() => status.textContent = '', 3000);
+});
+
+$('export-all-md').addEventListener('click', async () => {
+  const status = $('deck-status');
+  try {
+    await VaultExport.exportDeck(deck, cardToVaultSection, 'daggerheart-vault-notes.zip');
+    status.textContent = 'ZIP downloaded.';
+  } catch (err) {
+    console.error(err);
+    status.textContent = 'Vault export failed: see console.';
+  }
+  setTimeout(() => status.textContent = '', 3000);
+});
+
 // ===== Print sheet =====
 $('print-sheet').addEventListener('click', () => {
   const win = window.open('', '_blank');

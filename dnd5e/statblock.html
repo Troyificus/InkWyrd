@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Work+Sans:wght@400;500;600&family=Alegreya:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/base.css?v=1">
-<link rel="stylesheet" href="style.css?v=20260930a">
+<link rel="stylesheet" href="../assets/base.css?v=20261014a">
+<link rel="stylesheet" href="style.css?v=20261014a">
 <link rel="icon" href="/InkWyrd.png">
 </head>
 <body>
@@ -35,6 +35,7 @@
         <input type="file" id="import-json" accept="application/json" hidden>
       </label>
       <button type="button" id="export-all-png">Export All as PNG (.zip)</button>
+      <button type="button" id="export-all-md" title="One Obsidian note per card, ready for a vault">Export All for Obsidian (.zip)</button>
       <button type="button" id="print-sheet">Print Sheet</button>
     </div>
 
@@ -174,8 +175,10 @@
     <div class="export-controls">
       <label><input type="checkbox" id="export-portrait" style="width:auto; display:inline-block; margin-right:6px;"> Portrait orientation</label>
       <button type="button" id="export-png">Download PNG</button>
+      <button type="button" id="export-md" title="An Obsidian note that Adventure PDF Forge prints as a stat block">Download for Obsidian (.md)</button>
       <span id="export-status"></span>
     </div>
+    <p class="hint vault-hint">Obsidian notes drop straight into a vault, and <a href="https://pdf.inkwyrd.com" target="_blank" rel="noopener">Adventure PDF Forge</a> lays them out as stat blocks in a printable sourcebook. A card with an illustration downloads as a .zip holding the note and its image.</p>
     <p class="compliance-note">
       Built using material from the 5E System Reference Document, released by Wizards of the Coast under the Creative Commons Attribution 4.0 International License. This tool produces original card artwork, it does not reproduce official D&amp;D artwork, logos, or book layouts.
     </p>
@@ -196,6 +199,7 @@
 <script src="../assets/combobox.js?v=20260812x"></script>
 <script src="../assets/back-to-top.js?v=20260812x"></script>
 <script src="../assets/field-highlight.js?v=20260812x"></script>
-<script src="statblock.js?v=20261002a"></script>
+<script src="../assets/vault-export.js?v=20261014a"></script>
+<script src="statblock.js?v=20261014a"></script>
 </body>
 </html>
