@@ -7,7 +7,7 @@ A growing suite of free, browser-based tools for TTRPG's! Statblock and magic it
 ## What's here
 
 ### Statblock & Magic Item Generators
-Each system is a self-contained app under its own folder, sharing the same visual language and toolset (deck management, JSON import/export, single + batch PNG export, print sheets, custom `[TOKEN]` variables):
+Each system is a self-contained app under its own folder, sharing the same visual language and toolset (deck management, JSON import/export, single + batch PNG export, print sheets, custom `[TOKEN]` variables, and Obsidian note export):
 
 - **[/daggerheart/](daggerheart/)**: Adversary & Environment cards, built from the Daggerheart SRD under the Darrington Press Community Gaming License (DPCGL).
 - **[/dnd5e/](dnd5e/)**: Creature statblock cards, built from the D&D 5E SRD (5.1 / 5.2), released by Wizards of the Coast under Creative Commons CC-BY-4.0. Toggle between 2014-style and 2024-style presentation.
@@ -31,6 +31,7 @@ System-agnostic utilities under **[/tools/](tools/)**, useful at any table regar
 - A "deck" of cards/settlements/pantheons per tool (new/duplicate/delete), auto-saved to browser storage, with a migration path for cards saved under an older data model so a rewrite never silently breaks someone's saved work.
 - Custom `[TOKEN]` variables, plus built-in stat tokens per system.
 - JSON import/export, single-item PNG export, batch PNG export as `.zip`, print sheets.
+- **Download for Obsidian**: any statblock card (or a whole deck, as a `.zip`) exports as an Obsidian markdown note in the shape [Adventure PDF Forge](https://pdf.inkwyrd.com) prints as a stat block: an H1 title, the description as an intro, then a `## D&D 5E` / `## Pathfinder 2E` / `## Daggerheart` section. `[TOKEN]`s are resolved exactly as the card shows them, user text is escaped so it can never end the stat block early, and an illustration travels with the note as its frontmatter `art:` image. Shared code lives in `/assets/vault-export.js`; each system's `statblock.js` supplies `cardToVaultSection()`.
 - Original SVG iconography per system, none of it derived from official artwork or proprietary icon fonts.
 - Analogue balance-guidance hints (CR/Level/Tier-based, our own approximate formulas) driving both the inline "typical for this level" hints and the Randomize Stats buttons across all three statblock generators.
 - GitHub Issues integration for bug reports and feature requests, with structured templates for each.

@@ -759,6 +759,77 @@ $('export-all-png').addEventListener('click', async () => {
   setTimeout(() => status.textContent = '', 3000);
 });
 
+// ===== Export for Obsidian / Adventure PDF Forge =====
+// Builds the "## Pathfinder 2E" section VaultExport wraps into a note, in
+// the same order the card prints it, with [TOKEN]s resolved the same way.
+function cardToVaultSection(card) {
+  const md = (text) => VaultExport.md(applySubs(text, card));
+  const groups = [];
+
+  const traits = (card.traits || '').split(',').map(t => t.trim()).filter(Boolean);
+  groups.push([`**Creature ${VaultExport.md(card.level)}**`, md(card.rarity), md(card.sizeType)]
+    .concat(traits.map(t => md(t)))
+    .filter(Boolean)
+    .join(' · '));
+
+  const top = [`**Perception** ${md(card.perception)}${card.senses ? '; ' + md(card.senses) : ''}`];
+  if (card.languages) top.push(`**Languages** ${md(card.languages)}`);
+  if (card.skills) top.push(`**Skills** ${md(card.skills)}`);
+  top.push([['Str', card.str], ['Dex', card.dex], ['Con', card.con], ['Int', card.int], ['Wis', card.wis], ['Cha', card.cha]]
+    .map(([label, mod]) => `**${label}** ${fmtMod(mod)}`)
+    .join(', '));
+  if (card.items) top.push(`**Items** ${md(card.items)}`);
+  groups.push(top.join('\n'));
+
+  const defense = [
+    `**AC** ${md(card.ac)}; **Fort** ${md(card.fort)}, **Ref** ${md(card.ref)}, **Will** ${md(card.will)}`,
+    `**HP** ${md(card.hp)}`
+  ];
+  if (card.immunities) defense.push(`**Immunities** ${md(card.immunities)}`);
+  if (card.resistances) defense.push(`**Resistances** ${md(card.resistances)}`);
+  if (card.weaknesses) defense.push(`**Weaknesses** ${md(card.weaknesses)}`);
+  groups.push(defense.join('\n'));
+
+  const offense = [`**Speed** ${md(card.speed)}`];
+  (card.attacks || []).forEach(a => {
+    offense.push(`**${VaultExport.md(a.type)}** (${VaultExport.md(a.actionCost)}) *${md(a.name)}* ${md(a.bonus)}, **Damage** ${md(a.damage)}`);
+  });
+  groups.push(offense.join('\n'));
+
+  FEATURE_CATEGORIES.forEach(cat => {
+    const items = card.features.filter(f => f.category === cat);
+    if (!items.length) return;
+    groups.push(`### ${cat === 'Ability' ? 'Abilities' : cat + 's'}`);
+    items.forEach(f => groups.push(`***${md(f.name)}.*** ${md(f.text)}`));
+  });
+
+  return { header: 'Pathfinder 2E', intro: VaultExport.md(applySubs(card.description, card), true), body: groups.join('\n\n') };
+}
+
+$('export-md').addEventListener('click', async () => {
+  const status = $('export-status');
+  try {
+    const kind = await VaultExport.exportCard(currentCard(), cardToVaultSection);
+    status.textContent = kind === 'zip' ? 'Downloaded note and illustration (.zip).' : 'Downloaded note.';
+  } catch (err) {
+    console.error(err);
+    status.textContent = 'Export failed: see console.';
+  }
+  setTimeout(() => status.textContent = '', 3000);
+});
+
+$('export-all-md').addEventListener('click', async () => {
+  const status = $('deck-status');
+  try {
+    await VaultExport.exportDeck(deck, cardToVaultSection, 'pf2e-vault-notes.zip');
+    status.textContent = 'ZIP downloaded.';
+  } catch (err) {
+    console.error(err);
+    status.textContent = 'Vault export failed: see console.';
+  }
+  setTimeout(() => status.textContent = '', 3000);
+});
+
 // ===== Print sheet =====
 $('print-sheet').addEventListener('click', () => {
   const win = window.open('', '_blank');

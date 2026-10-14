@@ -669,7 +669,7 @@
   margin-top: 16px;
 }
 
-#export-png {
+#export-png, #export-md {
   padding: 11px 26px;
   background: transparent;
   color: var(--text);
@@ -683,7 +683,7 @@
   transition: background 0.15s ease, color 0.15s ease;
 }
 
-#export-png:hover { background: var(--accent); color: #f3ead8; }
+#export-png:hover, #export-md:hover { background: var(--accent); color: #f3ead8; }
 
 #export-status { color: var(--text-dim); font-size: 0.85rem; font-style: italic; }
 
