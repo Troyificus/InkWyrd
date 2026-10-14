@@ -341,7 +341,9 @@ function applySubs(text, card) {
 // ===== Card rendering =====
 function cardInnerHtml(card) {
   let html = '';
-  const sub = (text) => escapeHtml(applySubs(text, card));
+  // Escape first, then turn the user's line breaks into <br> so paragraphs
+  // typed into a textarea survive into the card (HTML collapses raw \n).
+  const sub = (text) => escapeHtml(applySubs(text, card)).replace(/\r?\n/g, '<br>');
   const hasImage = !!card.image && card.imageAlign !== 'none';
   const rowImage = hasImage && card.imageAlign !== 'bottom';
   const bottomImage = hasImage && card.imageAlign === 'bottom';
